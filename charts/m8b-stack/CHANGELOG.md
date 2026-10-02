@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0
+## 2.0.0 (2026-10-02)
 
 First release published from github.com/metricshub/helm-charts (Helm repository and GHCR OCI).
 Breaking for installations made with the 1.5.0 kit: resource and PVC names change.
