@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0 (2026-10-03)
+
+- M8B bot image 3.1.0 (`docker.metricshub.com/metricshub/m8b-slack:3.1.0`); `appVersion` 3.1.0.
+
 ## 2.0.0 (2026-10-02)
 
 First release published from github.com/metricshub/helm-charts (Helm repository and GHCR OCI).

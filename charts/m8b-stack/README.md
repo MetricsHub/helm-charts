@@ -50,7 +50,7 @@ helm show values metricshub/m8b-stack > values-reference.yaml
    ```bash
    docker login docker.metricshub.com
    docker pull docker.metricshub.com/metricshub-enterprise:3.9.07
-   docker pull docker.metricshub.com/metricshub/m8b-slack:3.0.1
+   docker pull docker.metricshub.com/metricshub/m8b-slack:3.1.0
    ```
 
 3. **Write the pull credentials** for Kubernetes without putting the password in shell history or arguments.

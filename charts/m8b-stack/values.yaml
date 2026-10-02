@@ -20,7 +20,7 @@ images:
   agent: docker.metricshub.com/metricshub-enterprise:3.9.07
   prometheus: prom/prometheus:v3.13.3
   searxng: searxng/searxng:2026.9.17-c49771992
-  bot: docker.metricshub.com/metricshub/m8b-slack:3.0.1
+  bot: docker.metricshub.com/metricshub/m8b-slack:3.1.0
   pullPolicy: IfNotPresent
 
 # -- Only Secret NAMES here, never credential values.

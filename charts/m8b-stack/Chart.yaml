@@ -2,8 +2,8 @@ apiVersion: v2
 name: m8b-stack
 description: MetricsHub Enterprise, Prometheus, SearXNG and the M8B Slack bot, installed in explicit stages
 type: application
-version: 2.0.0
-appVersion: 3.0.1
+version: 2.1.0
+appVersion: 3.1.0
 kubeVersion: '>=1.27.0-0'
 home: https://metricshub.com
 icon: https://metricshub.com/images/logo.svg
@@ -23,10 +23,4 @@ annotations:
   artifacthub.io/license: MIT
   artifacthub.io/changes: |
     - kind: changed
-      description: MetricsHub Enterprise image with its embedded OpenTelemetry Collector
-    - kind: changed
-      description: Resource names derive from the release (fullname) with standard Kubernetes labels
-    - kind: added
-      description: Render-time check of monitoring CIDRs against cluster Pod/Service ranges
-    - kind: fixed
-      description: Re-running the check or index stage no longer fails on an immutable Job
+      description: M8B bot image 3.1.0 (docker.metricshub.com/metricshub/m8b-slack:3.1.0)
