@@ -1,0 +1,21 @@
+{{- if and (has .Values.stage (list "run" "index")) .Values.metricshub.exposure.enabled }}
+{{- $n := include "stack.names" . | fromYaml }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $n.agentLan | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "metricshub") | indent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: NodePort
+  externalTrafficPolicy: {{ .Values.metricshub.exposure.externalTrafficPolicy }}
+  selector:
+{{ include "stack.selectorLabels" (dict "root" . "component" "metricshub") | indent 4 }}
+  ports:
+    - name: https
+      port: 31888
+      targetPort: https
+      nodePort: {{ .Values.metricshub.exposure.nodePort }}
+      protocol: TCP
+{{- end }}

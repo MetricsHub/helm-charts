@@ -1,0 +1,121 @@
+{{- $n := include "stack.names" . | fromYaml -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $n.agent | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "metricshub" "role" "agent") | indent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+{{ include "stack.selectorLabels" (dict "root" . "component" "metricshub") | indent 6 }}
+  template:
+    metadata:
+      labels:
+{{ include "stack.labels" (dict "root" . "component" "metricshub" "role" "agent") | indent 8 }}
+      annotations:
+        checksum/stack-config: {{ include "stack.componentHash" (dict "root" . "component" "metricshub") | quote }}
+    spec:
+      hostname: {{ $n.agent | quote }}
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: initialize-data
+          image: {{ .Values.images.agent | quote }}
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          command:
+            - /bin/sh
+            - -ec
+            - |
+{{ .Files.Get "files/scripts/initialize-agent.sh" | trimSuffix "\n" | indent 14 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+          resources:
+{{ toYaml .Values.metricshub.initResources | indent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: bootstrap
+              mountPath: /bootstrap
+              readOnly: true
+          env:
+            - name: CONFIG_MODE
+              value: {{ .Values.metricshub.config.mode | quote }}
+      containers:
+        - name: metricshub
+          image: {{ .Values.images.agent | quote }}
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+          ports:
+            - name: https
+              containerPort: 31888
+              protocol: TCP
+            - name: otel-health
+              containerPort: 13133
+              protocol: TCP
+            - name: otel-prom
+              containerPort: 24375
+              protocol: TCP
+          resources:
+{{ toYaml .Values.metricshub.resources | indent 12 }}
+          startupProbe:
+            tcpSocket:
+              port: https
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 60
+          readinessProbe:
+            tcpSocket:
+              port: https
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          volumeMounts:
+            - name: data
+              mountPath: /opt/metricshub/lib/config
+              subPath: config
+            - name: data
+              mountPath: /opt/metricshub/lib/logs
+              subPath: logs
+            - name: data
+              mountPath: /opt/metricshub/lib/security
+              subPath: security
+            - name: otel
+              mountPath: /opt/metricshub/lib/otel/otel-config.yaml
+              subPath: otel-config.yaml
+              readOnly: true
+{{ with .Values.metricshub.extraEnv }}
+          env:
+{{ toYaml . | indent 12 }}
+{{ end }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ $n.agentClaim | quote }}
+        - name: bootstrap
+{{ if .Values.metricshub.config.existingSecret }}
+          secret:
+            secretName: {{ .Values.metricshub.config.existingSecret | quote }}
+            items:
+              - key: {{ .Values.metricshub.config.secretKey | quote }}
+                path: metricshub.yaml
+{{ else }}
+          configMap:
+            name: {{ $n.agentConfig | quote }}
+{{ end }}
+        - name: otel
+          configMap:
+            name: {{ $n.otelConfig | quote }}
+{{ include "stack.placement" (dict "root" . "component" "metricshub" "pvc" true) | indent 6 }}

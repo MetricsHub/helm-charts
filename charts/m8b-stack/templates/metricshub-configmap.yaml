@@ -1,0 +1,23 @@
+{{- if not .Values.metricshub.config.existingSecret }}
+apiVersion: v1
+kind: ConfigMap
+data:
+  metricshub.yaml: {{ if hasSuffix "\n\n" (include "stack.agentConfig" .) }}|+{{ else if hasSuffix "\n" (include "stack.agentConfig" .) }}|{{ else }}|-{{ end }}
+{{ include "stack.agentConfig" . | trimSuffix "\n" | indent 4 }}
+metadata:
+  name: {{ (include "stack.names" . | fromYaml).agentConfig | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "metricshub") | indent 4 }}
+{{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+data:
+  otel-config.yaml: {{ if hasSuffix "\n" (include "stack.otelConfig" .) }}|{{ else }}|-{{ end }}
+{{ include "stack.otelConfig" . | trimSuffix "\n" | indent 4 }}
+metadata:
+  name: {{ (include "stack.names" . | fromYaml).otelConfig | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "metricshub") | indent 4 }}

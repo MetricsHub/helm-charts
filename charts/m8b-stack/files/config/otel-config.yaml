@@ -1,0 +1,42 @@
+# Embedded OpenTelemetry Collector Contrib (MetricsHub Enterprise), started by the agent in the same container.
+# The OTLP receiver listens on loopback only, so no TLS/basic auth: nothing outside this Pod can reach it.
+# Replace the whole file with metricshub.otel.configText to add exporters (SaaS, remote write...);
+# allow their destinations in metricshub.egress. Reference:
+# https://metricshub.com/docs/latest/resources/config/otel/otel-config-example.yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: localhost:4317
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 1000
+    spike_limit_mib: 200
+  batch:
+    timeout: 10s
+
+exporters:
+  # In-cluster Prometheus OTLP receiver (the M8B bot queries it with PromQL).
+  otlphttp/prometheus:
+    endpoint: http://{{ (include "stack.names" . | fromYaml).prometheus }}:9090/api/v1/otlp
+  # Scrape endpoint for an existing Prometheus; reachable per metricshub.otel.ingressCidrs.
+  prometheus:
+    endpoint: 0.0.0.0:24375
+    send_timestamps: true
+    metric_expiration: 15m
+    resource_to_telemetry_conversion:
+      enabled: true
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+service:
+  extensions: [health_check]
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlphttp/prometheus, prometheus]

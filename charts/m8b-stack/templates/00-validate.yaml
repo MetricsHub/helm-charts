@@ -1,0 +1,47 @@
+{{- if and .Values.network.enabled (ne .Values.network.provider "cilium") .Values.metricshub.monitorKubernetesNodes.enabled }}{{ fail "metricshub.monitorKubernetesNodes requires network.provider=cilium" }}{{ end -}}
+{{- if and (eq .Values.storage.mode "local") (empty .Values.storage.local.node) }}{{ fail "storage.local.node is required" }}{{ end -}}
+{{- if and .Values.metricshub.exposure.enabled (empty .Values.metricshub.exposure.adminCidrs) }}{{ fail "NodePort exposure requires adminCidrs" }}{{ end -}}
+{{- if and .Values.prometheus.exposure.enabled (empty .Values.prometheus.exposure.adminCidrs) }}{{ fail "Prometheus NodePort exposure requires adminCidrs" }}{{ end -}}
+{{- if and .Values.metricshub.exposure.enabled .Values.prometheus.exposure.enabled (eq .Values.metricshub.exposure.nodePort .Values.prometheus.exposure.nodePort) }}{{ fail "MetricsHub and Prometheus cannot use the same NodePort" }}{{ end -}}
+{{- if ne .Values.stage "core" -}}
+{{- if not (regexMatch "^T[A-Z0-9]+$" .Values.m8b.slackTeamId) }}{{ fail "The independently verified Slack Team ID is required" }}{{ end -}}
+{{- if or (empty .Values.m8b.ai.baseUrl) (empty .Values.m8b.ai.model) }}{{ fail "vLLM base URL and exact model ID are required" }}{{ end -}}
+{{- if and .Values.network.enabled (empty .Values.m8b.ai.egress) (empty .Values.m8b.ai.podEgress) }}{{ fail "vLLM egress rules must be explicit" }}{{ end -}}
+{{- end -}}
+
+{{- $m := .Values.m8b -}}
+{{- if or (empty $m.dataDir) (not (regexMatch "^/[^\\r\\n]+$" $m.dataDir)) (regexMatch "(^|/)\\.\\.(/|$)" $m.dataDir) (eq $m.dataDir "/") }}{{ fail "m8b.dataDir must be a dedicated absolute path" }}{{ end -}}
+{{- range $reserved := list "/app" "/stack-scripts" "/kb-seed" "/proc" "/sys" "/dev" "/etc" -}}
+{{- if or (eq $m.dataDir $reserved) (hasPrefix (printf "%s/" $reserved) $m.dataDir) (hasPrefix (printf "%s/" (trimSuffix "/" $m.dataDir)) $reserved) }}{{ fail "m8b.dataDir overlaps a reserved runtime path" }}{{ end -}}
+{{- end -}}
+{{- if and $m.knowledgeBase.directory (or (not (hasPrefix (printf "%s/" (trimSuffix "/" $m.dataDir)) $m.knowledgeBase.directory)) (regexMatch "(^|/)\\.\\.(/|$)" $m.knowledgeBase.directory)) }}{{ fail "knowledgeBase.directory must be strictly inside m8b.dataDir" }}{{ end -}}
+{{- if or $m.embeddings.model $m.embeddings.baseUrl $m.knowledgeBase.bootstrap.enabled (eq .Values.stage "index") -}}
+{{- if or (empty $m.embeddings.model) (not (regexMatch "^https?://[^/@?#]+(/[^?#]*)?/v1/?$" $m.embeddings.baseUrl)) }}{{ fail "Set embeddings.model and an explicit credential-free embeddings.baseUrl ending /v1" }}{{ end -}}
+{{- if and .Values.network.enabled (empty $m.embeddings.egress) (empty $m.embeddings.podEgress) (ne (trimSuffix "/" $m.embeddings.baseUrl) (trimSuffix "/" $m.ai.baseUrl)) }}{{ fail "A separate embedding endpoint requires embeddings.egress or embeddings.podEgress" }}{{ end -}}
+{{- end -}}
+{{- range $e := $m.extraEnv -}}
+{{- if or (hasPrefix "M8B_KB_" $e.name) (has $e.name (list "M8B_DATA_DIR" "KNOWLEDGE_BASE_DIR" "AI_EMBEDDING_BASE_URL" "AI_EMBEDDING_MODEL" "CODE_SANDBOX_ENABLED" "FETCH_URL_ENABLED" "AI_EMBEDDING_QUERY_PREFIX" "AI_EMBEDDING_DOCUMENT_PREFIX" "AI_EMBEDDING_QUERY_INPUT_TYPE" "AI_EMBEDDING_DOCUMENT_INPUT_TYPE")) }}{{ fail "Use managed fields instead of m8b.extraEnv for KB/data settings" }}{{ end -}}
+{{- end -}}
+
+
+{{- range $name := list "metricshub" "prometheus" "searxng" "m8b" -}}
+{{- range $env := (index $.Values $name).extraEnv -}}
+{{- if and (hasKey $env "value") (regexMatch "(?i)(TOKEN|PASSWORD|SECRET|API_KEY)" $env.name) }}{{ fail "Use valueFrom.secretKeyRef for credentials in extraEnv" }}{{ end -}}
+{{- end -}}{{- end -}}
+{{- range $env := .Values.searxng.extraEnv -}}
+{{- if has $env.name (list "SEARXNG_SECRET" "FORCE_OWNERSHIP") }}{{ fail "extraEnv overrides a managed SearXNG variable" }}{{ end -}}
+{{- end -}}
+
+{{- /* Remote monitoring CIDRs must not silently open the cluster's own Pod/Service ranges.
+       A rule is accepted when an "except" entry covers the overlapping cluster range. */ -}}
+{{- if not .Values.network.allowClusterCIDROverlap -}}
+{{- range $rule := .Values.metricshub.egress -}}
+{{- range $net := concat $.Values.network.podCidrs $.Values.network.serviceCidrs -}}
+{{- if or (include "stack.cidrContains" (list $rule.cidr $net)) (include "stack.cidrContains" (list $net $rule.cidr)) -}}
+{{- $excused := false -}}
+{{- range $rule.except }}{{ if include "stack.cidrContains" (list . $net) }}{{ $excused = true }}{{ end }}{{ end -}}
+{{- if not $excused }}{{ fail (printf "metricshub.egress %s overlaps cluster range %s: narrow it, add %s to its except list, or set network.allowClusterCIDROverlap=true" $rule.cidr $net $net) }}{{ end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,19 @@
+{{- if .Values.searxng.enabled }}
+{{- $n := include "stack.names" . | fromYaml }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $n.searxng | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "searxng") | indent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: ClusterIP
+  selector:
+{{ include "stack.selectorLabels" (dict "root" . "component" "searxng") | indent 4 }}
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
+{{- end }}

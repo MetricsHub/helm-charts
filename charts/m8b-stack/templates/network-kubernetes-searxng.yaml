@@ -1,0 +1,28 @@
+{{- if and .Values.network.enabled (eq .Values.network.provider "kubernetes") .Values.searxng.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ printf "%s-searxng-traffic" (include "stack.fullname" .) | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "network") | indent 4 }}
+spec:
+  podSelector:
+{{ include "stack.endpoint" (dict "root" . "role" "searxng") | indent 4 }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              m8b-stack.io/network-role: m8b
+              app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      ports:
+        - port: 8080
+          protocol: TCP
+  egress:
+{{ include "stack.kubeDns" . | indent 4 }}
+{{ include "stack.kubePublicEgress" (dict "root" . "ports" (list (dict "port" "80" "protocol" "TCP") (dict "port" "443" "protocol" "TCP"))) | indent 4 }}
+{{ include "stack.kubeCidrEgress" .Values.network.searxngAdditionalEgress | indent 4 }}
+{{- end }}

@@ -1,0 +1,1724 @@
+{
+  "type": "object",
+  "properties": {
+    "stage": {
+      "type": "string",
+      "enum": [
+        "core",
+        "check",
+        "run",
+        "index"
+      ]
+    },
+    "images": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\s]+(:[^/:]+|@sha256:[a-f0-9]{64})$",
+          "not": {
+            "pattern": ":latest$"
+          }
+        },
+        "prometheus": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\s]+(:[^/:]+|@sha256:[a-f0-9]{64})$",
+          "not": {
+            "pattern": ":latest$"
+          }
+        },
+        "searxng": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\s]+(:[^/:]+|@sha256:[a-f0-9]{64})$",
+          "not": {
+            "pattern": ":latest$"
+          }
+        },
+        "bot": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\s]+(:[^/:]+|@sha256:[a-f0-9]{64})$",
+          "not": {
+            "pattern": ":latest$"
+          }
+        },
+        "pullPolicy": {
+          "type": "string",
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "agent",
+        "bot",
+        "prometheus",
+        "pullPolicy",
+        "searxng"
+      ]
+    },
+    "secrets": {
+      "type": "object",
+      "properties": {
+        "registry": {
+          "type": "string"
+        },
+        "runtime": {
+          "type": "string"
+        },
+        "searxng": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "registry",
+        "runtime",
+        "searxng"
+      ]
+    },
+    "storage": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "local",
+            "csi",
+            "existing"
+          ]
+        },
+        "className": {
+          "type": "string"
+        },
+        "local": {
+          "type": "object",
+          "properties": {
+            "node": {
+              "type": "string"
+            },
+            "basePath": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "basePath",
+            "node"
+          ]
+        },
+        "sizes": {
+          "type": "object",
+          "properties": {
+            "agent": {
+              "type": "string"
+            },
+            "prometheus": {
+              "type": "string"
+            },
+            "bot": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "agent",
+            "bot",
+            "prometheus"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "className",
+        "local",
+        "mode",
+        "sizes"
+      ]
+    },
+    "network": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "defaultDenyWholeNamespace": {
+          "type": "boolean"
+        },
+        "clusterDomain": {
+          "type": "string"
+        },
+        "podCidrs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+          }
+        },
+        "serviceCidrs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+          }
+        },
+        "allowClusterCIDROverlap": {
+          "type": "boolean"
+        },
+        "dns": {
+          "type": "object",
+          "properties": {
+            "namespace": {
+              "type": "string"
+            },
+            "labels": {
+              "type": "object",
+              "properties": {
+                "k8s-app": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "ipBlocks": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "labels",
+            "namespace",
+            "ipBlocks"
+          ]
+        },
+        "publicEgress": {
+          "type": "object",
+          "properties": {
+            "cidr": {
+              "type": "string",
+              "const": "0.0.0.0/0"
+            },
+            "except": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "cidr",
+            "except"
+          ]
+        },
+        "m8bAdditionalEgress": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "cidr"
+            ],
+            "properties": {
+              "cidr": {
+                "type": "string",
+                "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+              },
+              "except": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+                }
+              },
+              "ports": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "port",
+                    "protocol"
+                  ],
+                  "properties": {
+                    "port": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[0-9]+$"
+                        },
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 65535
+                        }
+                      ]
+                    },
+                    "endPort": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65535
+                    },
+                    "protocol": {
+                      "enum": [
+                        "TCP",
+                        "UDP",
+                        "SCTP"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "searxngAdditionalEgress": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "cidr"
+            ],
+            "properties": {
+              "cidr": {
+                "type": "string",
+                "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+              },
+              "except": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+                }
+              },
+              "ports": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "port",
+                    "protocol"
+                  ],
+                  "properties": {
+                    "port": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[0-9]+$"
+                        },
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 65535
+                        }
+                      ]
+                    },
+                    "endPort": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65535
+                    },
+                    "protocol": {
+                      "enum": [
+                        "TCP",
+                        "UDP",
+                        "SCTP"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "kubernetes",
+            "cilium"
+          ],
+          "description": "NetworkPolicy API provider. Does not install or discover a CNI."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "allowClusterCIDROverlap",
+        "clusterDomain",
+        "defaultDenyWholeNamespace",
+        "dns",
+        "enabled",
+        "m8bAdditionalEgress",
+        "podCidrs",
+        "publicEgress",
+        "searxngAdditionalEgress",
+        "serviceCidrs",
+        "provider"
+      ]
+    },
+    "metricshub": {
+      "type": "object",
+      "properties": {
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tolerations": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "extraEnv": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "valueFrom": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+              {
+                "required": [
+                  "value"
+                ]
+              },
+              {
+                "required": [
+                  "valueFrom"
+                ]
+              }
+            ]
+          }
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "initResources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "egress": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "cidr"
+            ],
+            "properties": {
+              "cidr": {
+                "type": "string",
+                "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+              },
+              "except": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+                }
+              },
+              "ports": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "port",
+                    "protocol"
+                  ],
+                  "properties": {
+                    "port": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[0-9]+$"
+                        },
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 65535
+                        }
+                      ]
+                    },
+                    "endPort": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65535
+                    },
+                    "protocol": {
+                      "enum": [
+                        "TCP",
+                        "UDP",
+                        "SCTP"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "monitorKubernetesNodes": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "ports": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "port",
+                  "protocol"
+                ],
+                "properties": {
+                  "port": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[0-9]+$"
+                      },
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 65535
+                      }
+                    ]
+                  },
+                  "endPort": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                  },
+                  "protocol": {
+                    "enum": [
+                      "TCP",
+                      "UDP",
+                      "SCTP"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "enabled",
+            "ports"
+          ]
+        },
+        "exposure": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "nodePort": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "adminCidrs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+              }
+            },
+            "externalTrafficPolicy": {
+              "type": "string",
+              "const": "Local"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "adminCidrs",
+            "enabled",
+            "externalTrafficPolicy",
+            "nodePort"
+          ]
+        },
+        "config": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "seed",
+                "managed"
+              ]
+            },
+            "text": {
+              "type": "string"
+            },
+            "existingSecret": {
+              "type": "string"
+            },
+            "secretKey": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "existingSecret",
+            "mode",
+            "secretKey",
+            "text"
+          ]
+        },
+        "otel": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "configText",
+            "ingressCidrs"
+          ],
+          "properties": {
+            "configText": {
+              "type": "string"
+            },
+            "ingressCidrs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "affinity",
+        "config",
+        "egress",
+        "exposure",
+        "extraEnv",
+        "initResources",
+        "monitorKubernetesNodes",
+        "nodeSelector",
+        "otel",
+        "resources",
+        "tolerations"
+      ]
+    },
+    "prometheus": {
+      "type": "object",
+      "properties": {
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tolerations": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "extraEnv": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "valueFrom": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+              {
+                "required": [
+                  "value"
+                ]
+              },
+              {
+                "required": [
+                  "valueFrom"
+                ]
+              }
+            ]
+          }
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "initResources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "retentionTime": {
+          "type": "string"
+        },
+        "retentionSize": {
+          "type": "string"
+        },
+        "configText": {
+          "type": "string"
+        },
+        "exposure": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "nodePort": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "adminCidrs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+              }
+            },
+            "externalTrafficPolicy": {
+              "type": "string",
+              "const": "Local"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "adminCidrs",
+            "enabled",
+            "externalTrafficPolicy",
+            "nodePort"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "affinity",
+        "configText",
+        "exposure",
+        "extraEnv",
+        "initResources",
+        "nodeSelector",
+        "resources",
+        "retentionSize",
+        "retentionTime",
+        "tolerations"
+      ]
+    },
+    "searxng": {
+      "type": "object",
+      "properties": {
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tolerations": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "extraEnv": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "valueFrom": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+              {
+                "required": [
+                  "value"
+                ]
+              },
+              {
+                "required": [
+                  "valueFrom"
+                ]
+              }
+            ]
+          }
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "initResources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "cacheSize": {
+          "type": "string"
+        },
+        "configText": {
+          "type": "string"
+        },
+        "fixCacheOwnership": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "affinity",
+        "cacheSize",
+        "configText",
+        "enabled",
+        "extraEnv",
+        "fixCacheOwnership",
+        "initResources",
+        "nodeSelector",
+        "resources",
+        "tolerations"
+      ]
+    },
+    "m8b": {
+      "type": "object",
+      "properties": {
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tolerations": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "extraEnv": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "valueFrom": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": false,
+            "oneOf": [
+              {
+                "required": [
+                  "value"
+                ]
+              },
+              {
+                "required": [
+                  "valueFrom"
+                ]
+              }
+            ]
+          }
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "checkResources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "slackTeamId": {
+          "type": "string"
+        },
+        "ai": {
+          "type": "object",
+          "properties": {
+            "baseUrl": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "egress": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "cidr"
+                ],
+                "properties": {
+                  "cidr": {
+                    "type": "string",
+                    "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+                  },
+                  "except": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+                    }
+                  },
+                  "ports": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "port",
+                        "protocol"
+                      ],
+                      "properties": {
+                        "port": {
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^[0-9]+$"
+                            },
+                            {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65535
+                            }
+                          ]
+                        },
+                        "endPort": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 65535
+                        },
+                        "protocol": {
+                          "enum": [
+                            "TCP",
+                            "UDP",
+                            "SCTP"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "podEgress": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "namespace",
+                  "matchLabels",
+                  "ports"
+                ],
+                "properties": {
+                  "namespace": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 63,
+                    "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                  },
+                  "matchLabels": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "ports": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "port",
+                        "protocol"
+                      ],
+                      "properties": {
+                        "port": {
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^[0-9]+$"
+                            },
+                            {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65535
+                            }
+                          ]
+                        },
+                        "endPort": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 65535
+                        },
+                        "protocol": {
+                          "enum": [
+                            "TCP",
+                            "UDP",
+                            "SCTP"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "baseUrl",
+            "egress",
+            "model",
+            "podEgress"
+          ]
+        },
+        "allowSelfSignedMcp": {
+          "type": "boolean"
+        },
+        "enablePromql": {
+          "type": "boolean"
+        },
+        "extraConfig": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "startupAttempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        },
+        "startupRetrySeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300
+        },
+        "dataDir": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "^/[^\\n\\r]+$"
+        },
+        "codeSandboxEnabled": {
+          "type": "boolean"
+        },
+        "fetchUrlEnabled": {
+          "type": "boolean"
+        },
+        "embeddings": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "baseUrl": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "queryPrefix": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "documentPrefix": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "queryInputType": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "documentInputType": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "egress": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "cidr"
+                ],
+                "properties": {
+                  "cidr": {
+                    "type": "string",
+                    "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+                  },
+                  "except": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}/(?:[0-9]|[12][0-9]|3[0-2])$"
+                    }
+                  },
+                  "ports": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "port",
+                        "protocol"
+                      ],
+                      "properties": {
+                        "port": {
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^[0-9]+$"
+                            },
+                            {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65535
+                            }
+                          ]
+                        },
+                        "endPort": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 65535
+                        },
+                        "protocol": {
+                          "enum": [
+                            "TCP",
+                            "UDP",
+                            "SCTP"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "podEgress": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "namespace",
+                  "matchLabels",
+                  "ports"
+                ],
+                "properties": {
+                  "namespace": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 63,
+                    "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                  },
+                  "matchLabels": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "ports": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "port",
+                        "protocol"
+                      ],
+                      "properties": {
+                        "port": {
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^[0-9]+$"
+                            },
+                            {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 65535
+                            }
+                          ]
+                        },
+                        "endPort": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 65535
+                        },
+                        "protocol": {
+                          "enum": [
+                            "TCP",
+                            "UDP",
+                            "SCTP"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "baseUrl",
+            "egress",
+            "model",
+            "podEgress"
+          ]
+        },
+        "knowledgeBase": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "directory": {
+              "type": "string"
+            },
+            "seedConfigMap": {
+              "type": "string"
+            },
+            "bootstrap": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "mode": {
+                  "enum": [
+                    "if-missing",
+                    "always"
+                  ]
+                },
+                "emptyPolicy": {
+                  "enum": [
+                    "fail",
+                    "skip"
+                  ]
+                },
+                "timeoutSeconds": {
+                  "type": "integer",
+                  "minimum": 120,
+                  "maximum": 86400
+                },
+                "resources": {
+                  "type": "object",
+                  "properties": {
+                    "requests": {
+                      "type": "object",
+                      "properties": {
+                        "cpu": {
+                          "type": "string"
+                        },
+                        "memory": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "limits": {
+                      "type": "object",
+                      "properties": {
+                        "cpu": {
+                          "type": "string"
+                        },
+                        "memory": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "emptyPolicy",
+                "enabled",
+                "mode",
+                "resources",
+                "timeoutSeconds"
+              ]
+            }
+          },
+          "required": [
+            "bootstrap",
+            "directory",
+            "seedConfigMap"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "affinity",
+        "ai",
+        "allowSelfSignedMcp",
+        "checkResources",
+        "codeSandboxEnabled",
+        "dataDir",
+        "embeddings",
+        "enablePromql",
+        "extraConfig",
+        "extraEnv",
+        "fetchUrlEnabled",
+        "knowledgeBase",
+        "nodeSelector",
+        "resources",
+        "slackTeamId",
+        "startupAttempts",
+        "startupRetrySeconds",
+        "tolerations"
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "properties": {
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 3600
+        },
+        "requireMetrics": {
+          "type": "boolean"
+        },
+        "searchQuery": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "requireMetrics",
+        "searchQuery",
+        "timeoutSeconds"
+      ]
+    },
+    "nameOverride": {
+      "type": "string",
+      "maxLength": 40,
+      "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?)?$"
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "maxLength": 40,
+      "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?)?$"
+    }
+  },
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "M8B Stack 1.5.0 - shared Native and Helm values",
+  "required": [
+    "checks",
+    "images",
+    "m8b",
+    "metricshub",
+    "network",
+    "prometheus",
+    "searxng",
+    "secrets",
+    "stage",
+    "storage"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "stage": {
+            "enum": [
+              "check",
+              "run",
+              "index"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "m8b": {
+            "properties": {
+              "slackTeamId": {
+                "pattern": "^T[A-Z0-9]+$"
+              },
+              "ai": {
+                "properties": {
+                  "baseUrl": {
+                    "minLength": 1,
+                    "pattern": "^https?://"
+                  },
+                  "model": {
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "network": {
+            "properties": {
+              "enabled": {
+                "const": true
+              },
+              "provider": {
+                "const": "kubernetes"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "metricshub": {
+            "properties": {
+              "monitorKubernetesNodes": {
+                "properties": {
+                  "enabled": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

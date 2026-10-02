@@ -1,0 +1,23 @@
+{{- if and .Values.network.enabled (eq .Values.network.provider "cilium") .Values.metricshub.monitorKubernetesNodes.enabled }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ printf "%s-agent-monitor-k8s-nodes" (include "stack.fullname" .) | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "network") | indent 4 }}
+spec:
+  endpointSelector:
+{{ include "stack.endpoint" (dict "root" . "role" "agent") | indent 4 }}
+
+  egress:
+    - toEntities:
+        - host
+        - remote-node
+{{ with .Values.metricshub.monitorKubernetesNodes.ports }}
+      toPorts:
+        - ports:
+{{ include "stack.ports" . | indent 12 }}
+{{ end }}
+
+{{- end }}

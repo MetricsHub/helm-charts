@@ -1,0 +1,28 @@
+{{- if and .Values.network.enabled (eq .Values.network.provider "cilium") .Values.searxng.enabled }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ printf "%s-searxng-traffic" (include "stack.fullname" .) | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "network") | indent 4 }}
+spec:
+  endpointSelector:
+{{ include "stack.endpoint" (dict "root" . "role" "searxng") | indent 4 }}
+
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            m8b-stack.io/network-role: m8b
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    - {{ include "stack.dns" . | nindent 6 | trim }}
+{{ include "stack.extraDns" . | indent 4 }}
+{{ include "stack.publicEgress" (dict "root" . "ports" (list (dict "port" "80" "protocol" "TCP") (dict "port" "443" "protocol" "TCP"))) | indent 4 }}
+{{ include "stack.cidrEgress" .Values.network.searxngAdditionalEgress | indent 4 }}
+
+{{- end }}

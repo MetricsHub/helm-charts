@@ -1,0 +1,11 @@
+{{- $n := include "stack.names" . | fromYaml }}
+apiVersion: v1
+kind: ConfigMap
+data:
+  prometheus.yml: {{ if hasSuffix "\n\n" (include "stack.promConfig" .) }}|+{{ else if hasSuffix "\n" (include "stack.promConfig" .) }}|{{ else }}|-{{ end }}
+{{ include "stack.promConfig" . | trimSuffix "\n" | indent 4 }}
+metadata:
+  name: {{ $n.prometheusConfig | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "prometheus") | indent 4 }}

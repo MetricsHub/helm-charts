@@ -1,0 +1,16 @@
+# EXAMPLE ONLY: replace this documentation CIDR with your trusted administrator sources.
+# Network policy is not HTTP authentication/TLS. Local requires a node hosting the Pod.
+metricshub:
+  exposure:
+    enabled: true
+    nodePort: 31888
+    adminCidrs:
+      - 192.0.2.0/24
+    externalTrafficPolicy: Local
+prometheus:
+  exposure:
+    enabled: true
+    nodePort: 30909
+    adminCidrs:
+      - 192.0.2.0/24
+    externalTrafficPolicy: Local

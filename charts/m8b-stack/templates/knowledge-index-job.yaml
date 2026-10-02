@@ -1,0 +1,86 @@
+{{- if eq .Values.stage "index" }}
+{{- $n := include "stack.names" . | fromYaml }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $n.kbIndex | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "knowledge" "role" "m8b") | indent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: {{ add .Values.m8b.knowledgeBase.bootstrap.timeoutSeconds 60 }}
+  template:
+    metadata:
+      labels:
+{{ include "stack.labels" (dict "root" . "component" "knowledge" "role" "m8b") | indent 8 }}
+      annotations:
+        checksum/stack-config: {{ include "stack.componentHash" (dict "root" . "component" "knowledge") | quote }}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: index
+          image: {{ .Values.images.bot | quote }}
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          workingDir: /app
+          envFrom:
+            - configMapRef:
+                name: {{ $n.botConfig | quote }}
+            - secretRef:
+                name: {{ .Values.secrets.runtime | quote }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+{{ toYaml .Values.m8b.knowledgeBase.bootstrap.resources | indent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.m8b.dataDir | quote }}
+            - name: stack-scripts
+              mountPath: /stack-scripts
+              readOnly: true
+{{ if .Values.m8b.knowledgeBase.seedConfigMap }}
+            - name: kb-seed
+              mountPath: /kb-seed
+              readOnly: true
+{{ end }}
+          command:
+            - node
+            - /stack-scripts/kb-bootstrap.cjs
+            - run
+          env:
+{{ with .Values.m8b.extraEnv }}
+{{ toYaml . | indent 12 }}
+{{ end }}
+            - name: M8B_KB_BOOTSTRAP_MODE
+              value: {{ .Values.m8b.knowledgeBase.bootstrap.mode | quote }}
+            - name: M8B_KB_EMPTY_POLICY
+              value: {{ .Values.m8b.knowledgeBase.bootstrap.emptyPolicy | quote }}
+            - name: M8B_KB_TIMEOUT_SECONDS
+              value: {{ toString .Values.m8b.knowledgeBase.bootstrap.timeoutSeconds | quote }}
+            - name: M8B_KB_SEED_CONFIGURED
+              value: {{ toString (not (empty .Values.m8b.knowledgeBase.seedConfigMap)) | quote }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ $n.botClaim | quote }}
+        - name: stack-scripts
+          configMap:
+            name: {{ $n.botScripts | quote }}
+{{ if .Values.m8b.knowledgeBase.seedConfigMap }}
+        - name: kb-seed
+          configMap:
+            name: {{ .Values.m8b.knowledgeBase.seedConfigMap | quote }}
+{{ end }}
+      restartPolicy: Never
+{{ include "stack.placement" (dict "root" . "component" "m8b" "pvc" true) | indent 6 }}
+{{- end }}

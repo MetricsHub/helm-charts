@@ -1,0 +1,33 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        helm: [v3.22.0, v4.3.0]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: azure/setup-helm@v5
+        with:
+          version: ${{ matrix.helm }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: ./scripts/test.sh
+      - name: Chart version bumped when a chart changed
+        if: github.event_name == 'pull_request'
+        run: |
+          for chart in $(git diff --name-only origin/${{ github.base_ref }}... -- charts | cut -d/ -f2 | sort -u); do
+            [ -f "charts/$chart/Chart.yaml" ] || continue
+            old=$(git show "origin/${{ github.base_ref }}:charts/$chart/Chart.yaml" 2>/dev/null | sed -n 's/^version: *//p')
+            new=$(sed -n 's/^version: *//p' "charts/$chart/Chart.yaml")
+            if [ -n "$old" ] && [ "$old" = "$new" ]; then echo "::error::charts/$chart changed but version is still $new"; exit 1; fi
+          done

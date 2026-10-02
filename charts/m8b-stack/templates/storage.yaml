@@ -1,0 +1,64 @@
+{{- if ne .Values.storage.mode "existing" -}}
+{{- $v := .Values -}}
+{{- $n := include "stack.names" . | fromYaml -}}
+{{- $components := list "agent" "prometheus" -}}
+{{- if ne $v.stage "core" }}{{ $components = append $components "bot" }}{{ end -}}
+{{- range $component := $components -}}
+{{- $claim := index $n (printf "%sClaim" $component) -}}
+{{- $pv := printf "%s-%s-%s-pv" $.Release.Namespace (include "stack.fullname" $) $component -}}
+{{ if eq $v.storage.mode "local" }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ $pv | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" $ "component" "storage") | indent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  capacity:
+    storage: {{ index $v.storage.sizes $component | quote }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  claimRef:
+    namespace: {{ $.Release.Namespace | quote }}
+    name: {{ $claim | quote }}
+  local:
+    path: {{ printf "%s/%s/%s/%s" (trimSuffix "/" $v.storage.local.basePath) $.Release.Namespace (include "stack.fullname" $) $component | quote }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - {{ $v.storage.local.node | quote }}
+{{ end }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $claim | quote }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" $ "component" "storage") | indent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ index $v.storage.sizes $component | quote }}
+{{ if eq $v.storage.mode "local" }}
+  storageClassName: ""
+  volumeName: {{ $pv | quote }}
+{{ else if $v.storage.className }}
+  storageClassName: {{ $v.storage.className | quote }}
+{{ end }}
+{{ end -}}
+{{ end -}}

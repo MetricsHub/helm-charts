@@ -1,0 +1,37 @@
+{{- if and .Values.network.enabled (eq .Values.network.provider "cilium") }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ printf "%s-prometheus-traffic" (include "stack.fullname" .) | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "network") | indent 4 }}
+spec:
+  endpointSelector:
+{{ include "stack.endpoint" (dict "root" . "role" "prometheus") | indent 4 }}
+
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            m8b-stack.io/network-role: agent
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        - matchLabels:
+            m8b-stack.io/network-role: m8b
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      toPorts:
+        - ports:
+            - port: "9090"
+              protocol: TCP
+{{ if .Values.prometheus.exposure.enabled }}
+    - fromCIDR:
+{{ toYaml .Values.prometheus.exposure.adminCidrs | indent 8 }}
+      toPorts:
+        - ports:
+            - port: "9090"
+              protocol: TCP
+{{ end }}
+  egress:
+    - {{ include "stack.dns" . | nindent 6 | trim }}
+{{ include "stack.extraDns" . | indent 4 }}
+
+{{- end }}

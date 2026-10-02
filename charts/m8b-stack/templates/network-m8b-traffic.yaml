@@ -1,0 +1,51 @@
+{{- if and .Values.network.enabled (eq .Values.network.provider "cilium") }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ printf "%s-m8b-traffic" (include "stack.fullname" .) | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "network") | indent 4 }}
+spec:
+  endpointSelector:
+{{ include "stack.endpoint" (dict "root" . "role" "m8b") | indent 4 }}
+
+  egress:
+    - {{ include "stack.dns" . | nindent 6 | trim }}
+{{ include "stack.extraDns" . | indent 4 }}
+    - toEndpoints:
+        - matchLabels:
+            m8b-stack.io/network-role: agent
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      toPorts:
+        - ports:
+            - port: "31888"
+              protocol: TCP
+{{ include "stack.cidrEgress" .Values.m8b.ai.egress | indent 4 }}
+{{ include "stack.cidrEgress" .Values.m8b.embeddings.egress | indent 4 }}
+{{ include "stack.podEgress" .Values.m8b.ai.podEgress | indent 4 }}
+{{ include "stack.podEgress" .Values.m8b.embeddings.podEgress | indent 4 }}
+{{ include "stack.publicEgress" (dict "root" . "ports" (list (dict "port" "443" "protocol" "TCP"))) | indent 4 }}
+{{ if .Values.m8b.enablePromql }}
+    - toEndpoints:
+        - matchLabels:
+            m8b-stack.io/network-role: prometheus
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      toPorts:
+        - ports:
+            - port: "9090"
+              protocol: TCP
+{{ end }}
+{{ if .Values.searxng.enabled }}
+    - toEndpoints:
+        - matchLabels:
+            m8b-stack.io/network-role: searxng
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+{{ end }}
+{{ include "stack.cidrEgress" .Values.network.m8bAdditionalEgress | indent 4 }}
+
+{{- end }}

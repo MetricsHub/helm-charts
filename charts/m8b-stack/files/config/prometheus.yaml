@@ -1,0 +1,12 @@
+# MetricsHub PUSHES via OTLP (through its embedded collector). The only scrape target is Prometheus itself.
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ['127.0.0.1:9090']
+otlp:
+  translation_strategy: UnderscoreEscapingWithSuffixes
+  # MetricsHub resource attributes (host.name, site...) become labels on every series, not only target_info.
+  promote_all_resource_attributes: true

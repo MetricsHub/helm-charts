@@ -1,0 +1,37 @@
+name: Release
+# Publishes every chart whose version has no GitHub release yet:
+#   - GitHub release + gh-pages index.yaml  -> helm repo add metricshub https://metricshub.github.io/helm-charts
+#   - OCI artifact                          -> oci://ghcr.io/metricshub/charts/<chart>
+# Prerequisite: a gh-pages branch exists and GitHub Pages serves it.
+on:
+  push:
+    branches: [main]
+    paths: ['charts/**']
+permissions:
+  contents: write
+  packages: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: azure/setup-helm@v5
+        with:
+          version: v4.3.0
+      - run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - uses: helm/chart-releaser-action@v1.7.0
+        with:
+          skip_existing: true
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push to GHCR
+        run: |
+          shopt -s nullglob
+          packages=(.cr-release-packages/*.tgz)
+          [ ${#packages[@]} -gt 0 ] || { echo 'Nothing new to push'; exit 0; }
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          for pkg in "${packages[@]}"; do helm push "$pkg" oci://ghcr.io/metricshub/charts; done

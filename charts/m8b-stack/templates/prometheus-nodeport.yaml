@@ -1,0 +1,21 @@
+{{- if and (has .Values.stage (list "run" "index")) .Values.prometheus.exposure.enabled }}
+{{- $n := include "stack.names" . | fromYaml }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $n.prometheusLan | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "prometheus") | indent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: NodePort
+  selector:
+{{ include "stack.selectorLabels" (dict "root" . "component" "prometheus") | indent 4 }}
+  ports:
+    - name: http
+      port: 9090
+      targetPort: http
+      protocol: TCP
+      nodePort: {{ .Values.prometheus.exposure.nodePort }}
+  externalTrafficPolicy: {{ .Values.prometheus.exposure.externalTrafficPolicy }}
+{{- end }}

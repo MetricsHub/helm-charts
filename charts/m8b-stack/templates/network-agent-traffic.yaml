@@ -1,0 +1,53 @@
+{{- if and .Values.network.enabled (eq .Values.network.provider "cilium") }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ printf "%s-agent-traffic" (include "stack.fullname" .) | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "network") | indent 4 }}
+spec:
+  endpointSelector:
+{{ include "stack.endpoint" (dict "root" . "role" "agent") | indent 4 }}
+
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            m8b-stack.io/network-role: m8b
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      toPorts:
+        - ports:
+            - port: "31888"
+              protocol: TCP
+{{ if .Values.metricshub.exposure.enabled }}
+    - fromCIDR:
+{{ toYaml .Values.metricshub.exposure.adminCidrs | indent 8 }}
+      toPorts:
+        - ports:
+            - port: "31888"
+              protocol: TCP
+{{ end }}
+{{ with .Values.metricshub.otel.ingressCidrs }}
+    - fromCIDR:
+{{ toYaml . | indent 8 }}
+      toPorts:
+        - ports:
+            - port: "13133"
+              protocol: TCP
+            - port: "24375"
+              protocol: TCP
+{{ end }}
+  egress:
+    - {{ include "stack.dns" . | nindent 6 | trim }}
+{{ include "stack.extraDns" . | indent 4 }}
+{{ include "stack.cidrEgress" .Values.metricshub.egress | indent 4 }}
+    - toEndpoints:
+        - matchLabels:
+            m8b-stack.io/network-role: prometheus
+            app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      toPorts:
+        - ports:
+            - port: "9090"
+              protocol: TCP
+
+{{- end }}

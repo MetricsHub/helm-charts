@@ -1,0 +1,57 @@
+{{- if and .Values.network.enabled (eq .Values.network.provider "kubernetes")  }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ printf "%s-agent-traffic" (include "stack.fullname" .) | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "network") | indent 4 }}
+spec:
+  podSelector:
+{{ include "stack.endpoint" (dict "root" . "role" "agent") | indent 4 }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              m8b-stack.io/network-role: m8b
+              app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      ports:
+        - port: 31888
+          protocol: TCP
+{{ if .Values.metricshub.exposure.enabled }}
+    - from:
+{{ range .Values.metricshub.exposure.adminCidrs }}
+        - ipBlock:
+            cidr: {{ . | quote }}
+{{ end }}
+      ports:
+        - port: 31888
+          protocol: TCP
+{{ end }}
+{{ with .Values.metricshub.otel.ingressCidrs }}
+    - from:
+{{ range . }}
+        - ipBlock:
+            cidr: {{ . | quote }}
+{{ end }}
+      ports:
+        - port: 13133
+          protocol: TCP
+        - port: 24375
+          protocol: TCP
+{{ end }}
+  egress:
+{{ include "stack.kubeDns" . | indent 4 }}
+{{ include "stack.kubeCidrEgress" .Values.metricshub.egress | indent 4 }}
+    - to:
+        - podSelector:
+            matchLabels:
+              m8b-stack.io/network-role: prometheus
+              app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      ports:
+        - port: 9090
+          protocol: TCP
+{{- end }}

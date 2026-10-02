@@ -1,0 +1,12 @@
+# Private, platform-specific files (lab guides, site values, vendor archives). Never committed.
+/local/
+
+# Packaged charts and chart-releaser work dirs
+*.tgz
+*.tar.gz
+.cr-release-packages/
+.cr-index/
+
+# Files the getting-started guide tells users to create
+my-values.yaml
+rendered.yaml

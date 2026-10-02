@@ -1,0 +1,20 @@
+{{- $n := include "stack.names" . | fromYaml }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $n.botConfig | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "m8b") | indent 4 }}
+data:
+{{ include "stack.m8bConfig" . | indent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $n.botScripts | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "m8b") | indent 4 }}
+data:
+{{ include "stack.scriptData" . | indent 2 }}

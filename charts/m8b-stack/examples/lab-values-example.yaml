@@ -1,0 +1,58 @@
+# EXAMPLE on-premises lab: kubeadm cluster of 3 nodes (kube-01, kube-02, kube-03), no StorageClass, so the
+# volumes are local to kube-01. Used by GETTING-STARTED.md. Every value marked "CHANGE ME" is an example:
+# IPs come from the RFC 5737 documentation ranges, hostnames from the reserved .internal domain.
+# No credentials belong here: they go into Kubernetes Secrets (GETTING-STARTED.md, steps 4 and 5).
+
+storage:
+  mode: local
+  local:
+    node: kube-01                       # CHANGE ME: a node name from "kubectl get nodes"; it holds all the data
+    basePath: /var/lib/m8b-stack        # volumes: <basePath>/<namespace>/<release>/{agent,prometheus,bot}
+
+network:
+  provider: kubernetes                  # standard NetworkPolicies; any enforcing CNI (Cilium, Calico...) works
+  enabled: true
+  defaultDenyWholeNamespace: true       # the namespace is dedicated to this stack
+  podCidrs: [10.244.0.0/16]             # CHANGE ME: podSubnet (GETTING-STARTED.md, step 1)
+  serviceCidrs: [10.96.0.0/12]          # CHANGE ME: serviceSubnet (kubeadm default shown)
+
+metricshub:
+  # Networks the agent may reach: monitored hosts and the embedded collector's exporters.
+  # Empty = nothing is monitored. Omit "ports" to allow every port.
+  egress:
+    - cidr: 192.0.2.0/24                # CHANGE ME: the network you monitor
+  exposure:                             # MetricsHub Web UI on https://<kube-01 IP>:31888
+    enabled: true
+    nodePort: 31888
+    adminCidrs:                         # CHANGE ME: trusted SOURCE networks only
+      - 198.51.100.0/24                 #   e.g. office LAN
+      - 203.0.113.0/24                  #   e.g. VPN pool
+    externalTrafficPolicy: Local
+
+prometheus:
+  exposure:                             # Prometheus on http://<kube-01 IP>:30909, NO authentication or TLS
+    enabled: true
+    nodePort: 30909
+    adminCidrs:                         # CHANGE ME: same trusted sources as above
+      - 198.51.100.0/24
+      - 203.0.113.0/24
+    externalTrafficPolicy: Local
+
+m8b:
+  slackTeamId: T0000000000              # CHANGE ME: your workspace ID (browser URL app.slack.com/client/T.../...)
+  ai:
+    baseUrl: http://vllm.example.internal:8000/v1   # CHANGE ME: OpenAI-compatible endpoint, ending in /v1
+    model: chat-model                   # CHANGE ME: exact ID from "curl -s <baseUrl>/models"
+    egress:
+      - cidr: 192.0.2.50/32             # CHANGE ME: the IP that the endpoint hostname resolves to
+        ports:
+          - port: '8000'                # CHANGE ME: the endpoint port
+            protocol: TCP
+  embeddings:
+    baseUrl: http://vllm.example.internal:8000/v1   # CHANGE ME: same server as ai.baseUrl here, so ai.egress covers it
+    model: embedding-model              # CHANGE ME: exact embedding model ID
+  knowledgeBase:
+    bootstrap:
+      enabled: true                     # index the documentation once (GETTING-STARTED.md, step 11)
+      mode: if-missing
+      timeoutSeconds: 3600

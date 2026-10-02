@@ -1,0 +1,297 @@
+# M8B Stack - chart defaults
+# Edit a small site profile, not this complete reference:
+#   cp -n examples/portable.yaml my-values.yaml
+#   helm template demo metricshub/m8b-stack -f my-values.yaml --set stage=run
+# Maps merge; lists/scalars replace; later -f wins; null removes an optional key.
+# Quote environment strings ("false", "9090"). Never store credentials here.
+# Generic defaults require site values. examples/portable.yaml contains placeholders to replace.
+
+# -- Replaces the chart name in resource names and the app.kubernetes.io/name label.
+nameOverride: ''
+# -- Replaces the full "<release>-<chart>" prefix of every resource name (max 40 chars).
+fullnameOverride: ''
+
+# -- Lifecycle stage: core, check, run, index. See README for the sequence.
+stage: core
+
+# -- Full image references. agent and bot come from the private docker.metricshub.com registry (see README).
+images:
+  # -- MetricsHub Enterprise: agent plus embedded OpenTelemetry Collector Contrib.
+  agent: docker.metricshub.com/metricshub-enterprise:3.9.07
+  prometheus: prom/prometheus:v3.13.3
+  searxng: searxng/searxng:2026.9.17-c49771992
+  bot: docker.metricshub.com/metricshub/m8b-slack:3.0.1
+  pullPolicy: IfNotPresent
+
+# -- Only Secret NAMES here, never credential values.
+secrets:
+  # -- dockerconfigjson Secret with access to docker.metricshub.com.
+  registry: registry-pull
+  runtime: m8b-runtime
+  searxng: searxng-runtime
+
+# -- local: static PVs; csi: StorageClass/PVC; existing: reuse named PVCs.
+storage:
+  mode: csi
+  # -- CSI class name; empty string lets the cluster choose its default class.
+  className: ''
+  local:
+    # -- REQUIRED for local storage: kubernetes.io/hostname label of the storage node.
+    node: ''
+    # -- Dedicated absolute path ON THAT NODE; volumes live in <basePath>/<namespace>/<fullname>/<component>.
+    basePath: /var/lib/m8b-stack
+  # -- PV/PVC capacities, not filesystem quotas or physical reservations in local mode.
+  sizes:
+    agent: 10Gi
+    prometheus: 20Gi
+    bot: 5Gi
+
+# -- Standard Kubernetes NetworkPolicies by default; Cilium is optional.
+network:
+  # -- kubernetes: standard L3/L4 policies; cilium: opt-in CRDs. Does not install a CNI.
+  provider: kubernetes
+  # -- Create policies with the selected provider; false delegates isolation to the platform.
+  enabled: true
+  # -- false: only this release; true: EVERY Pod in this dedicated namespace.
+  defaultDenyWholeNamespace: false
+  clusterDomain: cluster.local
+  # -- Set to the real cluster Pod CIDRs; excluded from broad public egress.
+  podCidrs: []
+  # -- Set to the real cluster Service CIDRs.
+  serviceCidrs: []
+  # -- With podCidrs/serviceCidrs set, metricshub.egress rules overlapping them are rejected unless
+  # an "except" entry covers the cluster range. true accepts the overlap as reviewed.
+  allowClusterCIDROverlap: false
+  # -- DNS endpoint selectors; adjust if CoreDNS uses different labels.
+  dns:
+    namespace: kube-system
+    # -- Optional extra DNS destinations (for NodeLocal DNSCache); IPv4 CIDRs.
+    ipBlocks: []
+    labels:
+      k8s-app: kube-dns
+  # -- Public IPv4 range with exclusions; the chart also excludes Pod and Service CIDRs.
+  publicEgress:
+    cidr: 0.0.0.0/0
+    except:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+      - 127.0.0.0/8
+      - 169.254.0.0/16
+      - 100.64.0.0/10
+      - 224.0.0.0/4
+      - 240.0.0.0/4
+  # -- Additional explicit destination CIDRs/ports, for example an internal media proxy.
+  m8bAdditionalEgress: []
+  # -- Additional internal destinations allowed for SearXNG.
+  searxngAdditionalEgress: []
+
+# -- MetricsHub Agent: monitoring, persistent configuration and administration.
+metricshub:
+  # -- Additional placement; local persistent workloads are pinned to storage.local.node.
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # -- Kubernetes env list. Prefer valueFrom.secretKeyRef for sensitive values.
+  extraEnv: []
+  # -- Container requests and limits. CPU quantities like "1" remain strings.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 4Gi
+  # -- Resources for short initialization containers.
+  initResources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  # -- Destinations the agent Pod may reach: monitored hosts AND the embedded collector's exporters
+  # (SaaS, remote write). Empty = nothing is monitored while network policies are on. See examples/portable.yaml.
+  # Empty/omitted ports removes the L4 restriction (ICMP behavior is CNI-dependent).
+  egress: []
+  # -- Cilium-only host/remote-node SSH policy; rejected with the kubernetes provider.
+  monitorKubernetesNodes:
+    enabled: false
+    ports:
+      - port: '22'
+        protocol: TCP
+  # -- Separate *-lan NodePort Service, only in run/index. Internal Service is unchanged.
+  exposure:
+    enabled: false
+    nodePort: 31888
+    # -- Trusted SOURCE networks seen by the cluster (LAN/VPN/NAT), not monitoring targets.
+    adminCidrs: []
+    # -- Local: connect to the node hosting the agent; preserves external source addressing.
+    externalTrafficPolicy: Local
+  # -- seed preserves existing configuration; managed overwrites metricshub.yaml from the chart on every rollout.
+  config:
+    mode: seed
+    # -- Optional metricshub.yaml content. Use a block scalar (|) for multiline text.
+    text: ''
+    # -- Optional Secret supplying metricshub.yaml; do not put credentials in config.text.
+    existingSecret: ''
+    secretKey: metricshub.yaml
+  # -- Embedded OpenTelemetry Collector Contrib (Enterprise image).
+  otel:
+    # -- Complete otel-config.yaml; empty uses the bundled one (loopback OTLP in, Prometheus out).
+    configText: ''
+    # -- Trusted SOURCE CIDRs allowed to reach the collector health check (13133) and Prometheus exporter (24375).
+    ingressCidrs: []
+
+# -- Internal OTLP receiver/query service on 9090; no MetricsHub 31888 scrape.
+prometheus:
+  # -- Additional placement; local persistent workloads are pinned to storage.local.node.
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # -- Kubernetes env list. Prefer valueFrom.secretKeyRef for sensitive values.
+  extraEnv: []
+  # -- Container requests and limits. CPU quantities like "1" remain strings.
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  # -- Resources for short initialization containers.
+  initResources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  retentionTime: 7d
+  # -- Keep below available storage; reserve space for WAL and operational overhead.
+  retentionSize: 15GB
+  # -- Optional complete prometheus.yml override; empty string uses the bundled config.
+  configText: ''
+  # -- Opt-in LAN/VPN access. Does NOT add HTTP authentication or TLS.
+  exposure:
+    enabled: false
+    # -- External node port; the Pod/Service port remains 9090.
+    nodePort: 30909
+    # -- Required when exposure is enabled. Limit to trusted administration sources.
+    adminCidrs: []
+    # -- With Local, use the node actually hosting Prometheus.
+    externalTrafficPolicy: Local
+
+# -- Optional JSON web search backend. Its cache is ephemeral.
+searxng:
+  # -- Additional placement; local persistent workloads are pinned to storage.local.node.
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # -- Kubernetes env list. Prefer valueFrom.secretKeyRef for sensitive values.
+  extraEnv: []
+  enabled: true
+  # -- Container requests and limits. CPU quantities like "1" remain strings.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  # -- Resources for short initialization containers.
+  initResources:
+    requests:
+      cpu: 25m
+      memory: 32Mi
+    limits:
+      cpu: 250m
+      memory: 128Mi
+  cacheSize: 256Mi
+  # -- Optional full settings.yml; runtime Secret supplies the search secret.
+  configText: ''
+  # -- Small init container fixes ownership of the ephemeral cache.
+  fixCacheOwnership: true
+
+# -- M8B Slack bot, startup checks and local RAG store.
+m8b:
+  # -- Additional placement; local persistent workloads are pinned to storage.local.node.
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # -- Kubernetes env list. Prefer valueFrom.secretKeyRef for sensitive values.
+  extraEnv: []
+  # -- Container requests and limits. CPU quantities like "1" remain strings.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  checkResources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  # -- REQUIRED: expected Slack workspace ID, verified independently (T...).
+  slackTeamId: ''
+  # -- vLLM/OpenAI-compatible generation endpoint. No API key here.
+  ai:
+    # -- REQUIRED: reachable HTTP(S) base URL ending in /v1.
+    baseUrl: ''
+    # -- REQUIRED: exact served model ID, not an assumed filesystem name.
+    model: ''
+    # -- Explicit destination IP CIDRs and ports for the generation endpoint.
+    egress: []
+    # -- Optional in-cluster model servers, selected by namespace + Pod labels.
+    podEgress: []
+  # -- The agent serves MCP on 31888 with its own self-signed certificate; true is required until a
+  # trusted certificate is installed in the agent keystore. Traffic stays in-cluster.
+  allowSelfSignedMcp: true
+  enablePromql: true
+  # -- Additional non-secret string environment values. Use dedicated keys where available.
+  extraConfig: {}
+  startupAttempts: 6
+  startupRetrySeconds: 10
+  # -- Persistent mount path shared by the bot, Doctor, inspector and KB Job.
+  dataDir: /var/lib/m8b
+  codeSandboxEnabled: true
+  fetchUrlEnabled: true
+  # -- Explicit embedding endpoint/model; can share the chat proxy URL. Keys stay in Secrets.
+  embeddings:
+    baseUrl: ''
+    model: ''
+    # -- Needed for a distinct embedding destination. Same proxy may use ai.egress.
+    egress: []
+    # -- Optional in-cluster model servers, selected by namespace + Pod labels.
+    podEgress: []
+  knowledgeBase:
+    # -- Empty uses M8B_DATA_DIR/knowledge. Custom path must stay inside the persistent mount.
+    directory: ''
+    # -- Optional small Markdown additions; this is not a replacement for official initialization.
+    seedConfigMap: ''
+    bootstrap:
+      # -- Enable with configured embeddings. The portable example enables automatic initialization.
+      enabled: false
+      # -- if-missing preserves an existing index; always/--force requests an explicit rebuild.
+      mode: if-missing
+      # -- Compatibility setting: initially empty docs do NOT block the M8B official initializer.
+      emptyPolicy: fail
+      # -- Independent long deadline; the observed official corpus took about 21 minutes.
+      timeoutSeconds: 3600
+      resources:
+        requests:
+          cpu: 500m
+          memory: 512Mi
+        limits:
+          cpu: '2'
+          memory: 2Gi
+
+# -- Installation Doctor / integration gates. A successful Pod rollout is not enough.
+checks:
+  timeoutSeconds: 600
+  requireMetrics: true
+  searchQuery: MetricsHub documentation

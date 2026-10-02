@@ -1,0 +1,29 @@
+{{- $n := include "stack.names" . | fromYaml -}}
+M8B stack {{ .Chart.Version }} - stage={{ .Values.stage }}
+Namespace: {{ .Release.Namespace }} / Release: {{ .Release.Name }}
+Network policies: {{ if .Values.network.enabled }}{{ .Values.network.provider }}{{ else }}external platform responsibility{{ end }}
+No CNI is installed. Standard policy API acceptance does NOT prove enforcement.
+
+A helm install/upgrade executes ONLY this stage. Next step:
+{{- if eq .Values.stage "core" }}
+  Create the MetricsHub API key in deploy/{{ $n.agent }}, store it in {{ .Values.secrets.runtime }}:MCP_AGENT_TOKEN, then upgrade with --set stage=check.
+{{- else if eq .Values.stage "check" }}
+  kubectl -n {{ .Release.Namespace }} logs job/{{ $n.doctor }} --all-containers=true
+  On success, upgrade with --set stage=run (Helm removes this Job).
+  On failure: fix, delete the Job (Helm keeps Jobs of failed revisions), then re-run stage=check.
+{{- else if eq .Values.stage "index" }}
+  kubectl -n {{ .Release.Namespace }} logs job/{{ $n.kbIndex }} -c index
+  On success, upgrade with --set stage=run (Helm removes this Job).
+{{- else }}
+  Validate a real Slack conversation. A Ready Pod is not a KB retrieval test; try search_knowledge_base.
+{{- end }}
+See the chart README for the full staged sequence. Do not run the bot and the KB index Job concurrently.
+{{ if and (has .Values.stage (list "run" "index")) .Values.metricshub.exposure.enabled }}
+MetricsHub: https://<agent-node-ip>:{{ .Values.metricshub.exposure.nodePort }}
+External traffic policy: {{ .Values.metricshub.exposure.externalTrafficPolicy }}
+{{ end }}
+{{ if and (has .Values.stage (list "run" "index")) .Values.prometheus.exposure.enabled }}
+Prometheus: http://<prometheus-node-ip>:{{ .Values.prometheus.exposure.nodePort }}
+External traffic policy: {{ .Values.prometheus.exposure.externalTrafficPolicy }}
+No HTTP authentication or TLS added. Trusted networks only.
+{{ end }}

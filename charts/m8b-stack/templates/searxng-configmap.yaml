@@ -1,0 +1,13 @@
+{{- if .Values.searxng.enabled }}
+{{- $n := include "stack.names" . | fromYaml }}
+apiVersion: v1
+kind: ConfigMap
+data:
+  settings.yml: {{ if hasSuffix "\n\n" (include "stack.searxConfig" .) }}|+{{ else if hasSuffix "\n" (include "stack.searxConfig" .) }}|{{ else }}|-{{ end }}
+{{ include "stack.searxConfig" . | trimSuffix "\n" | indent 4 }}
+metadata:
+  name: {{ $n.searxngConfig | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "searxng") | indent 4 }}
+{{- end }}

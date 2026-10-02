@@ -1,0 +1,152 @@
+{{- $n := include "stack.names" . | fromYaml }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $n.bot | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "m8b" "role" "m8b") | indent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ ternary 1 0 (eq .Values.stage "run") }}
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+{{ include "stack.selectorLabels" (dict "root" . "component" "m8b") | indent 6 }}
+  template:
+    metadata:
+      labels:
+{{ include "stack.labels" (dict "root" . "component" "m8b" "role" "m8b") | indent 8 }}
+      annotations:
+        checksum/stack-config: {{ include "stack.componentHash" (dict "root" . "component" "m8b") | quote }}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: verify-slack-workspace
+          image: {{ .Values.images.bot | quote }}
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          command:
+            - node
+            - /stack-scripts/verify-workspace.js
+          env:
+            - name: EXPECTED_SLACK_TEAM_ID
+              value: {{ .Values.m8b.slackTeamId | quote }}
+            - name: SLACK_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.runtime | quote }}
+                  key: SLACK_BOT_TOKEN
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+{{ toYaml .Values.m8b.checkResources | indent 12 }}
+          volumeMounts:
+            - name: stack-scripts
+              mountPath: /stack-scripts
+              readOnly: true
+        - name: check-integrations
+          image: {{ .Values.images.bot | quote }}
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          workingDir: /app
+          envFrom:
+            - configMapRef:
+                name: {{ $n.botConfig | quote }}
+            - secretRef:
+                name: {{ .Values.secrets.runtime | quote }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+{{ toYaml .Values.m8b.checkResources | indent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.m8b.dataDir | quote }}
+            - name: stack-scripts
+              mountPath: /stack-scripts
+              readOnly: true
+          command:
+            - /bin/sh
+            - /stack-scripts/retry-check.sh
+            - integrations
+{{ with .Values.m8b.extraEnv }}
+          env:
+{{ toYaml . | indent 12 }}
+{{ end }}
+        - name: doctor
+          image: {{ .Values.images.bot | quote }}
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          workingDir: /app
+          envFrom:
+            - configMapRef:
+                name: {{ $n.botConfig | quote }}
+            - secretRef:
+                name: {{ .Values.secrets.runtime | quote }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+{{ toYaml .Values.m8b.checkResources | indent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.m8b.dataDir | quote }}
+            - name: stack-scripts
+              mountPath: /stack-scripts
+              readOnly: true
+          command:
+            - /bin/sh
+            - /stack-scripts/retry-check.sh
+            - doctor
+{{ with .Values.m8b.extraEnv }}
+          env:
+{{ toYaml . | indent 12 }}
+{{ end }}
+      containers:
+        - name: m8b
+          image: {{ .Values.images.bot | quote }}
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          workingDir: /app
+          envFrom:
+            - configMapRef:
+                name: {{ $n.botConfig | quote }}
+            - secretRef:
+                name: {{ .Values.secrets.runtime | quote }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+{{ toYaml .Values.m8b.resources | indent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.m8b.dataDir | quote }}
+            - name: stack-scripts
+              mountPath: /stack-scripts
+              readOnly: true
+{{ with .Values.m8b.extraEnv }}
+          env:
+{{ toYaml . | indent 12 }}
+{{ end }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ $n.botClaim | quote }}
+        - name: stack-scripts
+          configMap:
+            name: {{ $n.botScripts | quote }}
+{{ include "stack.placement" (dict "root" . "component" "m8b" "pvc" true) | indent 6 }}

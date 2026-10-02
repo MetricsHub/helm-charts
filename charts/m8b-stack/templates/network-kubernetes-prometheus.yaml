@@ -1,0 +1,40 @@
+{{- if and .Values.network.enabled (eq .Values.network.provider "kubernetes")  }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ printf "%s-prometheus-traffic" (include "stack.fullname" .) | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+{{ include "stack.labels" (dict "root" . "component" "network") | indent 4 }}
+spec:
+  podSelector:
+{{ include "stack.endpoint" (dict "root" . "role" "prometheus") | indent 4 }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              m8b-stack.io/network-role: agent
+              app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        - podSelector:
+            matchLabels:
+              m8b-stack.io/network-role: m8b
+              app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      ports:
+        - port: 9090
+          protocol: TCP
+{{ if .Values.prometheus.exposure.enabled }}
+    - from:
+{{ range .Values.prometheus.exposure.adminCidrs }}
+        - ipBlock:
+            cidr: {{ . | quote }}
+{{ end }}
+      ports:
+        - port: 9090
+          protocol: TCP
+{{ end }}
+  egress:
+{{ include "stack.kubeDns" . | indent 4 }}
+{{- end }}
