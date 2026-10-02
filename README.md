@@ -39,7 +39,9 @@ scripts/test.sh       offline checks run by CI: helm lint, render matrix, reject
 ```
 
 Bump `version` in `Chart.yaml` for every chart change; CI enforces it on pull requests.
-Merging to `main` publishes new chart versions to GitHub Releases, the `gh-pages` index and GHCR.
+Releases are manual: in GitHub, **Actions > Release > Run workflow** on `main`. The workflow runs the tests, then
+publishes every chart whose version has no release yet to GitHub Releases, the `gh-pages` index and GHCR.
+Pushing to `main` alone never publishes anything.
 
 ## License
 

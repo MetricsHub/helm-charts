@@ -3,15 +3,16 @@ name: Release
 #   - GitHub release + gh-pages index.yaml  -> helm repo add metricshub https://metricshub.github.io/helm-charts
 #   - OCI artifact                          -> oci://ghcr.io/metricshub/charts/<chart>
 # Prerequisite: a gh-pages branch exists and GitHub Pages serves it.
+# Manual only: GitHub > Actions > Release > Run workflow (branch: main). Pushes to main never release.
+# Bump `version` in charts/<chart>/Chart.yaml first: a version that already has a release is skipped.
 on:
-  push:
-    branches: [main]
-    paths: ['charts/**']
+  workflow_dispatch:
 permissions:
   contents: write
   packages: write
 jobs:
   release:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +21,11 @@ jobs:
       - uses: azure/setup-helm@v5
         with:
           version: v4.3.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test before publishing
+        run: ./scripts/test.sh
       - run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
