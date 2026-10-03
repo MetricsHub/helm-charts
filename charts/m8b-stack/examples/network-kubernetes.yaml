@@ -1,0 +1,7 @@
+# Portable L3/L4 policy objects. Requires a CNI that enforces NetworkPolicy.
+network:
+  enabled: true
+  provider: kubernetes
+metricshub:
+  monitorKubernetesNodes:
+    enabled: false

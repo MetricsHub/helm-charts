@@ -1,0 +1,4 @@
+# Platform-managed policies: the chart supplies NO isolation or admin CIDR filtering.
+# Existing platform policies remain in effect; exposure.adminCidrs is not a firewall.
+network:
+  enabled: false

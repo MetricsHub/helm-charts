@@ -1,0 +1,6 @@
+# EXAMPLE ONLY: use the actual NodeLocal DNSCache address in your cluster.
+# Host-network traffic enforcement is CNI dependent; test resolution from a Pod.
+network:
+  dns:
+    ipBlocks:
+      - 169.254.20.10/32

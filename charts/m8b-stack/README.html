@@ -1,0 +1,604 @@
+
+
+<!DOCTYPE html><html lang="en">
+
+
+
+		
+
+
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<title>M8B Stack Helm chart &ndash; Helm Charts</title>
+
+	<meta name="keywords" content="metricshub,helm,kubernetes,chart,m8b,slack,prometheus,opentelemetry" />
+	<meta name="generator" content="Maven Site Plugin, Doxia Site Renderer 2.0.0-M19, Skin sentry-maven-skin 8.0.00, from markdown" />
+	<meta property="article:published_time" content="2026-10-03T13:03:19" />
+	<meta property="article:modified_time" content="2026-10-03T13:03:19" />
+
+		<link rel="canonical" href="https://metricshub.org/helm-charts/charts/m8b-stack/README.html">
+	<link rel="alternate" type="text/markdown" href="README.html.md">	<link rel="stylesheet" href="../../css/main-combined.css">
+	<link rel="stylesheet" href="../../css/site.css">
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "TechArticle",
+	"headline": "M8B Stack Helm chart",
+	"datePublished": "2026-10-03T13:03:19",
+	"dateModified": "2026-10-03T13:03:19",
+	"mainEntityOfPage": "https://metricshub.org/helm-charts/charts/m8b-stack/README.html",
+}
+</script>
+</head>
+
+<body class="sentry-site " ng-class="{'dark': $matchMedia.dark }" ng-app="sentry.site" ng-strict-di ng-controller="siteController" ng-keydown="handleKeyboard($event)">
+<script>(function (){var d=window.localStorage.getItem('matchMediaLight.userIsDark');return null!=d?d==='true':window.matchMedia('(prefers-color-scheme: dark)').matches})()&&document.body.classList.add('dark')</script>
+
+
+	<header role="banner">
+		<div class="hidden-xs navbar navbar-inverse site-logo">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="https://metricshub.com"><img src="../../images/metricshub-logo.png" alt="MetricsHub Official Website"></a>
+			</div>
+			<ul class="nav navbar-nav">
+<li><a href="https://metricshub.com">MetricsHub</a></li>
+<li><a href="https://metricshub.com/download">Download</a></li>
+<li><a href="https://support.metricshub.com" class="externalLink">Support Desk</a></li>
+<li><a href="https://github.com/MetricsHub/helm-charts" class="externalLink"><i class='fa-brands fa-github'></i> GitHub</a></li>
+			</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="https://www.linkedin.com/company/metricshub" target="_blank" title="Follow metricshub on LinkedIn"><i class="fa-brands fa-linkedin"></i></a></li>
+			<li><a href="https://metricshub.slack.com" target="_blank" title="Join us on Slack!"><i class="fa-brands fa-slack"></i></a></li>
+
+<li class="dark-toggle"><toggle ng-model="$matchMedia.dark" ng-change="switchColors()" size="btn-xs" width="34px" height="22px" off-class="day" on-class="night" toggle-class="navbar-btn dark-toggle" on="<i class='fa-solid fa-moon'></i>" off="<i class='sun-icon'></i>" title="Switch between dark and light color schemes" tabindex="0"></toggle></li>
+				</ul>
+	</div>
+
+	<div class="visible-xs navbar navbar-inverse site-logo site-logo-xs">
+			<ul class="nav navbar-nav">
+				<li><a href="https://metricshub.com">MetricsHub</a></li>
+			</ul>
+		</div>
+	<div class="visible-xs navbar navbar-inverse site-logo site-logo-xs breadcrumb-xs">
+			<ul class="nav navbar-nav">
+<li><a href="https://metricshub.com">MetricsHub<sup>®</sup></a></li>
+			</ul>
+		</div>
+
+		<div class="navbar site-banner">
+
+			<div class="container-fluid">
+
+				<div class="navbar-header" ng-class="{'show-search-xs': showSearchInput && $matchMedia.size == 'xs'}">
+					<button
+						class="navbar-toggle hidden-lg hidden-md hidden-sm"
+						ng-click="showSearchInput = !showSearchInput; clearSearch()"
+						title="{{ showSearchInput ? 'Close the search' : 'Search' }}"
+						type="button"
+					>
+						<i ng-class="showSearchInput ? 'fas fa-times' : 'fa fa-search'"></i>
+					</button>
+					<div class="navbar-brand">
+					<ol class="breadcrumb hidden-xs">
+<li><a href="https://metricshub.com">MetricsHub<sup>®</sup></a></li>
+						</ol>
+					<div class="header-title">Helm Charts</div>
+						<div class="header-subtitle">
+							<span class="version-prefix"></span>
+							<span class="version"></span>
+						</div>
+					</div>
+					<div class="navbar-brand header-xxs visible-xs">
+						<div class="header-title">Helm Charts</div>
+						<div class="header-subtitle">
+							 <strong></strong>
+						</div>
+					</div>
+					<form class="navbar-form site-search site-search-xs visible-xs" ng-show="showSearchInput">
+						<input
+							type="search"
+							class="form-control"
+							placeholder="Search..."
+							aria-label="Search..."
+							ng-model="siteSearch"
+							ng-change="search(siteSearch)"
+							ng-model-options="{ debounce: 500 }"
+							ng-keydown="handleKeyboard($event)"
+							ng-focus="prefetchSearchIndex()"
+							focus-me="showSearchInput"
+						/>
+					</form>
+				</div>
+				<form class="navbar-form navbar-right site-search hidden-xs">
+					<div class="form-group has-feedback">
+						<input
+							type="text"
+							class="form-control"
+							placeholder="Search..."
+							aria-label="Search..."
+							ng-model="siteSearch"
+							ng-change="search(siteSearch)"
+							ng-model-options="{ debounce: 500 }"
+							ng-keydown="handleKeyboard($event)"
+							ng-focus="prefetchSearchIndex()"
+						/>
+						<i class="fa fa-search form-control-feedback" aria-hidden="true"></i>
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</header>
+
+	<div class="container-fluid main-container">
+		<div class="row display-flex">
+			<nav class="left-menu hidden-xs col-sm-4 col-md-3" role="navigation">
+
+
+		<h5 class="text-uppercase">Helm Charts</h5>
+
+<ul class="nav nav-pills nav-stacked animate">
+<li><a href="../../index.html"><i class="fas fa-home"></i> Overview</a></li>
+</ul>
+		<h5 class="text-uppercase">m8b-stack</h5>
+
+<ul class="nav nav-pills nav-stacked animate">
+<li class="active"><a href="../../charts/m8b-stack/README.html" ng-click="hideSubItems = !hideSubItems"><i class="fas fa-file-alt"></i> Chart Overview</a></li>
+<li><a href="../../charts/m8b-stack/GETTING-STARTED.html"><i class="fas fa-file-alt"></i> Getting Started</a></li>
+<li><a href="../../charts/m8b-stack/KNOWLEDGE-BASE.html"><i class="fas fa-file-alt"></i> Knowledge Base</a></li>
+<li><a href="../../charts/m8b-stack/NETWORK-POLICIES.html"><i class="fas fa-file-alt"></i> Network Policies</a></li>
+<li><a href="../../charts/m8b-stack/CHANGELOG.html"><i class="fas fa-file-alt"></i> Changelog</a></li>
+</ul>
+		<h5 class="text-uppercase">Related Documentation</h5>
+
+<ul class="nav nav-pills nav-stacked animate">
+<li><a href="https://metricshub.com/docs/latest/"><i class="fas fa-file-alt"></i> MetricsHub</a></li>
+<li><a href="https://metricshub.com/docs/latest/installation/installing-on-docker?edition=enterprise"><i class="fas fa-file-alt"></i> MetricsHub on Docker (Enterprise)</a></li>
+<li><a href="https://metricshub.com/docs/latest/configuration/resource-settings"><i class="fas fa-file-alt"></i> MetricsHub Resource Settings</a></li>
+<li><a href="../../../m8b-slack/"><i class="fas fa-file-alt"></i> M8B Slack Bot</a></li>
+<li><a href="../../../m8b-slack/CONFIGURATION.html"><i class="fas fa-file-alt"></i> M8B Configuration</a></li>
+<li><a href="../../../m8b-slack/BACKENDS.html"><i class="fas fa-file-alt"></i> M8B AI Backends</a></li>
+</ul>
+			</nav>
+			<main class="main-content col-xs-12 col-sm-8 col-md-9">
+
+
+				<div ng-hide="siteSearch">
+
+					<div class="row">
+					<div class="col-md-12">
+					<div class="page-header visible-print-block">
+							<h3><small>MetricsHub</small><br/>							MetricsHub Helm Charts 1.0.0
+							</h3>
+						</div>
+						<div class="parents hidden-xs">
+								<ol class="breadcrumb">
+									<!-- Home -->
+									<li>
+										<a href="../../index.html">
+											<i class="fas fa-home"></i>Home
+										</a>
+									</li>
+								<!-- menus and items -->
+										<li>m8b-stack</li>
+												</ol>
+							</div>
+						<div class="parents-xs visible-xs">
+								<ul class="list-group">
+									<!-- Home -->
+									<a class="list-group-item" href="../../index.html">
+										<i class="fas fa-home"></i>Home
+									</a>
+									<!-- menus and items -->
+										<li class="list-group-item"><i class="fas fa-level-up-alt fa-flip-horizontal"></i>m8b-stack</li>
+											</ul>
+						</div>
+<section>
+ <a id="m8b-stack-helm-chart"></a>
+ <h1 id="m8b-stack-helm-chart">M8B Stack Helm chart</h1>
+ <p><a href="https://github.com/MetricsHub/helm-charts/releases?q=m8b-stack" class="externalLink"><img src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fmetricshub.org%2Fhelm-charts%2Findex.yaml&amp;query=%24.entries%5B%27m8b-stack%27%5D%5B0%5D.version&amp;label=chart&amp;color=266fd0" alt="Chart version"></a><sup class="visible-print-inline">[1]</sup> <a href="CHANGELOG.html"><img src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fmetricshub.org%2Fhelm-charts%2Findex.yaml&amp;query=%24.entries%5B%27m8b-stack%27%5D%5B0%5D.appVersion&amp;label=app&amp;color=266fd0" alt="App version"></a><sup class="visible-print-inline">[2]</sup></p>
+ <p>MetricsHub Enterprise Agent (with its embedded OpenTelemetry Collector), Prometheus, SearXNG and the M8B Slack bot. Readable YAML templates, configurable resources, retained PVCs, staged diagnostics and local KB indexing.</p>
+ <pre copy-to-clipboard=""><code class="language-bash">helm repo add metricshub https://metricshub.github.io/helm-charts
+helm repo update
+helm show values metricshub/m8b-stack &gt; values-reference.yaml
+# or, without a repository: oci://ghcr.io/metricshub/charts/m8b-stack
+</code></pre>
+ <section>
+  <h2 id="architecture"><a href="#architecture">Architecture</a></h2>
+  <pre copy-to-clipboard=""><code>               ┌──────────────── agent Pod (metricshub-enterprise) ───────────────────┐
+ monitored ◄───┤ MetricsHub Agent ──OTLP gRPC localhost:4317──► OTel Collector Contrib├──► Prometheus :9090 (OTLP)
+ hosts         │   :31888 Web UI / REST / MCP (self-signed TLS)   :13133 health       │    ▲
+ (egress)      │                                                  :24375 /metrics     │    │ PromQL
+               └──────────────────────────────▲───────────────────────────────────────┘    │
+                                              │ MCP (HTTPS)                                │
+                                         M8B Slack bot ────────────────────────────────────┘
+                                              ├──► SearXNG :8080 (web search)
+                                              └──► Slack, LLM / embedding endpoints (egress)
+</code></pre>
+  <ul>
+   <li>The agent pushes metrics to the collector running in the <strong>same container</strong>, over loopback without TLS: nothing outside the Pod can reach port 4317, and the Pod keeps its real hostname.</li>
+   <li>The bundled collector config (<code>files/config/otel-config.yaml</code>) exports to the in-cluster Prometheus and exposes a Prometheus scrape endpoint on 24375. Replace it entirely with <code>metricshub.otel.configText</code> to add exporters (Datadog, New Relic, BMC Helix, remote write…), starting from the <a href="https://metricshub.com/docs/latest/resources/config/otel/otel-config-example.yaml">official example</a><sup class="visible-print-inline">[3]</sup>.</li>
+   <li>Prometheus promotes OTLP resource attributes (<code>host.name</code>, …) to labels, so PromQL can filter on them.</li>
+  </ul>
+ </section>
+ <section>
+  <h2 id="related-documentation"><a href="#related-documentation">Related documentation</a></h2>
+  <p>The chart deploys and wires the components; their own documentation covers what they do and how to configure them.</p>
+  <p><strong>MetricsHub Agent</strong></p>
+  <ul>
+   <li><a href="https://metricshub.com/docs/latest/">MetricsHub documentation</a><sup class="visible-print-inline">[4]</sup>: concepts, connectors, metrics.</li>
+   <li><a href="https://metricshub.com/docs/latest/installation/installing-on-docker?edition=enterprise">Installing on Docker, Enterprise edition</a><sup class="visible-print-inline">[5]</sup>: the same image as this chart, with its ports (31888, 13133, 24375), paths and embedded collector.</li>
+   <li><a href="https://metricshub.com/docs/latest/configuration/resource-settings">Resource settings</a><sup class="visible-print-inline">[6]</sup>: what to put in <code>metricshub.yaml</code> (<code>metricshub.config.text</code> or <code>metricshub.config.existingSecret</code>) to monitor your hosts.</li>
+  </ul>
+  <p><strong>M8B Slack bot</strong></p>
+  <ul>
+   <li><a href="https://metricshub.org/m8b-slack/" class="externalLink">M8B Slack Bot</a><sup class="visible-print-inline">[7]</sup>: overview and <a href="https://metricshub.org/m8b-slack/#1-create-the-slack-app" class="externalLink">how to create the Slack app</a><sup class="visible-print-inline">[8]</sup> (bot and app-level tokens).</li>
+   <li><a href="https://metricshub.org/m8b-slack/CONFIGURATION.html" class="externalLink">Configuration reference</a><sup class="visible-print-inline">[9]</sup>: every environment variable. Variables the chart manages (endpoints, models, data and knowledge-base settings) have their own value under <code>m8b</code>; set the others, such as the media store, through <code>m8b.extraConfig</code> (non-secret) or <code>m8b.extraEnv</code> (<code>secretKeyRef</code>). The chart rejects a managed variable in <code>m8b.extraConfig</code>.</li>
+   <li><a href="https://metricshub.org/m8b-slack/BACKENDS.html" class="externalLink">AI backends</a><sup class="visible-print-inline">[10]</sup>: which LLM backends work, what they must provide, reference models.</li>
+  </ul>
+ </section>
+ <section>
+  <h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a></h2>
+  <ul>
+   <li>A NetworkPolicy-enforcing CNI (policies are on by default), IPv4 Linux nodes, a StorageClass (or prepared local/existing volumes) and outbound access to Slack and your LLM endpoints.</li>
+   <li>Credentials for the <strong>private registry <code>docker.metricshub.com</code></strong> (see below). Both the MetricsHub Enterprise image and the M8B bot image are pulled from it. A public chart does not make these images public.</li>
+   <li>A Slack app (<a href="https://metricshub.org/m8b-slack/#1-create-the-slack-app" class="externalLink">how to create it</a><sup class="visible-print-inline">[8]</sup>) and an LLM chat endpoint (<a href="https://metricshub.org/m8b-slack/BACKENDS.html" class="externalLink">supported backends</a><sup class="visible-print-inline">[10]</sup>); an embedding endpoint for the KB.</li>
+  </ul>
+ </section>
+ <section>
+  <a id="private-registry-access-28docker-metricshub-com-29"></a>
+  <h2 id="private-registry-access-docker-metricshub-com"><a href="#private-registry-access-docker-metricshub-com">Private registry access (docker.metricshub.com)</a></h2>
+  <ol style="list-style-type: decimal;">
+   <li>
+    <p><strong>Get credentials.</strong> MetricsHub Enterprise customers receive a registry username and password in their onboarding email. Otherwise request access through <a href="https://support.metricshub.com" class="externalLink">support.metricshub.com</a><sup class="visible-print-inline">[11]</sup> or <a href="https://metricshub.com/pricing">metricshub.com/pricing</a><sup class="visible-print-inline">[12]</sup>.</p>
+   </li>
+   <li>
+    <p><strong>Check them</strong> from a workstation (optional but saves a failed rollout):</p>
+    <pre copy-to-clipboard=""><code class="language-bash">docker login docker.metricshub.com
+docker pull docker.metricshub.com/metricshub-enterprise:3.9.07
+docker pull docker.metricshub.com/metricshub/m8b-slack:3.1.0
+</code></pre>
+   </li>
+   <li>
+    <p><strong>Give them to Kubernetes</strong>: <a href="GETTING-STARTED.html">GETTING-STARTED.md</a><sup class="visible-print-inline">[13]</sup> step 4 writes them without echoing the password, step 5 creates the <code>registry-pull</code> Secret that every Pod of the chart references, and step 5b checks from the cluster that both images can be pulled. Do not reuse <code>~/.docker/config.json</code>: with a credential helper it holds no usable <code>auth</code> entry.</p>
+   </li>
+  </ol>
+ </section>
+ <section>
+  <h2 id="values"><a href="#values">Values</a></h2>
+  <p>Copy <code>examples/portable.yaml</code> (CSI storage) or <code>examples/lab-values-example.yaml</code> (on-premises lab with local volumes, used by <a href="GETTING-STARTED.html">GETTING-STARTED.md</a><sup class="visible-print-inline">[13]</sup>) to a private site file and REPLACE its example values: Slack workspace, chat/embedding model IDs and endpoints, cluster CIDRs, monitored networks and StorageClass. Do not put Secret values in YAML. Maps merge, lists replace, and later <code>-f</code> overrides earlier files. <code>values.schema.json</code> rejects unknown keys and the chart rejects incompatible combinations.</p>
+  <pre copy-to-clipboard=""><code class="language-bash">helm pull metricshub/m8b-stack --untar
+cp -n m8b-stack/examples/portable.yaml my-values.yaml   # edit every REPLACE marker
+# Offline render only; nothing is applied.
+helm template demo metricshub/m8b-stack --namespace demo -f my-values.yaml --set stage=run &gt; rendered.yaml
+</code></pre>
+  <p>Resource names follow Helm conventions: <code>&lt;release&gt;-m8b-stack-&lt;component&gt;</code> (just <code>&lt;release&gt;-&lt;component&gt;</code> when the release name already contains <code>m8b-stack</code>); override with <code>nameOverride</code> / <code>fullnameOverride</code>. Several releases can share a namespace. Renaming a release creates new PVCs: do not rename an installed one.</p>
+  <section>
+   <h3 id="what-the-agent-can-reach"><a href="#what-the-agent-can-reach">What the agent can reach</a></h3>
+   <p>With network policies on, the agent Pod only reaches DNS, Prometheus and the destinations listed in <code>metricshub.egress</code>. <strong>An empty list means nothing is monitored.</strong> The same list governs the embedded collector's exporters (for a SaaS over the Internet: <code>0.0.0.0/0</code> minus private ranges, port 443). See <code>examples/portable.yaml</code>.</p>
+   <p>Set <code>network.podCidrs</code> and <code>network.serviceCidrs</code> to the real cluster ranges. They are then excluded from public egress, and any <code>metricshub.egress</code> rule that overlaps them is <strong>rejected at render time</strong>, unless an <code>except</code> entry covers the cluster range or <code>network.allowClusterCIDROverlap: true</code> records that the overlap was reviewed.</p>
+   <p>To scrape the collector (24375) or probe its health (13133) from outside the Pod, list the trusted source CIDRs in <code>metricshub.otel.ingressCidrs</code>. The ClusterIP Service <code>&lt;fullname&gt;-agent</code> exposes both ports.</p>
+  </section>
+  <section>
+   <h3 id="mcp-tls"><a href="#mcp-tls">MCP TLS</a></h3>
+   <p>The agent serves its Web UI, REST API and MCP endpoint on 31888 with its own <strong>self-signed certificate</strong>, so the bot must accept it: <code>m8b.allowSelfSignedMcp</code> defaults to <code>true</code>. This traffic never leaves the cluster and is limited by network policies. Set it to <code>false</code> only after installing a certificate trusted by the bot in the agent keystore (<code>/opt/metricshub/lib/security</code>, on the agent PVC).</p>
+  </section>
+ </section>
+ <section>
+  <a id="secrets-3a-supplied-by-the-operator-2c-never-printed-by-the-chart"></a>
+  <h2 id="secrets-supplied-by-the-operator-never-printed-by-"><a href="#secrets-supplied-by-the-operator-never-printed-by-">Secrets: supplied by the operator, never printed by the chart</a></h2>
+  <table class="bodyTable table table-striped table-hover">
+   <thead>
+    <tr class="a">
+     <th>Default name</th>
+     <th>Required content</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr class="b">
+     <td><code>registry-pull</code></td>
+     <td>dockerconfigjson for <code>docker.metricshub.com</code> (see above)</td>
+    </tr>
+    <tr class="a">
+     <td><code>m8b-runtime</code></td>
+     <td><code>SLACK_BOT_TOKEN</code>, <code>SLACK_APP_TOKEN</code>, <code>AI_API_KEY</code>; <code>MCP_AGENT_TOKEN</code> generated by this agent (step 8)</td>
+    </tr>
+    <tr class="b">
+     <td><code>m8b-runtime</code> (optional)</td>
+     <td><code>AI_EMBEDDING_API_KEY</code> if the embedding endpoint uses a different key</td>
+    </tr>
+    <tr class="a">
+     <td><code>searxng-runtime</code></td>
+     <td><code>SEARXNG_SECRET</code> when SearXNG is enabled</td>
+    </tr>
+   </tbody>
+  </table>
+  <p>Names are configurable under <code>secrets</code>. Use a Secret manager, an encrypted deployment workflow or secure local tooling. Do not commit actual Secrets, .env files, kubeconfigs, rendered private values or registry credentials.</p>
+ </section>
+ <section>
+  <h2 id="install"><a href="#install">Install</a></h2>
+  <p>Follow <strong><a href="GETTING-STARTED.html">GETTING-STARTED.md</a><sup class="visible-print-inline">[13]</sup></strong>: installing Helm, discovering your cluster settings, values, Secrets, volumes, then the staged install. In short, a <code>helm upgrade</code> applies ONLY the selected <code>stage</code>:</p>
+  <table class="bodyTable table table-striped table-hover">
+   <thead>
+    <tr class="a">
+     <th>Stage</th>
+     <th>Runs</th>
+     <th>Before moving on</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr class="b">
+     <td><code>core</code></td>
+     <td>agent, Prometheus, SearXNG</td>
+     <td>create the MetricsHub API key in <code>m8b-runtime:MCP_AGENT_TOKEN</code></td>
+    </tr>
+    <tr class="a">
+     <td><code>check</code></td>
+     <td>Doctor Job (bot stopped)</td>
+     <td>Doctor logs show success</td>
+    </tr>
+    <tr class="b">
+     <td><code>run</code></td>
+     <td>the bot</td>
+     <td>a real Slack conversation works</td>
+    </tr>
+    <tr class="a">
+     <td><code>index</code></td>
+     <td>KB index Job (bot stopped beforehand)</td>
+     <td>Job succeeded; delete it, then <code>run</code> again</td>
+    </tr>
+   </tbody>
+  </table>
+  <p>There is no hook or operator: each step is an explicit command, so the bot never shares its PVC with a Job. Doctor and index Jobs carry the Helm revision in their name, so a stage can be re-run without an immutable-Job error; Helm does not remove a Job from a failed revision, so delete it before retrying. <code>helm uninstall</code> keeps PVCs, PVs and Secrets; deleting data is a separate, deliberate action.</p>
+ </section>
+ <section>
+  <h2 id="validation"><a href="#validation">Validation</a></h2>
+  <p>Network isolation uses standard NetworkPolicies by default, so Cilium is not required. On a Cilium cluster you may opt into CiliumNetworkPolicies with <code>network.provider: cilium</code>; see <a href="NETWORK-POLICIES.html">NETWORK-POLICIES.md</a><sup class="visible-print-inline">[14]</sup>. CI runs <code>scripts/test.sh</code> (lint, render matrix, rejected values) on every change. That is offline only: on a representative cluster, test allowed AND denied traffic, DNS, storage, Doctor, KB indexing and a real Slack retrieval before declaring production readiness.</p>
+ </section>
+</section>
+<div class="keywords">
+<span class="label label-default">metricshub</span>
+<span class="label label-default">helm</span>
+<span class="label label-default">kubernetes</span>
+<span class="label label-default">chart</span>
+<span class="label label-default">m8b</span>
+<span class="label label-default">slack</span>
+<span class="label label-default">prometheus</span>
+<span class="label label-default">opentelemetry</span>
+</div>
+<div class="footnotes visible-print-block">
+								Links:
+								<ul class="list-unstyled">
+								<li>[1] https://github.com/MetricsHub/helm-charts/releases?q=m8b-stack</li>
+								<li>[2] CHANGELOG.html</li>
+								<li>[3] https://metricshub.com/docs/latest/resources/config/otel/otel-config-example.yaml</li>
+								<li>[4] https://metricshub.com/docs/latest/</li>
+								<li>[5] https://metricshub.com/docs/latest/installation/installing-on-docker?edition=enterprise</li>
+								<li>[6] https://metricshub.com/docs/latest/configuration/resource-settings</li>
+								<li>[7] https://metricshub.org/m8b-slack/</li>
+								<li>[8] https://metricshub.org/m8b-slack/#1-create-the-slack-app</li>
+								<li>[9] https://metricshub.org/m8b-slack/CONFIGURATION.html</li>
+								<li>[10] https://metricshub.org/m8b-slack/BACKENDS.html</li>
+								<li>[11] https://support.metricshub.com</li>
+								<li>[12] https://metricshub.com/pricing</li>
+								<li>[13] GETTING-STARTED.html</li>
+								<li>[14] NETWORK-POLICIES.html</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Search results -->
+				<div class="search-results" ng-show="siteSearch">
+
+					<h2 class="hidden-xs">
+						Search Results for <em>{{siteSearch | truncate:'50'}}</em>
+					</h2>
+
+					<div ng-show="resultArray.length">
+
+						<!-- Result count -->
+						<div class="hidden-xs">
+							{{resultArray.length}}
+							<span ng-pluralize count="resultArray.length" when="{'1': 'result', 'other': 'results'}"></span>
+						</div>
+
+						<!-- List of results (Desktop) -->
+						<div class="search-results-content hidden-xs">
+							<div class="search-results-entry" ng-repeat="result in resultArray track by result.href">
+								<div class="search-results-parents small text-muted">
+									<span class="search-results-parents-entry" ng-repeat="parent in result.parents track by parent.title">
+										<a ng-if="parent.path" ng-href="{{parent.path}}" ng-bind-html="parent.title"></a>
+										<span ng-if="!parent.path" ng-bind-html="parent.title"></span>
+									</span>
+								</div>
+								<p class="search-results-title"><a ng-href="{{result.href}}"><i class="fas fa-file-alt"></i>{{result.title}}</a></p>
+								<div class="progressbar" aria-hidden="true">
+									<div class="bar-bg"></div>
+									<div class="bar-fg" ng-style="{width: result.score * 100 + '%'}"></div>
+								</div>
+								<div class="small extract">{{result.body | truncate:'400'}}</div>
+							</div>
+						</div>
+
+						<!-- List of results (mobile) -->
+						<ul class="list-group search-results-content search-results-content-xs visible-xs">
+							<a
+								ng-repeat="result in resultArray track by result.href"
+								ng-href="{{result.href}}"
+								class="list-group-item"
+							>
+								<div class="search-results-parents small" aria-hidden="true">
+									<span class="search-results-parents-entry" ng-repeat="parent in result.parents track by parent.title" ng-bind-html="parent.title"></span>
+								</div>
+								<div class="search-results-title"><i class="fas fa-file-alt"></i>{{result.title}}</div>
+								<div class="progressbar" aria-hidden="true">
+									<div class="bar-bg"></div>
+									<div class="bar-fg" ng-style="{width: result.score * 100 + '%'}"></div>
+								</div>
+								<div class="small extract">{{result.body | truncate:'100'}}</div>
+							</a>
+						</ul>
+
+					</div>
+
+					<div ng-hide="resultArray.length">
+						<div ng-show="searchLoading" class="search-loading">
+							<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+							<em>Searching...</em>
+						</div>
+						<em ng-hide="searchLoading">No results.</em>
+					</div>
+
+				</div>
+			</main>
+
+		</div>
+	</div>
+
+
+	<!--Footer in mobile and desktop-->
+	<footer class="footer">
+		<p class="footer-title" ng-class="{'text-center': $matchMedia.size == 'xs'}">
+			<strong>Helm Charts </strong>
+			<span class="hidden-xs">|</span><br class="hidden-sm hidden-md hidden-lg"/>
+			Documentation as of <strong><time datetime="2026-10-03">2026-10-03</time></strong>
+		</p>
+
+<div class="hidden-xs navbar navbar-inverse site-logo additional-links">
+		<ul class="nav navbar-nav">
+			<li><a href="https://metricshub.com/legal/general.html">Terms of Service</a></li>
+<li><a href="https://metricshub.com/legal/privacy.html">Privacy Policy</a></li>
+<li><a href="https://metricshub.com/legal/cookies.html">Cookie Policy</a></li>
+<li><a href="https://metricshub.com/legal/disclaimer.html">Disclaimer</a></li>
+<li><a href="https://metricshub.com/legal/trademarks.html">Trademarks</a></li>
+<li><a href="https://metricshub.com/legal/ethics.html">Code of Ethics</a></li>
+		</ul>
+</div>
+	<div class="visible-xs navbar navbar-inverse site-logo site-logo-xs">
+			<ul class="nav navbar-nav">
+			<li><a href="https://metricshub.com">MetricsHub</a></li>
+<li><a href="https://metricshub.com">MetricsHub</a></li>
+<li><a href="https://metricshub.com/download">Download</a></li>
+<li><a href="https://support.metricshub.com" class="externalLink">Support Desk</a></li>
+<li><a href="https://github.com/MetricsHub/helm-charts" class="externalLink"><i class='fa-brands fa-github'></i> GitHub</a></li>
+<li><a href="https://metricshub.com/legal/general.html">Terms of Service</a></li>
+<li><a href="https://metricshub.com/legal/privacy.html">Privacy Policy</a></li>
+<li><a href="https://metricshub.com/legal/cookies.html">Cookie Policy</a></li>
+<li><a href="https://metricshub.com/legal/disclaimer.html">Disclaimer</a></li>
+<li><a href="https://metricshub.com/legal/trademarks.html">Trademarks</a></li>
+<li><a href="https://metricshub.com/legal/ethics.html">Code of Ethics</a></li>
+<li class="icons"><a href="https://www.linkedin.com/company/metricshub" target="_blank" title="Follow metricshub on LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+<a href="https://metricshub.slack.com" target="_blank" title="Join us on Slack!"><i class="fa-brands fa-slack"></i></a>
+</li>
+
+<li class="dark-toggle dark-toggle-xs">
+    <toggle
+        ng-model="$matchMedia.dark"
+        ng-change="switchColors()"
+        size="btn-md"
+        width="55px"
+        height="32px"
+        off-class="day"
+        on-class="night"
+        toggle-class="navbar-btn dark-toggle"
+        on="<i class='fa-solid fa-moon'></i>"
+        off="<i class='sun-icon'></i>"
+        title="Switch between dark and light color schemes"
+        tabindex="0"></toggle>
+		</li>
+		</ul>
+		</div>
+
+		<div class="footer-copyright" ng-class="{'text-center': $matchMedia.size == 'xs'}">
+			<span class="copyright">Copyright &copy; 2026&dash;2026</span> <a href="https://metricshub.com">MetricsHub</a><span class="pull-right hidden-xs icons">
+			<a href="https://www.linkedin.com/company/metricshub" target="_blank" title="Follow metricshub on LinkedIn">
+					<i class="fa-brands fa-linkedin"></i>
+			</a>
+	<a href="https://metricshub.slack.com" target="_blank" title="Join us on Slack!">
+					<i class="fa-brands fa-slack"></i>
+			</a>
+	</span>
+	</div>
+	</footer>
+
+	<div ng-show="showBackToTop" class="back-to-top" ng-click="backToTop()"><i class="fa fa-angle-up" aria-hidden="true"></i></div>
+
+
+	<script src="../../js/main-combined.js"></script>
+
+	<script src="../../js/prism.js"></script>
+	<script>Prism.plugins.autoloader.languages_path = "../../js/prism/";</script>
+	<script>
+angular.module("sentry.site").constant("RELATIVE_ROOT", "../..");
+angular.module("sentry.site").constant("SITE_MENU", [
+{
+	path: "index.html",
+	title: "Overview",
+	parents: [{ title: "Helm Charts" }]
+},
+{
+	path: "charts/m8b-stack/README.html",
+	title: "Chart Overview",
+	parents: [{ title: "m8b-stack" }]
+},
+{
+	path: "charts/m8b-stack/GETTING-STARTED.html",
+	title: "Getting Started",
+	parents: [{ title: "m8b-stack" }]
+},
+{
+	path: "charts/m8b-stack/KNOWLEDGE-BASE.html",
+	title: "Knowledge Base",
+	parents: [{ title: "m8b-stack" }]
+},
+{
+	path: "charts/m8b-stack/NETWORK-POLICIES.html",
+	title: "Network Policies",
+	parents: [{ title: "m8b-stack" }]
+},
+{
+	path: "charts/m8b-stack/CHANGELOG.html",
+	title: "Changelog",
+	parents: [{ title: "m8b-stack" }]
+},
+{
+	path: "https://metricshub.com/docs/latest/",
+	title: "MetricsHub",
+	parents: [{ title: "Related Documentation" }]
+},
+{
+	path: "https://metricshub.com/docs/latest/installation/installing-on-docker?edition=enterprise",
+	title: "MetricsHub on Docker (Enterprise)",
+	parents: [{ title: "Related Documentation" }]
+},
+{
+	path: "https://metricshub.com/docs/latest/configuration/resource-settings",
+	title: "MetricsHub Resource Settings",
+	parents: [{ title: "Related Documentation" }]
+},
+{
+	path: "../m8b-slack/",
+	title: "M8B Slack Bot",
+	parents: [{ title: "Related Documentation" }]
+},
+{
+	path: "../m8b-slack/CONFIGURATION.html",
+	title: "M8B Configuration",
+	parents: [{ title: "Related Documentation" }]
+},
+{
+	path: "../m8b-slack/BACKENDS.html",
+	title: "M8B AI Backends",
+	parents: [{ title: "Related Documentation" }]
+},
+]);
+
+	</script>
+
+</body>
+</html>

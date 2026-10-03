@@ -1,0 +1,56 @@
+# EXAMPLE ONLY: replace every REPLACE value before deployment. No Secret values belong in this file.
+# IPs are RFC 5737 documentation addresses; hostnames use the reserved .invalid domain.
+storage:
+  mode: csi
+  className: ''  # Set an installed StorageClass, or use the cluster default.
+
+network:
+  provider: kubernetes
+  enabled: true
+  defaultDenyWholeNamespace: false
+  # REPLACE with the real cluster ranges (kubectl cluster-info dump | grep -m1 -E 'cluster-cidr|service-cluster-ip-range').
+  # They are excluded from public egress and checked against metricshub.egress below.
+  podCidrs: [10.244.0.0/16]
+  serviceCidrs: [10.96.0.0/12]
+
+metricshub:
+  # With network policies on, the agent reaches NOTHING that is not listed here.
+  # One entry per monitored network (hosts, BMCs, storage arrays, switches...).
+  # Omit "ports" to allow every port; list them to restrict to the protocols you use.
+  egress:
+    - cidr: 192.0.2.0/24            # REPLACE: monitored server/device network
+      ports:
+        - port: '22'                # SSH (osCommand, Linux/Unix)
+          protocol: TCP
+        - port: '443'               # HTTPS / REST / WBEM / Redfish
+          protocol: TCP
+        - port: '5985'              # WinRM (Windows); add 5986 for HTTPS
+          protocol: TCP
+        - port: '161'               # SNMP
+          protocol: UDP
+    - cidr: 203.0.113.25/32         # REPLACE: a single host, all ports
+    # Embedded collector exporting to a SaaS (Datadog, New Relic, Helix...) over the Internet:
+    # - cidr: 0.0.0.0/0
+    #   except: [10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16]
+    #   ports:
+    #     - port: '443'
+    #       protocol: TCP
+
+m8b:
+  slackTeamId: T0000000000  # REPLACE with the independently verified workspace ID.
+  ai:
+    baseUrl: https://models.example.invalid/v1
+    model: chat-model  # REPLACE with the exact served model ID.
+    egress:
+      - cidr: 198.51.100.10/32  # REPLACE with the real external model endpoint IP.
+        ports:
+          - port: '443'
+            protocol: TCP
+  embeddings:
+    baseUrl: https://models.example.invalid/v1
+    model: embedding-model  # REPLACE; may share a routing proxy with the chat API.
+  knowledgeBase:
+    bootstrap:
+      enabled: true
+      mode: if-missing
+      timeoutSeconds: 3600

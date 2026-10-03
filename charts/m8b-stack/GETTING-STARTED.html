@@ -1,0 +1,928 @@
+
+
+<!DOCTYPE html><html lang="en">
+
+
+
+		
+
+
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<title>Getting started with the m8b-stack chart &ndash; Helm Charts</title>
+
+	<meta name="keywords" content="metricshub,helm,kubernetes,chart,m8b,slack,prometheus,opentelemetry" />
+	<meta name="generator" content="Maven Site Plugin, Doxia Site Renderer 2.0.0-M19, Skin sentry-maven-skin 8.0.00, from markdown" />
+	<meta property="article:published_time" content="2026-10-03T13:03:19" />
+	<meta property="article:modified_time" content="2026-10-03T13:03:19" />
+
+		<link rel="canonical" href="https://metricshub.org/helm-charts/charts/m8b-stack/GETTING-STARTED.html">
+	<link rel="alternate" type="text/markdown" href="GETTING-STARTED.html.md">	<link rel="stylesheet" href="../../css/main-combined.css">
+	<link rel="stylesheet" href="../../css/site.css">
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "TechArticle",
+	"headline": "Getting started with the m8b-stack chart",
+	"datePublished": "2026-10-03T13:03:19",
+	"dateModified": "2026-10-03T13:03:19",
+	"mainEntityOfPage": "https://metricshub.org/helm-charts/charts/m8b-stack/GETTING-STARTED.html",
+}
+</script>
+</head>
+
+<body class="sentry-site " ng-class="{'dark': $matchMedia.dark }" ng-app="sentry.site" ng-strict-di ng-controller="siteController" ng-keydown="handleKeyboard($event)">
+<script>(function (){var d=window.localStorage.getItem('matchMediaLight.userIsDark');return null!=d?d==='true':window.matchMedia('(prefers-color-scheme: dark)').matches})()&&document.body.classList.add('dark')</script>
+
+
+	<header role="banner">
+		<div class="hidden-xs navbar navbar-inverse site-logo">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="https://metricshub.com"><img src="../../images/metricshub-logo.png" alt="MetricsHub Official Website"></a>
+			</div>
+			<ul class="nav navbar-nav">
+<li><a href="https://metricshub.com">MetricsHub</a></li>
+<li><a href="https://metricshub.com/download">Download</a></li>
+<li><a href="https://support.metricshub.com" class="externalLink">Support Desk</a></li>
+<li><a href="https://github.com/MetricsHub/helm-charts" class="externalLink"><i class='fa-brands fa-github'></i> GitHub</a></li>
+			</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href="https://www.linkedin.com/company/metricshub" target="_blank" title="Follow metricshub on LinkedIn"><i class="fa-brands fa-linkedin"></i></a></li>
+			<li><a href="https://metricshub.slack.com" target="_blank" title="Join us on Slack!"><i class="fa-brands fa-slack"></i></a></li>
+
+<li class="dark-toggle"><toggle ng-model="$matchMedia.dark" ng-change="switchColors()" size="btn-xs" width="34px" height="22px" off-class="day" on-class="night" toggle-class="navbar-btn dark-toggle" on="<i class='fa-solid fa-moon'></i>" off="<i class='sun-icon'></i>" title="Switch between dark and light color schemes" tabindex="0"></toggle></li>
+				</ul>
+	</div>
+
+	<div class="visible-xs navbar navbar-inverse site-logo site-logo-xs">
+			<ul class="nav navbar-nav">
+				<li><a href="https://metricshub.com">MetricsHub</a></li>
+			</ul>
+		</div>
+	<div class="visible-xs navbar navbar-inverse site-logo site-logo-xs breadcrumb-xs">
+			<ul class="nav navbar-nav">
+<li><a href="https://metricshub.com">MetricsHub<sup>®</sup></a></li>
+			</ul>
+		</div>
+
+		<div class="navbar site-banner">
+
+			<div class="container-fluid">
+
+				<div class="navbar-header" ng-class="{'show-search-xs': showSearchInput && $matchMedia.size == 'xs'}">
+					<button
+						class="navbar-toggle hidden-lg hidden-md hidden-sm"
+						ng-click="showSearchInput = !showSearchInput; clearSearch()"
+						title="{{ showSearchInput ? 'Close the search' : 'Search' }}"
+						type="button"
+					>
+						<i ng-class="showSearchInput ? 'fas fa-times' : 'fa fa-search'"></i>
+					</button>
+					<div class="navbar-brand">
+					<ol class="breadcrumb hidden-xs">
+<li><a href="https://metricshub.com">MetricsHub<sup>®</sup></a></li>
+						</ol>
+					<div class="header-title">Helm Charts</div>
+						<div class="header-subtitle">
+							<span class="version-prefix"></span>
+							<span class="version"></span>
+						</div>
+					</div>
+					<div class="navbar-brand header-xxs visible-xs">
+						<div class="header-title">Helm Charts</div>
+						<div class="header-subtitle">
+							 <strong></strong>
+						</div>
+					</div>
+					<form class="navbar-form site-search site-search-xs visible-xs" ng-show="showSearchInput">
+						<input
+							type="search"
+							class="form-control"
+							placeholder="Search..."
+							aria-label="Search..."
+							ng-model="siteSearch"
+							ng-change="search(siteSearch)"
+							ng-model-options="{ debounce: 500 }"
+							ng-keydown="handleKeyboard($event)"
+							ng-focus="prefetchSearchIndex()"
+							focus-me="showSearchInput"
+						/>
+					</form>
+				</div>
+				<form class="navbar-form navbar-right site-search hidden-xs">
+					<div class="form-group has-feedback">
+						<input
+							type="text"
+							class="form-control"
+							placeholder="Search..."
+							aria-label="Search..."
+							ng-model="siteSearch"
+							ng-change="search(siteSearch)"
+							ng-model-options="{ debounce: 500 }"
+							ng-keydown="handleKeyboard($event)"
+							ng-focus="prefetchSearchIndex()"
+						/>
+						<i class="fa fa-search form-control-feedback" aria-hidden="true"></i>
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</header>
+
+	<div class="container-fluid main-container">
+		<div class="row display-flex">
+			<nav class="left-menu hidden-xs col-sm-4 col-md-3" role="navigation">
+
+
+		<h5 class="text-uppercase">Helm Charts</h5>
+
+<ul class="nav nav-pills nav-stacked animate">
+<li><a href="../../index.html"><i class="fas fa-home"></i> Overview</a></li>
+</ul>
+		<h5 class="text-uppercase">m8b-stack</h5>
+
+<ul class="nav nav-pills nav-stacked animate">
+<li><a href="../../charts/m8b-stack/README.html"><i class="fas fa-file-alt"></i> Chart Overview</a></li>
+<li class="active"><a href="../../charts/m8b-stack/GETTING-STARTED.html" ng-click="hideSubItems = !hideSubItems"><i class="fas fa-file-alt"></i> Getting Started</a></li>
+<li><a href="../../charts/m8b-stack/KNOWLEDGE-BASE.html"><i class="fas fa-file-alt"></i> Knowledge Base</a></li>
+<li><a href="../../charts/m8b-stack/NETWORK-POLICIES.html"><i class="fas fa-file-alt"></i> Network Policies</a></li>
+<li><a href="../../charts/m8b-stack/CHANGELOG.html"><i class="fas fa-file-alt"></i> Changelog</a></li>
+</ul>
+		<h5 class="text-uppercase">Related Documentation</h5>
+
+<ul class="nav nav-pills nav-stacked animate">
+<li><a href="https://metricshub.com/docs/latest/"><i class="fas fa-file-alt"></i> MetricsHub</a></li>
+<li><a href="https://metricshub.com/docs/latest/installation/installing-on-docker?edition=enterprise"><i class="fas fa-file-alt"></i> MetricsHub on Docker (Enterprise)</a></li>
+<li><a href="https://metricshub.com/docs/latest/configuration/resource-settings"><i class="fas fa-file-alt"></i> MetricsHub Resource Settings</a></li>
+<li><a href="../../../m8b-slack/"><i class="fas fa-file-alt"></i> M8B Slack Bot</a></li>
+<li><a href="../../../m8b-slack/CONFIGURATION.html"><i class="fas fa-file-alt"></i> M8B Configuration</a></li>
+<li><a href="../../../m8b-slack/BACKENDS.html"><i class="fas fa-file-alt"></i> M8B AI Backends</a></li>
+</ul>
+			</nav>
+			<main class="main-content col-xs-12 col-sm-8 col-md-9">
+
+
+				<div ng-hide="siteSearch">
+
+					<div class="row">
+					<div class="col-md-12">
+					<div class="page-header visible-print-block">
+							<h3><small>MetricsHub</small><br/>							MetricsHub Helm Charts 1.0.0
+							</h3>
+						</div>
+						<div class="parents hidden-xs">
+								<ol class="breadcrumb">
+									<!-- Home -->
+									<li>
+										<a href="../../index.html">
+											<i class="fas fa-home"></i>Home
+										</a>
+									</li>
+								<!-- menus and items -->
+										<li>m8b-stack</li>
+												</ol>
+							</div>
+						<div class="parents-xs visible-xs">
+								<ul class="list-group">
+									<!-- Home -->
+									<a class="list-group-item" href="../../index.html">
+										<i class="fas fa-home"></i>Home
+									</a>
+									<!-- menus and items -->
+										<li class="list-group-item"><i class="fas fa-level-up-alt fa-flip-horizontal"></i>m8b-stack</li>
+											</ul>
+						</div>
+<section>
+ <a id="getting-started-with-the-m8b-stack-chart"></a>
+ <h1 id="getting-started-with-the-m8b-stack-chart">Getting started with the m8b-stack chart</h1>
+ <p>A complete, step-by-step installation for someone who has never used Helm, from an empty cluster to a bot that answers in Slack. It follows a typical on-premises lab and uses <a href="examples/lab-values-example.yaml">examples/lab-values-example.yaml</a><sup class="visible-print-inline">[1]</sup>. Values marked <strong>CHANGE ME</strong> in that file are examples: replace them with yours.</p>
+ <table class="bodyTable table table-striped table-hover">
+  <thead>
+   <tr class="a">
+    <th>Item</th>
+    <th>Example value used in this guide</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr class="b">
+    <td>Cluster</td>
+    <td>kubeadm, 3 nodes: kube-01 (192.0.2.11), kube-02 (192.0.2.12), kube-03 (192.0.2.13)</td>
+   </tr>
+   <tr class="a">
+    <td>Pod / Service CIDR</td>
+    <td>10.244.0.0/16 / 10.96.0.0/12</td>
+   </tr>
+   <tr class="b">
+    <td>Storage</td>
+    <td>no StorageClass → local volumes on kube-01</td>
+   </tr>
+   <tr class="a">
+    <td>Namespace, release</td>
+    <td><code>m8b-metricshub</code>, <code>m8b-stack</code></td>
+   </tr>
+   <tr class="b">
+    <td>LLM (vLLM)</td>
+    <td><code>http://vllm.example.internal:8000/v1</code> (192.0.2.50), models <code>chat-model</code> / <code>embedding-model</code></td>
+   </tr>
+   <tr class="a">
+    <td>Slack workspace</td>
+    <td><code>T0000000000</code></td>
+   </tr>
+   <tr class="b">
+    <td>Admin networks</td>
+    <td>LAN 198.51.100.0/24, VPN 203.0.113.0/24</td>
+   </tr>
+   <tr class="a">
+    <td>MetricsHub Web UI</td>
+    <td><a href="https://192.0.2.11:31888" class="externalLink">https://192.0.2.11:31888</a><sup class="visible-print-inline">[2]</sup></td>
+   </tr>
+   <tr class="b">
+    <td>Prometheus</td>
+    <td><a href="http://192.0.2.11:30909" class="externalLink">http://192.0.2.11:30909</a><sup class="visible-print-inline">[3]</sup> (no authentication, no TLS)</td>
+   </tr>
+  </tbody>
+ </table>
+ <p>Every command runs <strong>on kube-01 as root, in one SSH session</strong>: later steps reuse variables set earlier. kube-01 is a control-plane node, so it already has <code>kubectl</code> and <code>/etc/kubernetes/admin.conf</code>, and it is the node that holds the local volumes. If the session drops, re-run <a href="#session-variables" du-smooth-scroll="">the session variables</a>.</p>
+ <p>Time: about 45 minutes, plus about 20 minutes of knowledge-base indexing.</p>
+ <p><strong>What you need at hand:</strong></p>
+ <ul>
+  <li>registry credentials for the private registry <code>docker.metricshub.com</code> (from your MetricsHub onboarding email, or <a href="https://support.metricshub.com" class="externalLink">support.metricshub.com</a><sup class="visible-print-inline">[4]</sup>);</li>
+  <li>the Slack bot token (<code>xoxb-…</code>) and app-level token (<code>xapp-…</code>, Socket Mode) of your M8B Slack app. To create the app, see <a href="https://metricshub.org/m8b-slack/#1-create-the-slack-app" class="externalLink">Create the Slack app</a><sup class="visible-print-inline">[5]</sup>;</li>
+  <li>the API key of your OpenAI-compatible (vLLM) endpoint. Check that your backend and models are supported in <a href="https://metricshub.org/m8b-slack/BACKENDS.html" class="externalLink">AI backends</a><sup class="visible-print-inline">[6]</sup>.</li>
+ </ul>
+ <hr>
+ <section>
+  <a id="step-1-e2-80-94-session-variables-and-cluster-facts"></a>
+  <h2 id="step-1--session-variables-and-cluster-facts"><a href="#step-1--session-variables-and-cluster-facts">Step 1 — Session variables and cluster facts</a></h2>
+  <pre copy-to-clipboard=""><code class="language-bash">export KUBECONFIG=/etc/kubernetes/admin.conf
+NS=m8b-metricshub
+RELEASE=m8b-stack
+CHART=metricshub/m8b-stack        # from the MetricsHub Helm repository, added in step 3
+VALUES=/root/my-values.yaml
+L="app.kubernetes.io/instance=$RELEASE"
+S=/root/.m8b-secrets
+kubectl get nodes -o wide          # all nodes Ready; note their names and INTERNAL-IP
+</code></pre>
+  <p>Note the answers to these commands; the values file needs them:</p>
+  <pre copy-to-clipboard=""><code class="language-bash"># Pod and Service ranges -&gt; network.podCidrs / network.serviceCidrs
+kubectl -n kube-system get cm kubeadm-config -o jsonpath='{.data.ClusterConfiguration}' | grep -E 'podSubnet|serviceSubnet'
+# Network plugin: it must enforce NetworkPolicies (Cilium, Calico... yes; Flannel alone: no, policies are ignored)
+kubectl -n kube-system get pods -o name | grep -E 'cilium|calico|flannel|weave' | head -3
+# Storage: "No resources found" -&gt; local volumes (this guide); a StorageClass -&gt; see examples/portable.yaml
+kubectl get storageclass
+</code></pre>
+ </section>
+ <section>
+  <a id="step-2-e2-80-94-install-helm"></a>
+  <h2 id="step-2--install-helm"><a href="#step-2--install-helm">Step 2 — Install Helm</a></h2>
+  <p>Skip this step if <code>helm version</code> already works.</p>
+  <pre copy-to-clipboard=""><code class="language-bash">HELM_VERSION=v4.3.0
+cd /tmp
+curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz"
+curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256sum"
+sha256sum -c "helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256sum"     # must print: OK
+tar -xzf "helm-${HELM_VERSION}-linux-amd64.tar.gz"
+install -m 755 linux-amd64/helm /usr/local/bin/helm
+rm -rf linux-amd64 helm-${HELM_VERSION}-linux-amd64.tar.gz*
+cd /root
+helm version
+</code></pre>
+  <p>Helm uses the <code>KUBECONFIG</code> set in step 1. There is nothing else to configure.</p>
+ </section>
+ <section>
+  <a id="step-3-e2-80-94-get-the-chart-and-write-your-values-file"></a>
+  <h2 id="step-3--get-the-chart-and-write-your-values-file"><a href="#step-3--get-the-chart-and-write-your-values-file">Step 3 — Get the chart and write your values file</a></h2>
+  <pre copy-to-clipboard=""><code class="language-bash">helm repo add metricshub https://metricshub.github.io/helm-charts
+helm repo update
+helm search repo "$CHART" --versions        # every published version
+# Pin the latest version: every helm command below installs exactly this one
+CHART_VERSION=$(helm search repo "$CHART" -o yaml | sed -n 's/^  version: //p' | head -1); echo "$CHART_VERSION"
+# A local copy, only to read the examples and docs
+rm -rf /tmp/m8b-chart &amp;&amp; helm pull "$CHART" --version "$CHART_VERSION" --untar --untardir /tmp/m8b-chart
+cp -n /tmp/m8b-chart/m8b-stack/examples/lab-values-example.yaml "$VALUES"
+</code></pre>
+  <p>Edit <code>$VALUES</code> and replace <strong>every <code>CHANGE ME</code></strong> value with yours, using the facts from step 1:</p>
+  <ul>
+   <li><code>storage.local.node</code>: the node that holds the data (here kube-01, the node you are on);</li>
+   <li><code>network.podCidrs</code>, <code>network.serviceCidrs</code>: the ranges from step 1;</li>
+   <li><code>metricshub.egress</code>: the networks the agent monitors. <strong>Empty means nothing is monitored</strong>. Which hosts it monitors, and how, is the agent configuration (<code>metricshub.config.text</code>): see <a href="https://metricshub.com/docs/latest/configuration/resource-settings">Resource settings</a><sup class="visible-print-inline">[7]</sup>;</li>
+   <li><code>exposure.adminCidrs</code>: the networks allowed to open the Web UI and Prometheus;</li>
+   <li><code>m8b.slackTeamId</code>: your workspace ID, from the Slack browser URL <code>app.slack.com/client/T…/…</code>;</li>
+   <li><code>m8b.ai</code> / <code>m8b.embeddings</code>: endpoint URL, exact model IDs (<code>curl -s &lt;baseUrl&gt;/models</code>), and the endpoint IP and port in <code>ai.egress</code>.</li>
+  </ul>
+  <p>Check the file offline. Nothing is applied to the cluster, and errors name the value to fix:</p>
+  <pre copy-to-clipboard=""><code class="language-bash">for st in core check run index; do
+  helm template "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" --set stage=$st &gt; /dev/null &amp;&amp; echo "$st OK"
+done
+</code></pre>
+ </section>
+ <section>
+  <a id="step-4-e2-80-94-enter-the-credentials"></a>
+  <h2 id="step-4--enter-the-credentials"><a href="#step-4--enter-the-credentials">Step 4 — Enter the credentials</a></h2>
+  <p>This script asks for each value without echoing it, then writes one file per credential to <code>$S</code>, readable by root only. Nothing ends up in the shell history.</p>
+  <pre copy-to-clipboard=""><code class="language-bash">cat &gt; /root/m8b-secrets.sh &lt;&lt;'SCRIPT'
+#!/usr/bin/env bash
+set -euo pipefail
+S=${S:-/root/.m8b-secrets}
+install -d -m 700 "$S" "$S/runtime"
+umask 077
+
+ask() {  # ask &lt;prompt&gt; &lt;variable&gt; [required prefix]
+  local v
+  while :; do
+    read -rsp "$1: " v; echo
+    [ -n "$v" ] || { echo '  empty, try again'; continue; }
+    [ -z "${3:-}" ] || [[ $v == "$3"* ]] || { echo "  must start with $3"; continue; }
+    printf -v "$2" '%s' "$v"; return
+  done
+}
+
+read -rp 'docker.metricshub.com username: ' RU
+ask 'docker.metricshub.com password' RP
+printf '{"auths":{"docker.metricshub.com":{"auth":"%s"}}}' "$(printf '%s:%s' "$RU" "$RP" | base64 -w0)" \
+  &gt; "$S/.dockerconfigjson"
+unset RU RP
+
+ask 'Slack bot token (xoxb-...)' V xoxb-; printf '%s' "$V" &gt; "$S/runtime/SLACK_BOT_TOKEN"
+ask 'Slack app token (xapp-...)' V xapp-; printf '%s' "$V" &gt; "$S/runtime/SLACK_APP_TOKEN"
+ask 'LLM API key' V;                      printf '%s' "$V" &gt; "$S/runtime/AI_API_KEY"
+unset V
+
+python3 -m json.tool "$S/.dockerconfigjson" &gt; /dev/null &amp;&amp; echo 'dockerconfigjson: valid JSON'
+wc -c "$S"/runtime/*      # no file may be 0 bytes
+SCRIPT
+chmod 700 /root/m8b-secrets.sh
+/root/m8b-secrets.sh
+</code></pre>
+  <p>If the embedding endpoint uses a different key, also write it: <code>read -rsp 'Embedding API key: ' V; echo; printf '%s' "$V" &gt; "$S/runtime/AI_EMBEDDING_API_KEY"; unset V</code>.</p>
+ </section>
+ <section>
+  <a id="step-5-e2-80-94-namespace-and-secrets"></a>
+  <h2 id="step-5--namespace-and-secrets"><a href="#step-5--namespace-and-secrets">Step 5 — Namespace and Secrets</a></h2>
+  <p>The chart never contains credentials: it reads these Kubernetes Secrets.</p>
+  <pre copy-to-clipboard=""><code class="language-bash">kubectl create namespace "$NS"
+kubectl -n "$NS" create secret generic registry-pull --type=kubernetes.io/dockerconfigjson \
+  --from-file=.dockerconfigjson="$S/.dockerconfigjson"
+kubectl -n "$NS" create secret generic m8b-runtime --from-file="$S/runtime/"
+kubectl -n "$NS" create secret generic searxng-runtime \
+  --from-literal=SEARXNG_SECRET="$(head -c 48 /dev/urandom | base64 | tr -d '\n=')"
+kubectl -n "$NS" get secrets
+</code></pre>
+  <section>
+   <a id="a5b-check-access-to-the-private-images"></a>
+   <h3 id="5b-check-access-to-the-private-images"><a href="#5b-check-access-to-the-private-images">5b. Check access to the private images</a></h3>
+   <p>Run this before going further: it proves the registry credentials can pull both private images, the MetricsHub Enterprise agent and the M8B bot, in the versions of the chart you pinned. <code>--image-pull-policy=Always</code> forces a real download: without it, a node that already has an image reuses it without contacting the registry, and the credentials are not tested at all.</p>
+   <pre copy-to-clipboard=""><code class="language-bash">for img in $(helm show values "$CHART" --version "$CHART_VERSION" | grep -oE 'docker\.metricshub\.com/[^ ]+'); do
+  kubectl -n "$NS" delete pod pull-test --ignore-not-found --wait=true &gt; /dev/null
+  kubectl -n "$NS" run pull-test --image="$img" --restart=Never --image-pull-policy=Always \
+    --overrides='{"spec":{"imagePullSecrets":[{"name":"registry-pull"}]}}' --command -- sleep 5 &gt; /dev/null
+  sleep 60; echo "== $img"
+  kubectl -n "$NS" describe pod pull-test | grep -Ei 'pulled|failed|errimage|denied|unauthorized'
+done
+kubectl -n "$NS" delete pod pull-test --ignore-not-found
+</code></pre>
+   <ul>
+    <li><code>Successfully pulled image</code> for both images: continue.</li>
+    <li><code>denied</code> or <code>unauthorized</code>: the credentials do not cover that image. Get the right ones, re-run step 4, then <code>kubectl -n "$NS" delete secret registry-pull</code> and the <code>create</code> command above.</li>
+    <li><code>already present on machine</code>: the download was not forced. Check that the command contains <code>--image-pull-policy=Always</code>.</li>
+   </ul>
+   <p>When the stack works, delete the credential files with <code>rm -rf "$S"</code>. The values then live only in the cluster.</p>
+  </section>
+ </section>
+ <section>
+  <a id="step-6-e2-80-94-local-volume-folders"></a>
+  <h2 id="step-6--local-volume-folders"><a href="#step-6--local-volume-folders">Step 6 — Local volume folders</a></h2>
+  <p>The chart expects <code>&lt;basePath&gt;/&lt;namespace&gt;/&lt;release&gt;/&lt;component&gt;</code>, on the node named in <code>storage.local.node</code>. The owners must match the user IDs the containers run as.</p>
+  <pre copy-to-clipboard=""><code class="language-bash">DIR=/var/lib/m8b-stack/$NS/$RELEASE
+install -d -m 750 -o 1000 -g 1000 "$DIR/agent" "$DIR/bot"
+install -d -m 750 -o 65534 -g 65534 "$DIR/prometheus"
+ls -ln "$DIR"       # agent and bot: 1000 1000; prometheus: 65534 65534
+</code></pre>
+ </section>
+ <section>
+  <a id="step-7-e2-80-94-stage-core-3a-agent-2c-prometheus-2c-searxng"></a>
+  <h2 id="step-7--stage-core-agent-prometheus-searxng"><a href="#step-7--stage-core-agent-prometheus-searxng">Step 7 — Stage <code>core</code>: agent, Prometheus, SearXNG</a></h2>
+  <p>The chart installs in <strong>stages</strong>. Each <code>helm upgrade</code> applies exactly one stage, and <strong>the last one you ran decides the state</strong>: <code>check</code> and <code>index</code> keep the bot stopped, and only <code>run</code> starts it.</p>
+  <table class="bodyTable table table-striped table-hover">
+   <thead>
+    <tr class="a">
+     <th>Stage</th>
+     <th>Runs</th>
+     <th>Bot</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr class="b">
+     <td><code>core</code></td>
+     <td>agent, Prometheus, SearXNG</td>
+     <td>stopped</td>
+    </tr>
+    <tr class="a">
+     <td><code>check</code></td>
+     <td>the above + Doctor Job</td>
+     <td>stopped</td>
+    </tr>
+    <tr class="b">
+     <td><code>run</code></td>
+     <td>the above + bot, admin NodePorts</td>
+     <td>running</td>
+    </tr>
+    <tr class="a">
+     <td><code>index</code></td>
+     <td>the above + knowledge-base index Job</td>
+     <td>stopped</td>
+    </tr>
+   </tbody>
+  </table>
+  <pre copy-to-clipboard=""><code class="language-bash">helm upgrade --install "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" \
+  --set stage=core --wait --timeout 15m
+kubectl -n "$NS" get pods -o wide
+</code></pre>
+  <p>Expected:</p>
+  <ul>
+   <li><code>m8b-stack-agent-…</code>, <code>m8b-stack-prometheus-…</code> and <code>m8b-stack-searxng-…</code> are <code>Running</code>;</li>
+   <li>the agent and Prometheus run on kube-01, because their volumes are local to that node.</li>
+  </ul>
+  <p>The embedded OpenTelemetry Collector runs inside the agent container. Check that it uses the chart's config:</p>
+  <pre copy-to-clipboard=""><code class="language-bash">kubectl -n "$NS" exec -c metricshub deploy/m8b-stack-agent -- sh -c \
+  'for p in /proc/[0-9]*; do tr "\0" " " &lt; $p/cmdline 2&gt;/dev/null | grep -o "otelcol-contrib --config [^ ]*"; done' | sort -u
+</code></pre>
+  <p>It should print <code>otelcol-contrib --config /opt/metricshub/lib/app/../otel/otel-config.yaml</code>.</p>
+ </section>
+ <section>
+  <a id="step-8-e2-80-94-web-ui-user-and-mcp-api-key"></a>
+  <h2 id="step-8--web-ui-user-and-mcp-api-key"><a href="#step-8--web-ui-user-and-mcp-api-key">Step 8 — Web UI user and MCP API key</a></h2>
+  <p>The bot talks to the agent with an API key that <strong>this</strong> agent must issue. In the Enterprise image, the <code>user</code> and <code>apikey</code> tools live in <code>/opt/metricshub/bin/</code>; <code>-c metricshub</code> targets the agent container directly.</p>
+  <p><code>apikey create</code> prints <code>API key created for alias '…': &lt;uuid&gt; (No expiration)</code>. Only the UUID (36 characters) may go into the Secret. With the <code>(No expiration)</code> suffix, the agent answers <strong>401</strong> to the bot.</p>
+  <pre copy-to-clipboard=""><code class="language-bash">AGENT=deploy/m8b-stack-agent
+X="kubectl -n $NS exec -c metricshub"
+$X "$AGENT" -- ls /opt/metricshub/bin/    # must list "user" and "apikey"
+
+# Web UI user "admin" (password read without echo)
+read -rsp 'Web UI password for admin: ' PW; echo
+printf '%s\n' "$PW" | $X -i "$AGENT" -- sh -c \
+  'IFS= read -r p; exec /opt/metricshub/bin/user create "$1" --password "$p" --role rw' _ admin
+unset PW
+$X "$AGENT" -- /opt/metricshub/bin/user list
+
+# MCP API key for the bot, stored in the Secret without being printed
+OUT=$($X "$AGENT" -- /opt/metricshub/bin/apikey create "m8b-helm-$(date +%s)")
+KEY=$(printf '%s\n' "$OUT" | sed -n "s/.*API key created for alias ['\"][^'\"]*['\"]: *\([A-Za-z0-9_.-]*\).*/\1/p")
+if [ -n "$KEY" ]; then
+  printf '{"stringData":{"MCP_AGENT_TOKEN":"%s"}}' "$KEY" \
+    | kubectl -n "$NS" patch secret m8b-runtime --type merge --patch-file /dev/stdin
+else
+  echo 'Unexpected output:'; printf '%s\n' "$OUT" | sed -E 's/[A-Za-z0-9_.-]{20,}/&lt;MASKED&gt;/g'
+fi
+unset OUT KEY
+kubectl -n "$NS" get secret m8b-runtime -o go-template='{{index .data "MCP_AGENT_TOKEN" | base64decode}}' | wc -c   # must print 36
+</code></pre>
+  <ul>
+   <li>
+    <p><strong>Not 36</strong> (for example 52): the key itself is valid, only the stored value is wrong. Repair it without creating another key:</p>
+    <pre copy-to-clipboard=""><code class="language-bash">T=$(kubectl -n "$NS" get secret m8b-runtime -o go-template='{{index .data "MCP_AGENT_TOKEN" | base64decode}}' | cut -d' ' -f1)
+printf '{"stringData":{"MCP_AGENT_TOKEN":"%s"}}' "$T" \
+  | kubectl -n "$NS" patch secret m8b-runtime --type merge --patch-file /dev/stdin
+unset T
+</code></pre>
+   </li>
+   <li>
+    <p><strong><code>Unexpected output</code></strong>: the key was still created. Do <strong>not</strong> run <code>create</code> again, it would add a second key. Note the printed line, where the key is masked. To list keys: <code>$X "$AGENT" -- /opt/metricshub/bin/apikey list</code>. To remove a spare key: <code>… apikey revoke &lt;alias&gt;</code>.</p>
+   </li>
+   <li>
+    <p><strong><code>user create</code> fails because the user exists</strong> (step re-run): keep the existing one (<code>user list</code>).</p>
+   </li>
+  </ul>
+ </section>
+ <section>
+  <a id="step-9-e2-80-94-stage-check-3a-the-doctor"></a>
+  <h2 id="step-9--stage-check-the-doctor"><a href="#step-9--stage-check-the-doctor">Step 9 — Stage <code>check</code>: the Doctor</a></h2>
+  <p>With the bot still stopped, the Doctor checks:</p>
+  <ul>
+   <li>the Slack tokens, scopes and workspace;</li>
+   <li>Prometheus and its OTLP receiver, and that MetricsHub metrics arrive;</li>
+   <li>SearXNG;</li>
+   <li>the M8B Doctor itself: LLM chat and embeddings, the MCP connection to the agent, the data directories and the Python sandbox.</li>
+  </ul>
+  <pre copy-to-clipboard=""><code class="language-bash">helm upgrade "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" \
+  --set stage=check --wait --wait-for-jobs --timeout 15m
+kubectl -n "$NS" logs -l "$L,app.kubernetes.io/component=doctor" --all-containers=true --tail=-1
+</code></pre>
+  <ul>
+   <li>
+    <p><strong>Success:</strong> the log ends with <code>0 failed</code>. A warning about <code>M8B_MEDIA_BASE_URL</code> is expected: images sent to the bot are then passed inline as base64. To configure a media store, see <a href="https://metricshub.org/m8b-slack/CONFIGURATION.html#images-and-the-media-store" class="externalLink">Images and the media store</a><sup class="visible-print-inline">[8]</sup> and set the variables through <code>m8b.extraConfig</code>.</p>
+   </li>
+   <li>
+    <p><strong>Failure:</strong> fix the cause (see <a href="#troubleshooting" du-smooth-scroll="">Troubleshooting</a>), delete the failed Job, then run the same <code>helm upgrade</code> again. Each attempt gets a new Job name (<code>m8b-stack-doctor-&lt;revision&gt;</code>). Helm does <strong>not</strong> remove a Job created by a failed revision, so delete it yourself:</p>
+    <pre copy-to-clipboard=""><code class="language-bash">kubectl -n "$NS" delete job -l "$L,app.kubernetes.io/component=doctor"
+</code></pre>
+   </li>
+   <li>
+    <p><strong><code>No current metricshub_agent_info sample</code></strong> on the very first try: the agent has not exported yet (its collect period is about 1 minute). Wait two minutes and retry.</p>
+   </li>
+  </ul>
+ </section>
+ <section>
+  <a id="step-10-e2-80-94-stage-run-3a-start-the-bot"></a>
+  <h2 id="step-10--stage-run-start-the-bot"><a href="#step-10--stage-run-start-the-bot">Step 10 — Stage <code>run</code>: start the bot</a></h2>
+  <pre copy-to-clipboard=""><code class="language-bash">helm upgrade "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" \
+  --set stage=run --wait --timeout 15m
+kubectl -n "$NS" get pods
+kubectl -n "$NS" logs deploy/m8b-stack-bot -c m8b --tail=50
+</code></pre>
+  <p>Expected in the bot log:</p>
+  <ul>
+   <li><code>[MCP] Connected to m8b-stack-agent.m8b-metricshub.svc.cluster.local using sse</code>;</li>
+   <li><code>[MCP] Indexed N hosts</code>.</li>
+  </ul>
+  <p>At this stage the log still says <code>Local knowledge base is empty or not indexed</code>: step 11 fixes that.</p>
+  <p>Tests:</p>
+  <ul>
+   <li><strong>Slack:</strong> invite the bot to a channel (<code>/invite @&lt;bot name&gt;</code>) and ask it a question about your infrastructure.</li>
+   <li><strong>Web UI:</strong> <a href="https://192.0.2.11:31888" class="externalLink">https://192.0.2.11:31888</a><sup class="visible-print-inline">[2]</sup> from an admin network. Accept the self-signed certificate, then log in as <code>admin</code>. With <code>externalTrafficPolicy: Local</code>, use the IP of the node running the agent (kube-01 here).</li>
+   <li><strong>Prometheus:</strong> <a href="http://192.0.2.11:30909" class="externalLink">http://192.0.2.11:30909</a><sup class="visible-print-inline">[3]</sup>, query <code>metricshub_agent_info</code>, which must return at least one series. From the node: <code>curl -s 'http://192.0.2.11:30909/api/v1/query?query=metricshub_agent_info'</code>.</li>
+  </ul>
+ </section>
+ <section>
+  <a id="step-11-e2-80-94-build-the-knowledge-base-28about-20-minutes-29"></a>
+  <h2 id="step-11--build-the-knowledge-base-about-20-minutes"><a href="#step-11--build-the-knowledge-base-about-20-minutes">Step 11 — Build the knowledge base (about 20 minutes)</a></h2>
+  <p>The index Job needs the bot volume to itself, so the bot is stopped first:</p>
+  <pre copy-to-clipboard=""><code class="language-bash">kubectl -n "$NS" scale deployment -l "$L,app.kubernetes.io/component=m8b" --replicas=0
+kubectl -n "$NS" wait --for=delete pod -l "$L,app.kubernetes.io/component=m8b" --timeout=300s
+helm upgrade "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" \
+  --set stage=index --wait --wait-for-jobs --timeout 65m
+</code></pre>
+  <p>To follow the indexing, open a <strong>second</strong> SSH session, re-run <a href="#session-variables" du-smooth-scroll="">the session variables</a>, then:</p>
+  <pre copy-to-clipboard=""><code class="language-bash">kubectl -n "$NS" logs -l "$L,app.kubernetes.io/component=knowledge" -c index -f
+</code></pre>
+  <p>When the <code>helm upgrade</code> returns:</p>
+  <pre copy-to-clipboard=""><code class="language-bash">kubectl -n "$NS" logs -l "$L,app.kubernetes.io/component=knowledge" -c index --tail=-1 &gt; /root/kb-index.log
+tail -5 /root/kb-index.log         # must contain "action":"indexed" with a document count
+kubectl -n "$NS" delete job -l "$L,app.kubernetes.io/component=knowledge" --wait=true
+helm upgrade "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" \
+  --set stage=run --wait --timeout 15m
+</code></pre>
+  <p>Test: ask the bot something only the MetricsHub documentation answers. It should use <code>search_knowledge_base</code>. A typical run indexes several hundred documents. Details: <a href="KNOWLEDGE-BASE.html">KNOWLEDGE-BASE.md</a><sup class="visible-print-inline">[9]</sup>, and the bot's <a href="https://metricshub.org/m8b-slack/CONFIGURATION.html#knowledge-base" class="externalLink">knowledge-base settings</a><sup class="visible-print-inline">[10]</sup>.</p>
+  <hr>
+ </section>
+ <section>
+  <h2 id="session-variables"><a href="#session-variables">Session variables</a></h2>
+  <pre copy-to-clipboard=""><code class="language-bash">export KUBECONFIG=/etc/kubernetes/admin.conf
+NS=m8b-metricshub; RELEASE=m8b-stack; CHART=metricshub/m8b-stack; VALUES=/root/my-values.yaml
+CHART_VERSION=$(helm get metadata "$RELEASE" -n "$NS" -o yaml | sed -n 's/^version: //p')   # the installed version
+L="app.kubernetes.io/instance=$RELEASE"; S=/root/.m8b-secrets
+</code></pre>
+ </section>
+ <section>
+  <h2 id="everyday-operations"><a href="#everyday-operations">Everyday operations</a></h2>
+  <pre copy-to-clipboard=""><code class="language-bash">helm get values "$RELEASE" -n "$NS" --all | grep '^stage:'   # current stage: must be "run" for the bot to run
+helm list -n "$NS"                              # release, revision, chart version
+helm history "$RELEASE" -n "$NS"                # every upgrade
+kubectl -n "$NS" get pods,pvc,svc -o wide
+kubectl -n "$NS" logs deploy/m8b-stack-bot -c m8b -f
+kubectl -n "$NS" logs deploy/m8b-stack-agent -c metricshub -f
+kubectl -n "$NS" get events --sort-by=.lastTimestamp | tail -20
+</code></pre>
+  <p><strong>Restart the bot.</strong> This only works in stage <code>run</code>, because restarting a Deployment scaled to 0 starts nothing. Helm has no restart command; <code>kubectl rollout restart</code> is the standard way and does not conflict with Helm.</p>
+  <pre copy-to-clipboard=""><code class="language-bash">kubectl -n "$NS" rollout restart deployment/m8b-stack-bot
+kubectl -n "$NS" rollout status deployment/m8b-stack-bot --timeout=10m
+</code></pre>
+  <p>The new Pod runs its start-up checks again (about 1–2 minutes). The knowledge base is reloaded from disk, not rebuilt.</p>
+  <p><strong>Change a value.</strong> Edit <code>$VALUES</code>, then re-run step 9 if an endpoint or a token changed, and <strong>always</strong> finish with step 10. A configuration change restarts the bot automatically.</p>
+  <p><strong>Update the chart.</strong> Look for a newer version and read its <code>CHANGELOG.md</code>, then pin it and run steps 9 and 10:</p>
+  <pre copy-to-clipboard=""><code class="language-bash">helm repo update
+helm search repo "$CHART" --versions
+CHART_VERSION=2.1.0          # example: the version you picked in the list above
+</code></pre>
+ </section>
+ <section>
+  <h2 id="troubleshooting"><a href="#troubleshooting">Troubleshooting</a></h2>
+  <table class="bodyTable table table-striped table-hover">
+   <thead>
+    <tr class="a">
+     <th>Symptom</th>
+     <th>Likely cause and fix</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr class="b">
+     <td>Bot Deployment <code>0/0</code>, no bot Pod</td>
+     <td>The last <code>helm upgrade</code> was <code>check</code> or <code>index</code>: run step 10</td>
+    </tr>
+    <tr class="a">
+     <td>Agent <code>ErrImagePull</code> / <code>ImagePullBackOff</code></td>
+     <td>Registry credentials (step 5b)</td>
+    </tr>
+    <tr class="b">
+     <td>Pod or PVC <code>Pending</code></td>
+     <td>Missing folders or wrong node: step 6, <code>kubectl -n "$NS" describe pvc</code></td>
+    </tr>
+    <tr class="a">
+     <td>Pod <code>CrashLoopBackOff</code> right after start</td>
+     <td>Wrong folder owner: <code>ls -ln "$DIR"</code> (step 6)</td>
+    </tr>
+    <tr class="b">
+     <td>Doctor: <code>Workspace mismatch: received T…</code></td>
+     <td><code>m8b.slackTeamId</code> is wrong: use the ID printed, then re-run step 9</td>
+    </tr>
+    <tr class="a">
+     <td>Doctor: HTTP 401 from the LLM</td>
+     <td>Wrong <code>AI_API_KEY</code>: re-run step 4, recreate <code>m8b-runtime</code> (step 5), then step 8</td>
+    </tr>
+    <tr class="b">
+     <td>Doctor: <code>MCP … SSE error: Non-200 status code (401)</code></td>
+     <td><code>MCP_AGENT_TOKEN</code> is not the bare 36-character UUID: repair it (end of step 8), then step 9</td>
+    </tr>
+    <tr class="a">
+     <td>Doctor: no <code>metricshub_agent_info</code> after 5 minutes</td>
+     <td>Collector: step 7 check, <code>kubectl -n "$NS" logs deploy/m8b-stack-agent -c metricshub</code></td>
+    </tr>
+    <tr class="b">
+     <td>Doctor: timeouts to the LLM, Slack or monitored hosts</td>
+     <td>A network policy blocks it: add the destination to <code>m8b.ai.egress</code> or <code>metricshub.egress</code></td>
+    </tr>
+    <tr class="a">
+     <td><code>helm template</code>: <code>overlaps cluster range</code></td>
+     <td>A <code>metricshub.egress</code> CIDR includes the Pod/Service ranges: narrow it or add them to its <code>except</code> list</td>
+    </tr>
+    <tr class="b">
+     <td>Failed <code>m8b-stack-doctor-N</code> Job remains</td>
+     <td>Expected after a failed revision: <code>kubectl -n "$NS" delete job -l "$L,app.kubernetes.io/component=doctor"</code></td>
+    </tr>
+    <tr class="a">
+     <td>Web UI (:31888) or Prometheus (:30909) unreachable</td>
+     <td>Source IP outside <code>adminCidrs</code>, or wrong node IP (use the node running the Pod); NodePorts exist in <code>run</code> and <code>index</code> only</td>
+    </tr>
+    <tr class="b">
+     <td><code>helm upgrade</code>: <code>another operation is in progress</code></td>
+     <td>Interrupted command: <code>helm history</code>, then <code>helm rollback "$RELEASE" &lt;last good revision&gt; -n "$NS"</code></td>
+    </tr>
+   </tbody>
+  </table>
+ </section>
+ <section>
+  <h2 id="remove-everything"><a href="#remove-everything">Remove everything</a></h2>
+  <p>Irreversible: metrics, knowledge base, API keys, users, Secrets and images. <code>helm uninstall</code> alone keeps the PVCs and PVs on purpose (<code>helm.sh/resource-policy: keep</code>), and it never touches the Secrets it did not create.</p>
+  <pre copy-to-clipboard=""><code class="language-bash"># Cluster
+helm uninstall "$RELEASE" -n "$NS" --wait --ignore-not-found
+kubectl delete namespace "$NS" --wait=true --ignore-not-found
+kubectl get pv -o name | grep "$NS-" | xargs -r kubectl delete
+
+# Data and working files on kube-01
+rm -rf /var/lib/m8b-stack /tmp/m8b-chart "$S" "$VALUES" /root/m8b-secrets.sh /root/kb-index.log
+</code></pre>
+  <p>Images: run this on <strong>each</strong> node (kube-01, kube-02, kube-03). It uses <code>ctr</code>, which ships with containerd; with <code>crictl</code> installed, <code>crictl rmi</code> works too.</p>
+  <pre copy-to-clipboard=""><code class="language-bash">ctr -n k8s.io images ls -q | grep -E 'metricshub|m8b-slack|searxng/searxng|prom/prometheus' \
+  | xargs -r ctr -n k8s.io images rm
+</code></pre>
+  <p>Check: the commands below must print nothing.</p>
+  <pre copy-to-clipboard=""><code class="language-bash">kubectl get namespace "$NS" --ignore-not-found
+kubectl get pv | grep -i m8b
+ctr -n k8s.io images ls -q | grep -E 'metricshub|m8b-slack|searxng|prometheus'
+</code></pre>
+  <p>Optional, to remove Helm as well: <code>rm -rf /usr/local/bin/helm /root/.cache/helm /root/.config/helm /root/.local/share/helm</code>.</p>
+ </section>
+</section>
+<div class="keywords">
+<span class="label label-default">metricshub</span>
+<span class="label label-default">helm</span>
+<span class="label label-default">kubernetes</span>
+<span class="label label-default">chart</span>
+<span class="label label-default">m8b</span>
+<span class="label label-default">slack</span>
+<span class="label label-default">prometheus</span>
+<span class="label label-default">opentelemetry</span>
+</div>
+<div class="footnotes visible-print-block">
+								Links:
+								<ul class="list-unstyled">
+								<li>[1] examples/lab-values-example.yaml</li>
+								<li>[2] https://192.0.2.11:31888</li>
+								<li>[3] http://192.0.2.11:30909</li>
+								<li>[4] https://support.metricshub.com</li>
+								<li>[5] https://metricshub.org/m8b-slack/#1-create-the-slack-app</li>
+								<li>[6] https://metricshub.org/m8b-slack/BACKENDS.html</li>
+								<li>[7] https://metricshub.com/docs/latest/configuration/resource-settings</li>
+								<li>[8] https://metricshub.org/m8b-slack/CONFIGURATION.html#images-and-the-media-store</li>
+								<li>[9] KNOWLEDGE-BASE.html</li>
+								<li>[10] https://metricshub.org/m8b-slack/CONFIGURATION.html#knowledge-base</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Search results -->
+				<div class="search-results" ng-show="siteSearch">
+
+					<h2 class="hidden-xs">
+						Search Results for <em>{{siteSearch | truncate:'50'}}</em>
+					</h2>
+
+					<div ng-show="resultArray.length">
+
+						<!-- Result count -->
+						<div class="hidden-xs">
+							{{resultArray.length}}
+							<span ng-pluralize count="resultArray.length" when="{'1': 'result', 'other': 'results'}"></span>
+						</div>
+
+						<!-- List of results (Desktop) -->
+						<div class="search-results-content hidden-xs">
+							<div class="search-results-entry" ng-repeat="result in resultArray track by result.href">
+								<div class="search-results-parents small text-muted">
+									<span class="search-results-parents-entry" ng-repeat="parent in result.parents track by parent.title">
+										<a ng-if="parent.path" ng-href="{{parent.path}}" ng-bind-html="parent.title"></a>
+										<span ng-if="!parent.path" ng-bind-html="parent.title"></span>
+									</span>
+								</div>
+								<p class="search-results-title"><a ng-href="{{result.href}}"><i class="fas fa-file-alt"></i>{{result.title}}</a></p>
+								<div class="progressbar" aria-hidden="true">
+									<div class="bar-bg"></div>
+									<div class="bar-fg" ng-style="{width: result.score * 100 + '%'}"></div>
+								</div>
+								<div class="small extract">{{result.body | truncate:'400'}}</div>
+							</div>
+						</div>
+
+						<!-- List of results (mobile) -->
+						<ul class="list-group search-results-content search-results-content-xs visible-xs">
+							<a
+								ng-repeat="result in resultArray track by result.href"
+								ng-href="{{result.href}}"
+								class="list-group-item"
+							>
+								<div class="search-results-parents small" aria-hidden="true">
+									<span class="search-results-parents-entry" ng-repeat="parent in result.parents track by parent.title" ng-bind-html="parent.title"></span>
+								</div>
+								<div class="search-results-title"><i class="fas fa-file-alt"></i>{{result.title}}</div>
+								<div class="progressbar" aria-hidden="true">
+									<div class="bar-bg"></div>
+									<div class="bar-fg" ng-style="{width: result.score * 100 + '%'}"></div>
+								</div>
+								<div class="small extract">{{result.body | truncate:'100'}}</div>
+							</a>
+						</ul>
+
+					</div>
+
+					<div ng-hide="resultArray.length">
+						<div ng-show="searchLoading" class="search-loading">
+							<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+							<em>Searching...</em>
+						</div>
+						<em ng-hide="searchLoading">No results.</em>
+					</div>
+
+				</div>
+			</main>
+
+		</div>
+	</div>
+
+
+	<!--Footer in mobile and desktop-->
+	<footer class="footer">
+		<p class="footer-title" ng-class="{'text-center': $matchMedia.size == 'xs'}">
+			<strong>Helm Charts </strong>
+			<span class="hidden-xs">|</span><br class="hidden-sm hidden-md hidden-lg"/>
+			Documentation as of <strong><time datetime="2026-10-03">2026-10-03</time></strong>
+		</p>
+
+<div class="hidden-xs navbar navbar-inverse site-logo additional-links">
+		<ul class="nav navbar-nav">
+			<li><a href="https://metricshub.com/legal/general.html">Terms of Service</a></li>
+<li><a href="https://metricshub.com/legal/privacy.html">Privacy Policy</a></li>
+<li><a href="https://metricshub.com/legal/cookies.html">Cookie Policy</a></li>
+<li><a href="https://metricshub.com/legal/disclaimer.html">Disclaimer</a></li>
+<li><a href="https://metricshub.com/legal/trademarks.html">Trademarks</a></li>
+<li><a href="https://metricshub.com/legal/ethics.html">Code of Ethics</a></li>
+		</ul>
+</div>
+	<div class="visible-xs navbar navbar-inverse site-logo site-logo-xs">
+			<ul class="nav navbar-nav">
+			<li><a href="https://metricshub.com">MetricsHub</a></li>
+<li><a href="https://metricshub.com">MetricsHub</a></li>
+<li><a href="https://metricshub.com/download">Download</a></li>
+<li><a href="https://support.metricshub.com" class="externalLink">Support Desk</a></li>
+<li><a href="https://github.com/MetricsHub/helm-charts" class="externalLink"><i class='fa-brands fa-github'></i> GitHub</a></li>
+<li><a href="https://metricshub.com/legal/general.html">Terms of Service</a></li>
+<li><a href="https://metricshub.com/legal/privacy.html">Privacy Policy</a></li>
+<li><a href="https://metricshub.com/legal/cookies.html">Cookie Policy</a></li>
+<li><a href="https://metricshub.com/legal/disclaimer.html">Disclaimer</a></li>
+<li><a href="https://metricshub.com/legal/trademarks.html">Trademarks</a></li>
+<li><a href="https://metricshub.com/legal/ethics.html">Code of Ethics</a></li>
+<li class="icons"><a href="https://www.linkedin.com/company/metricshub" target="_blank" title="Follow metricshub on LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+<a href="https://metricshub.slack.com" target="_blank" title="Join us on Slack!"><i class="fa-brands fa-slack"></i></a>
+</li>
+
+<li class="dark-toggle dark-toggle-xs">
+    <toggle
+        ng-model="$matchMedia.dark"
+        ng-change="switchColors()"
+        size="btn-md"
+        width="55px"
+        height="32px"
+        off-class="day"
+        on-class="night"
+        toggle-class="navbar-btn dark-toggle"
+        on="<i class='fa-solid fa-moon'></i>"
+        off="<i class='sun-icon'></i>"
+        title="Switch between dark and light color schemes"
+        tabindex="0"></toggle>
+		</li>
+		</ul>
+		</div>
+
+		<div class="footer-copyright" ng-class="{'text-center': $matchMedia.size == 'xs'}">
+			<span class="copyright">Copyright &copy; 2026&dash;2026</span> <a href="https://metricshub.com">MetricsHub</a><span class="pull-right hidden-xs icons">
+			<a href="https://www.linkedin.com/company/metricshub" target="_blank" title="Follow metricshub on LinkedIn">
+					<i class="fa-brands fa-linkedin"></i>
+			</a>
+	<a href="https://metricshub.slack.com" target="_blank" title="Join us on Slack!">
+					<i class="fa-brands fa-slack"></i>
+			</a>
+	</span>
+	</div>
+	</footer>
+
+	<div ng-show="showBackToTop" class="back-to-top" ng-click="backToTop()"><i class="fa fa-angle-up" aria-hidden="true"></i></div>
+
+
+	<script src="../../js/main-combined.js"></script>
+
+	<script src="../../js/prism.js"></script>
+	<script>Prism.plugins.autoloader.languages_path = "../../js/prism/";</script>
+	<script>
+angular.module("sentry.site").constant("RELATIVE_ROOT", "../..");
+angular.module("sentry.site").constant("SITE_MENU", [
+{
+	path: "index.html",
+	title: "Overview",
+	parents: [{ title: "Helm Charts" }]
+},
+{
+	path: "charts/m8b-stack/README.html",
+	title: "Chart Overview",
+	parents: [{ title: "m8b-stack" }]
+},
+{
+	path: "charts/m8b-stack/GETTING-STARTED.html",
+	title: "Getting Started",
+	parents: [{ title: "m8b-stack" }]
+},
+{
+	path: "charts/m8b-stack/KNOWLEDGE-BASE.html",
+	title: "Knowledge Base",
+	parents: [{ title: "m8b-stack" }]
+},
+{
+	path: "charts/m8b-stack/NETWORK-POLICIES.html",
+	title: "Network Policies",
+	parents: [{ title: "m8b-stack" }]
+},
+{
+	path: "charts/m8b-stack/CHANGELOG.html",
+	title: "Changelog",
+	parents: [{ title: "m8b-stack" }]
+},
+{
+	path: "https://metricshub.com/docs/latest/",
+	title: "MetricsHub",
+	parents: [{ title: "Related Documentation" }]
+},
+{
+	path: "https://metricshub.com/docs/latest/installation/installing-on-docker?edition=enterprise",
+	title: "MetricsHub on Docker (Enterprise)",
+	parents: [{ title: "Related Documentation" }]
+},
+{
+	path: "https://metricshub.com/docs/latest/configuration/resource-settings",
+	title: "MetricsHub Resource Settings",
+	parents: [{ title: "Related Documentation" }]
+},
+{
+	path: "../m8b-slack/",
+	title: "M8B Slack Bot",
+	parents: [{ title: "Related Documentation" }]
+},
+{
+	path: "../m8b-slack/CONFIGURATION.html",
+	title: "M8B Configuration",
+	parents: [{ title: "Related Documentation" }]
+},
+{
+	path: "../m8b-slack/BACKENDS.html",
+	title: "M8B AI Backends",
+	parents: [{ title: "Related Documentation" }]
+},
+]);
+
+	</script>
+
+</body>
+</html>

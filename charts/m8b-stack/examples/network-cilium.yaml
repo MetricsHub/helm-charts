@@ -1,0 +1,5 @@
+# Use only on a cluster already running Cilium and its CiliumNetworkPolicy CRD.
+# This does NOT install or reconfigure Cilium.
+network:
+  enabled: true
+  provider: cilium

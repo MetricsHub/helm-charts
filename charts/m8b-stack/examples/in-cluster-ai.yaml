@@ -1,0 +1,24 @@
+# Overlay on portable.yaml. Adjust namespaces, labels and model names.
+m8b:
+  ai:
+    baseUrl: http://chat.ai.svc.cluster.local:8000/v1
+    model: chat-model
+    egress: []
+    podEgress:
+      - namespace: ai
+        matchLabels:
+          app: chat
+        ports:
+          - port: '8000'
+            protocol: TCP
+  embeddings:
+    baseUrl: http://embeddings.ai.svc.cluster.local:8000/v1
+    model: embedding-model
+    egress: []
+    podEgress:
+      - namespace: ai
+        matchLabels:
+          app: embeddings
+        ports:
+          - port: '8000'
+            protocol: TCP
