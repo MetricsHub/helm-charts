@@ -1,15 +1,22 @@
 name: Release
-# Publishes every chart whose version has no GitHub release yet:
-#   - GitHub release + gh-pages index.yaml  -> helm repo add metricshub https://metricshub.github.io/helm-charts
-#   - OCI artifact                          -> oci://ghcr.io/metricshub/charts/<chart>
-# Prerequisite: a gh-pages branch exists and GitHub Pages serves it.
 # Manual only: GitHub > Actions > Release > Run workflow (branch: main). Pushes to main never release.
 # Bump `version` in charts/<chart>/Chart.yaml first: a version that already has a release is skipped.
+#
+# Publishes every chart whose version has no GitHub release yet, then the documentation site:
+#   - GitHub release (.tgz) + index.yaml on the gh-pages branch (chart-releaser)
+#   - OCI artifact      -> oci://ghcr.io/metricshub/charts/<chart>
+#   - Documentation     -> gh-pages branch, next to index.yaml
+# GitHub Pages serves the gh-pages branch: https://metricshub.org/helm-charts
+#   helm repo add metricshub https://metricshub.github.io/helm-charts
+# gh-pages is written by this workflow only; never edit it by hand.
 on:
   workflow_dispatch:
 permissions:
   contents: write
   packages: write
+concurrency:
+  group: release
+  cancel-in-progress: false
 jobs:
   release:
     if: github.ref == 'refs/heads/main'
@@ -41,3 +48,25 @@ jobs:
           [ ${#packages[@]} -gt 0 ] || { echo 'Nothing new to push'; exit 0; }
           echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
           for pkg in "${packages[@]}"; do helm push "$pkg" oci://ghcr.io/metricshub/charts; done
+
+      # Documentation site: same toolchain as the other metricshub.org project sites
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: Build the site
+        run: mvn -B site
+      - name: Publish the site to gh-pages
+        run: |
+          git fetch origin gh-pages
+          git worktree add --detach pages origin/gh-pages
+          cd pages
+          # Replace the previous site, keep the chart index written by chart-releaser
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name index.yaml -exec rm -rf {} +
+          cp -r ../target/site/. .
+          touch .nojekyll   # serve the files as built, no Jekyll processing
+          git add -A
+          if git diff --cached --quiet; then echo 'Site unchanged'; exit 0; fi
+          git commit -m "Publish documentation site from ${GITHUB_SHA::7}"
+          git push origin HEAD:gh-pages

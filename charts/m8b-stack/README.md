@@ -1,5 +1,7 @@
 # M8B Stack Helm chart
 
+[![Chart version](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fmetricshub.org%2Fhelm-charts%2Findex.yaml&query=%24.entries%5B%27m8b-stack%27%5D%5B0%5D.version&label=chart&color=266fd0)](https://github.com/MetricsHub/helm-charts/releases?q=m8b-stack) [![App version](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fmetricshub.org%2Fhelm-charts%2Findex.yaml&query=%24.entries%5B%27m8b-stack%27%5D%5B0%5D.appVersion&label=app&color=266fd0)](CHANGELOG.md)
+
 MetricsHub Enterprise Agent (with its embedded OpenTelemetry Collector), Prometheus, SearXNG and the M8B Slack bot.
 Readable YAML templates, configurable resources, retained PVCs, staged diagnostics and local KB indexing.
 

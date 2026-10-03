@@ -1,0 +1,65 @@
+/* MetricsHub site style, shared with the other metricshub.org project sites. */
+
+/* Poppins font */
+@font-face {
+	font-family: 'Poppins';
+	src: url('../fonts/Poppins-ExtraBold.woff2') format('woff2'),
+		url('../fonts/Poppins-ExtraBold.woff') format('woff'),
+		url('../fonts/Poppins-ExtraBold.ttf') format('truetype'),
+		local('Helvetica');
+	font-weight: 800;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('../fonts/Poppins-Bold.woff2') format('woff2'),
+		url('../fonts/Poppins-Bold.woff') format('woff'),
+		url('../fonts/Poppins-Bold.ttf') format('truetype'),
+		local('Helvetica');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('../fonts/Poppins-Regular.woff2') format('woff2'),
+		url('../fonts/Poppins-Regular.woff') format('woff'),
+		url('../fonts/Poppins-Regular.ttf') format('truetype'),
+		local('Helvetica');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* MetricsHub fonts */
+:root {
+	--title-font: "Poppins", sans-serif;
+	--heading-font: "Poppins", sans-serif;
+	--content-font: "Poppins", sans-serif;
+
+	--content-font-size: 15px;
+	--banner-font-size: 40px;
+	--banner-font-weight: 800;
+
+}
+
+ /* MetricsHub colors */
+body {
+	--main-fgcolor: #212529;
+	--banner-bgcolor: #266fd0;
+	--link-color: #266fd0;
+	--alternate-bgcolor: #c8ddf1;
+	--alternate-fgcolor: #266fd0;
+}
+
+body.dark {
+	--link-color: #7cb6ff;
+	--main-bgcolor: #262626;
+	--main-fgcolor: #e9ecef;
+    --alternate-bgcolor: #9fcdfc;
+    --alternate-fgcolor: #27333f;
+}
+

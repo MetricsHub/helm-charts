@@ -10,3 +10,7 @@
 # Files the getting-started guide tells users to create
 my-values.yaml
 rendered.yaml
+
+# Maven site build output and local tool settings
+target/
+.claude/

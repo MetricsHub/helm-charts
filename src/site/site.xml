@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site
+	xmlns="http://maven.apache.org/SITE/2.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/SITE/2.0.0 https://maven.apache.org/xsd/site-2.0.0.xsd"
+	name="Helm Charts">
+
+	<skin>
+		<groupId>org.sentrysoftware.maven</groupId>
+		<artifactId>sentry-maven-skin</artifactId>
+		<version>8.0.00</version>
+	</skin>
+
+	<custom>
+		<noDefaultLinks>true</noDefaultLinks>
+		<!-- No global version: each chart is versioned independently (see the badges on each chart page) -->
+		<projectVersionText></projectVersionText>
+		<projectVersion></projectVersion>
+		<keywords>metricshub, helm, kubernetes, chart, m8b, slack, prometheus, opentelemetry</keywords>
+		<social>
+			<linkedin>metricshub</linkedin>
+			<custom>
+				<title>Join us on Slack!</title>
+				<href>https://metricshub.slack.com</href>
+				<icon>fa-brands fa-slack</icon>
+			</custom>
+		</social>
+
+		<additionalLinks>
+			<link>
+				<name>Terms of Service</name>
+				<href>https://metricshub.com/legal/general.html</href>
+			</link>
+			<link>
+				<name>Privacy Policy</name>
+				<href>https://metricshub.com/legal/privacy.html</href>
+			</link>
+			<link>
+				<name>Cookie Policy</name>
+				<href>https://metricshub.com/legal/cookies.html</href>
+			</link>
+			<link>
+				<name>Disclaimer</name>
+				<href>https://metricshub.com/legal/disclaimer.html</href>
+			</link>
+			<link>
+				<name>Trademarks</name>
+				<href>https://metricshub.com/legal/trademarks.html</href>
+			</link>
+			<link>
+				<name>Code of Ethics</name>
+				<href>https://metricshub.com/legal/ethics.html</href>
+			</link>
+		</additionalLinks>
+	</custom>
+
+	<bannerLeft name="MetricsHub" href="https://metricshub.com">
+		<image src="images/metricshub-logo.png" alt="MetricsHub Official Website" />
+	</bannerLeft>
+
+	<body>
+
+		<links>
+			<item name="MetricsHub" href="https://metricshub.com" />
+			<item name="Download" href="https://metricshub.com/download" />
+			<item name="Support Desk" href="https://support.metricshub.com" />
+			<item name="&lt;i class='fa-brands fa-github'&gt;&lt;/i&gt; GitHub" href="https://github.com/MetricsHub/helm-charts" />
+		</links>
+
+		<breadcrumbs>
+			<item name="MetricsHub&lt;sup&gt;&reg;&lt;/sup&gt;" href="https://metricshub.com" />
+		</breadcrumbs>
+
+		<menu name="Helm Charts">
+			<item name="Overview" href="index.html" />
+		</menu>
+
+		<menu name="m8b-stack">
+			<item name="Chart Overview" href="charts/m8b-stack/README.html" />
+			<item name="Getting Started" href="charts/m8b-stack/GETTING-STARTED.html" />
+			<item name="Knowledge Base" href="charts/m8b-stack/KNOWLEDGE-BASE.html" />
+			<item name="Network Policies" href="charts/m8b-stack/NETWORK-POLICIES.html" />
+			<item name="Changelog" href="charts/m8b-stack/CHANGELOG.html" />
+		</menu>
+	</body>
+
+</site>

@@ -1,0 +1,98 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Documentation site only (https://metricshub.org/helm-charts), built with: mvn site
+	     The pages are the Markdown files of this repository (README.md, charts/*/*.md), copied at build time,
+	     so GitHub and the site always show the same text. -->
+	<groupId>org.metricshub</groupId>
+	<artifactId>helm-charts</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+
+	<name>MetricsHub Helm Charts</name>
+	<description>Helm charts for deploying MetricsHub on Kubernetes</description>
+
+	<organization>
+		<name>MetricsHub</name>
+		<url>https://metricshub.com</url>
+	</organization>
+
+	<url>https://metricshub.org/helm-charts</url>
+	<inceptionYear>2026</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>MIT</name>
+			<url>https://opensource.org/license/mit</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/MetricsHub/helm-charts/issues/</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:git:https://github.com/MetricsHub/helm-charts.git</connection>
+		<url>https://github.com/MetricsHub/helm-charts</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.release>25</maven.compiler.release>
+	</properties>
+
+	<build>
+		<plugins>
+			<!-- Copy the repository's Markdown into the site sources, and the files they link to into the site -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>collect-docs</id>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<copy file="${basedir}/README.md" tofile="${project.build.directory}/generated-site/markdown/index.md" overwrite="true" />
+								<copy todir="${project.build.directory}/generated-site/markdown/charts" overwrite="true">
+									<fileset dir="${basedir}/charts" includes="*/*.md" />
+								</copy>
+								<copy todir="${project.build.directory}/site" overwrite="true">
+									<fileset dir="${basedir}" includes="LICENSE" />
+									<fileset dir="${basedir}" includes="charts/*/values.yaml,charts/*/examples/*.yaml" />
+								</copy>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- site -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>4.0.0-M16</version>
+				<configuration>
+					<generateReports>false</generateReports>
+					<generateProjectInfo>false</generateProjectInfo>
+					<inputEncoding>UTF-8</inputEncoding>
+					<outputEncoding>UTF-8</outputEncoding>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.sentrysoftware.maven</groupId>
+						<artifactId>maven-skin-tools</artifactId>
+						<version>1.8.01</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+</project>
