@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.1 (2026-10-05)
+
+- Architecture diagram (`architecture.svg`) replaces the text diagram in the README, also on the site: embedded
+  OTel Collector pushing to Prometheus, outbound Slack and LLM connections, stage Jobs, Secrets and network rules.
+
 ## 2.1.0 (2026-10-03)
 
 - M8B bot image 3.1.0 (`docker.metricshub.com/metricshub/m8b-slack:3.1.0`); `appVersion` 3.1.0.

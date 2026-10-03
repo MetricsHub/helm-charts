@@ -14,17 +14,8 @@ helm show values metricshub/m8b-stack > values-reference.yaml
 
 ## Architecture
 
-```
-               ┌──────────────── agent Pod (metricshub-enterprise) ───────────────────┐
- monitored ◄───┤ MetricsHub Agent ──OTLP gRPC localhost:4317──► OTel Collector Contrib├──► Prometheus :9090 (OTLP)
- hosts         │   :31888 Web UI / REST / MCP (self-signed TLS)   :13133 health       │    ▲
- (egress)      │                                                  :24375 /metrics     │    │ PromQL
-               └──────────────────────────────▲───────────────────────────────────────┘    │
-                                              │ MCP (HTTPS)                                │
-                                         M8B Slack bot ────────────────────────────────────┘
-                                              ├──► SearXNG :8080 (web search)
-                                              └──► Slack, LLM / embedding endpoints (egress)
-```
+<p align="center"><img src="architecture.svg" alt="m8b-stack architecture: components, flows and network rules" width="100%" /></p>
+
 
 - The agent pushes metrics to the collector running in the **same container**, over loopback without TLS:
   nothing outside the Pod can reach port 4317, and the Pod keeps its real hostname.

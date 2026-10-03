@@ -16,6 +16,8 @@
 		<!-- No global version: each chart is versioned independently (see the badges on each chart page) -->
 		<projectVersionText></projectVersionText>
 		<projectVersion></projectVersion>
+		<!-- Zoomable thumbnails are rendered with ImageIO, which cannot read SVG: keep vector images as they are -->
+		<convertImagesToThumbnails>img:not([alt=inline]):not([src$=.svg])</convertImagesToThumbnails>
 		<keywords>metricshub, helm, kubernetes, chart, m8b, slack, prometheus, opentelemetry</keywords>
 		<social>
 			<linkedin>metricshub</linkedin>
