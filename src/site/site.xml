@@ -82,6 +82,15 @@
 			<item name="Network Policies" href="charts/m8b-stack/NETWORK-POLICIES.html" />
 			<item name="Changelog" href="charts/m8b-stack/CHANGELOG.html" />
 		</menu>
+
+		<menu name="Related Documentation">
+			<item name="MetricsHub" href="https://metricshub.com/docs/latest/" />
+			<item name="MetricsHub on Docker (Enterprise)" href="https://metricshub.com/docs/latest/installation/installing-on-docker?edition=enterprise" />
+			<item name="MetricsHub Resource Settings" href="https://metricshub.com/docs/latest/configuration/resource-settings" />
+			<item name="M8B Slack Bot" href="https://metricshub.org/m8b-slack/" />
+			<item name="M8B Configuration" href="https://metricshub.org/m8b-slack/CONFIGURATION.html" />
+			<item name="M8B AI Backends" href="https://metricshub.org/m8b-slack/BACKENDS.html" />
+		</menu>
 	</body>
 
 </site>

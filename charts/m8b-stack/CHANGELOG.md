@@ -6,6 +6,8 @@
 - Knowledge-base errors name the Helm setting to use (`m8b.knowledgeBase.bootstrap.mode=always`) instead of kit commands.
 - Documentation: GETTING-STARTED pins the chart version and checks both private images; README, KNOWLEDGE-BASE
   and NETWORK-POLICIES aligned with it (step numbers, Job retries, full list of allowed network flows).
+- Documentation links to the MetricsHub Agent docs (Enterprise on Docker, resource settings) and to the M8B Slack
+  bot docs (Slack app creation, configuration reference, AI backends).
 
 ## 2.0.0 (2026-10-02)
 

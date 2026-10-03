@@ -132,6 +132,7 @@ metricshub:
   config:
     mode: seed
     # -- Optional metricshub.yaml content. Use a block scalar (|) for multiline text.
+    # Format: https://metricshub.com/docs/latest/configuration/resource-settings
     text: ''
     # -- Optional Secret supplying metricshub.yaml; do not put credentials in config.text.
     existingSecret: ''
@@ -253,6 +254,7 @@ m8b:
   allowSelfSignedMcp: true
   enablePromql: true
   # -- Additional non-secret string environment values. Use dedicated keys where available.
+  # Variables: https://metricshub.org/m8b-slack/CONFIGURATION.html
   extraConfig: {}
   startupAttempts: 6
   startupRetrySeconds: 10

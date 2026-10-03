@@ -25,6 +25,10 @@ m8b:
 - If the embedding endpoint needs a different key than the chat endpoint, add it to the `m8b-runtime` Secret as
   `AI_EMBEDDING_API_KEY`.
 - The index records the embedding configuration. After changing the embedding model or endpoint, rebuild it.
+- Embedding prefixes and input types, described in the bot's
+  [configuration reference](https://metricshub.org/m8b-slack/CONFIGURATION.html#knowledge-base), are set with
+  `m8b.embeddings.queryPrefix`, `documentPrefix`, `queryInputType` and `documentInputType`. The chart rejects
+  the corresponding variables in `m8b.extraConfig`, because it manages them.
 
 ## Build, rebuild
 

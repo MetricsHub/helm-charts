@@ -26,8 +26,10 @@ Time: about 45 minutes, plus about 20 minutes of knowledge-base indexing.
 
 - registry credentials for the private registry `docker.metricshub.com` (from your MetricsHub onboarding email, or
   [support.metricshub.com](https://support.metricshub.com));
-- the Slack bot token (`xoxb-…`) and app-level token (`xapp-…`, Socket Mode) of your M8B Slack app;
-- the API key of your OpenAI-compatible (vLLM) endpoint.
+- the Slack bot token (`xoxb-…`) and app-level token (`xapp-…`, Socket Mode) of your M8B Slack app. To create the
+  app, see [Create the Slack app](https://metricshub.org/m8b-slack/#1-create-the-slack-app);
+- the API key of your OpenAI-compatible (vLLM) endpoint. Check that your backend and models are supported in
+  [AI backends](https://metricshub.org/m8b-slack/BACKENDS.html).
 
 ---
 
@@ -91,7 +93,9 @@ Edit `$VALUES` and replace **every `CHANGE ME`** value with yours, using the fac
 
 - `storage.local.node`: the node that holds the data (here kube-01, the node you are on);
 - `network.podCidrs`, `network.serviceCidrs`: the ranges from step 1;
-- `metricshub.egress`: the networks the agent monitors. **Empty means nothing is monitored**;
+- `metricshub.egress`: the networks the agent monitors. **Empty means nothing is monitored**. Which hosts it
+  monitors, and how, is the agent configuration (`metricshub.config.text`): see
+  [Resource settings](https://metricshub.com/docs/latest/configuration/resource-settings);
 - `exposure.adminCidrs`: the networks allowed to open the Web UI and Prometheus;
 - `m8b.slackTeamId`: your workspace ID, from the Slack browser URL `app.slack.com/client/T…/…`;
 - `m8b.ai` / `m8b.embeddings`: endpoint URL, exact model IDs (`curl -s <baseUrl>/models`), and the endpoint IP and
@@ -297,7 +301,9 @@ kubectl -n "$NS" logs -l "$L,app.kubernetes.io/component=doctor" --all-container
 ```
 
 - **Success:** the log ends with `0 failed`. A warning about `M8B_MEDIA_BASE_URL` is expected: images sent to the
-  bot are then passed inline as base64.
+  bot are then passed inline as base64. To configure a media store, see
+  [Images and the media store](https://metricshub.org/m8b-slack/CONFIGURATION.html#images-and-the-media-store) and
+  set the variables through `m8b.extraConfig`.
 - **Failure:** fix the cause (see [Troubleshooting](#troubleshooting)), delete the failed Job, then run the same
   `helm upgrade` again. Each attempt gets a new Job name (`m8b-stack-doctor-<revision>`). Helm does **not** remove a
   Job created by a failed revision, so delete it yourself:
@@ -361,7 +367,8 @@ helm upgrade "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES
 ```
 
 Test: ask the bot something only the MetricsHub documentation answers. It should use `search_knowledge_base`.
-A typical run indexes several hundred documents. Details: [KNOWLEDGE-BASE.md](KNOWLEDGE-BASE.md).
+A typical run indexes several hundred documents. Details: [KNOWLEDGE-BASE.md](KNOWLEDGE-BASE.md), and the bot's
+[knowledge-base settings](https://metricshub.org/m8b-slack/CONFIGURATION.html#knowledge-base).
 
 ---
 

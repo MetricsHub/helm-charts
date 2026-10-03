@@ -34,13 +34,37 @@ helm show values metricshub/m8b-stack > values-reference.yaml
   [official example](https://metricshub.com/docs/latest/resources/config/otel/otel-config-example.yaml).
 - Prometheus promotes OTLP resource attributes (`host.name`, ...) to labels, so PromQL can filter on them.
 
+## Related documentation
+
+The chart deploys and wires the components; their own documentation covers what they do and how to configure them.
+
+**MetricsHub Agent**
+
+- [MetricsHub documentation](https://metricshub.com/docs/latest/): concepts, connectors, metrics.
+- [Installing on Docker, Enterprise edition](https://metricshub.com/docs/latest/installation/installing-on-docker?edition=enterprise):
+  the same image as this chart, with its ports (31888, 13133, 24375), paths and embedded collector.
+- [Resource settings](https://metricshub.com/docs/latest/configuration/resource-settings): what to put in
+  `metricshub.yaml` (`metricshub.config.text` or `metricshub.config.existingSecret`) to monitor your hosts.
+
+**M8B Slack bot**
+
+- [M8B Slack Bot](https://metricshub.org/m8b-slack/): overview and
+  [how to create the Slack app](https://metricshub.org/m8b-slack/#1-create-the-slack-app) (bot and app-level tokens).
+- [Configuration reference](https://metricshub.org/m8b-slack/CONFIGURATION.html): every environment variable.
+  Variables the chart manages (endpoints, models, data and knowledge-base settings) have their own value under
+  `m8b`; set the others, such as the media store, through `m8b.extraConfig` (non-secret) or `m8b.extraEnv`
+  (`secretKeyRef`). The chart rejects a managed variable in `m8b.extraConfig`.
+- [AI backends](https://metricshub.org/m8b-slack/BACKENDS.html): which LLM backends work, what they must provide,
+  reference models.
+
 ## Prerequisites
 
 - A NetworkPolicy-enforcing CNI (policies are on by default), IPv4 Linux nodes, a StorageClass (or prepared
   local/existing volumes) and outbound access to Slack and your LLM endpoints.
 - Credentials for the **private registry `docker.metricshub.com`** (see below). Both the MetricsHub Enterprise
   image and the M8B bot image are pulled from it. A public chart does not make these images public.
-- A Slack app (bot + app-level tokens) and an OpenAI-compatible (vLLM) chat endpoint; an embedding endpoint for the KB.
+- A Slack app ([how to create it](https://metricshub.org/m8b-slack/#1-create-the-slack-app)) and an LLM chat endpoint
+  ([supported backends](https://metricshub.org/m8b-slack/BACKENDS.html)); an embedding endpoint for the KB.
 
 ## Private registry access (docker.metricshub.com)
 
