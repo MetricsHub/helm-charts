@@ -22,8 +22,19 @@ promise of connectivity nor a firewall configuration. `adminCidrs` has no enforc
 ## Policy scope and traffic
 
 The default deny selects only this release's labelled Pods. `defaultDenyWholeNamespace: true` deliberately
-selects every Pod in the dedicated namespace. Allow policies cover DNS, M8B to agent/Prometheus/SearXNG,
-agent to Prometheus, configured model endpoints and explicitly configured monitoring networks.
+selects every Pod in the dedicated namespace. Everything else is denied; the allow policies cover exactly:
+
+| From                         | To                                                                         |
+| ---------------------------- | -------------------------------------------------------------------------- |
+| every component              | DNS (`network.dns`)                                                        |
+| bot, Doctor and index Jobs   | agent 31888 (MCP), Prometheus 9090, SearXNG 8080                           |
+| bot, Doctor and index Jobs   | public Internet on 443 (Slack); LLM and embedding endpoints (`m8b.ai`, `m8b.embeddings`); `network.m8bAdditionalEgress` |
+| SearXNG                      | public Internet on 80/443 (search engines); `network.searxngAdditionalEgress` |
+| agent (and its collector)    | Prometheus 9090; `metricshub.egress` (monitored hosts, collector exporters) |
+| `exposure.adminCidrs`        | agent 31888 and Prometheus 9090, when the NodePorts are enabled            |
+| `metricshub.otel.ingressCidrs` | agent collector 13133 (health) and 24375 (Prometheus exporter)           |
+
+"Public Internet" excludes the private/reserved ranges and the configured Pod/Service CIDRs.
 A same-namespace Pod selector is not broadened to every namespace. Cross-namespace model rules put the
 namespace AND Pod selectors into one peer. Public egress excludes the configured private/reserved, Pod
 and Service CIDRs; supply your actual cluster ranges when these are not covered by the private exclusions.
@@ -73,11 +84,9 @@ endpoint. Network routing, upstream firewalls and source translation still need 
 Prometheus exposure adds neither TLS nor authentication and also reaches its enabled HTTP APIs, including
 the OTLP receiver. Do not expose it to untrusted networks without an authentication/reverse-proxy strategy.
 
-## Existing releases and provider changes
+## Changing provider
 
-1.4 used Cilium for its allows. Preserve that behavior on upgrade with explicit `network.provider: cilium`.
 Merely adding standard policies does not neutralize existing Cilium allows: policy permissions are additive.
-
 Changing provider is a reviewed network migration, not a routine values toggle. Plan maintenance, protect
 access independently, identify old policies by release ownership, apply and test the replacement policies,
 and remove only obsolete owned objects. Helm offers no migration guard. Do not use

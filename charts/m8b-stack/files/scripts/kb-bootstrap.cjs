@@ -55,12 +55,12 @@ function inspectIndex(file) {
   if (!exists(file)) return { exists: false, bytes: 0 };
   const stat = fs.lstatSync(file);
   if (!stat.isFile()) throw new Error('Index is not a regular file');
-  if (stat.size === 0) throw new Error('Index is empty; review and use --force to rebuild');
+  if (stat.size === 0) throw new Error('Index is empty; review it, then rebuild with m8b.knowledgeBase.bootstrap.mode=always');
   let value;
   try { value = JSON.parse(fs.readFileSync(file, 'utf8')); }
-  catch (_) { throw new Error('Index is not valid JSON; review and use --force to rebuild'); }
+  catch (_) { throw new Error('Index is not valid JSON; review it, then rebuild with m8b.knowledgeBase.bootstrap.mode=always'); }
   if (!value || typeof value !== 'object' || Object.keys(value).length === 0) {
-    throw new Error('Index has no data; review and use --force to rebuild');
+    throw new Error('Index has no data; review it, then rebuild with m8b.knowledgeBase.bootstrap.mode=always');
   }
   // Only a sanity check. The actual versioned index format is owned by M8B.
   if (Array.isArray(value.chunks) && value.chunks.length === 0) throw new Error('Index has zero chunks');
@@ -80,7 +80,7 @@ function plan(env = process.env) {
     if (exists(cfg.state)) {
       const state = JSON.parse(fs.readFileSync(cfg.state, 'utf8'));
       tracked = true;
-      if (state.configHash !== cfg.hash) throw new Error('Embedding configuration changed since bootstrap; review and run kb-init --force');
+      if (state.configHash !== cfg.hash) throw new Error('Embedding configuration changed since bootstrap; review it, then rebuild with m8b.knowledgeBase.bootstrap.mode=always');
     }
     return { action: 'preserve', documents: files.length, indexBytes: index.bytes,
       tracked, reason: tracked ? 'Existing index retained; no rebuild requested' : 'Existing untracked index retained; retrieval compatibility must be validated in M8B' };

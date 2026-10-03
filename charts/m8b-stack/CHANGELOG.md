@@ -3,6 +3,9 @@
 ## 2.1.0 (2026-10-03)
 
 - M8B bot image 3.1.0 (`docker.metricshub.com/metricshub/m8b-slack:3.1.0`); `appVersion` 3.1.0.
+- Knowledge-base errors name the Helm setting to use (`m8b.knowledgeBase.bootstrap.mode=always`) instead of kit commands.
+- Documentation: GETTING-STARTED pins the chart version and checks both private images; README, KNOWLEDGE-BASE
+  and NETWORK-POLICIES aligned with it (step numbers, Job retries, full list of allowed network flows).
 
 ## 2.0.0 (2026-10-02)
 

@@ -37,7 +37,7 @@ Time: about 45 minutes, plus about 20 minutes of knowledge-base indexing.
 export KUBECONFIG=/etc/kubernetes/admin.conf
 NS=m8b-metricshub
 RELEASE=m8b-stack
-CHART=/root/m8b-stack
+CHART=metricshub/m8b-stack        # from the MetricsHub Helm repository, added in step 3
 VALUES=/root/my-values.yaml
 L="app.kubernetes.io/instance=$RELEASE"
 S=/root/.m8b-secrets
@@ -79,12 +79,13 @@ Helm uses the `KUBECONFIG` set in step 1. There is nothing else to configure.
 ```bash
 helm repo add metricshub https://metricshub.github.io/helm-charts
 helm repo update
-helm pull metricshub/m8b-stack --untar --untardir /root      # creates /root/m8b-stack
-cp -n "$CHART/examples/lab-values-example.yaml" "$VALUES"
+helm search repo "$CHART" --versions        # every published version
+# Pin the latest version: every helm command below installs exactly this one
+CHART_VERSION=$(helm search repo "$CHART" -o yaml | sed -n 's/^  version: //p' | head -1); echo "$CHART_VERSION"
+# A local copy, only to read the examples and docs
+rm -rf /tmp/m8b-chart && helm pull "$CHART" --version "$CHART_VERSION" --untar --untardir /tmp/m8b-chart
+cp -n /tmp/m8b-chart/m8b-stack/examples/lab-values-example.yaml "$VALUES"
 ```
-
-Before the first public release, clone the repository instead:
-`git clone https://github.com/metricshub/helm-charts /root/helm-charts && CHART=/root/helm-charts/charts/m8b-stack`.
 
 Edit `$VALUES` and replace **every `CHANGE ME`** value with yours, using the facts from step 1:
 
@@ -99,9 +100,8 @@ Edit `$VALUES` and replace **every `CHANGE ME`** value with yours, using the fac
 Check the file offline. Nothing is applied to the cluster, and errors name the value to fix:
 
 ```bash
-helm lint "$CHART" -f "$VALUES" --set stage=run --strict
 for st in core check run index; do
-  helm template "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" --set stage=$st > /dev/null && echo "$st OK"
+  helm template "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" --set stage=$st > /dev/null && echo "$st OK"
 done
 ```
 
@@ -165,20 +165,24 @@ kubectl -n "$NS" get secrets
 
 ### 5b. Check access to the private images
 
-Run this before going further: it proves the registry credentials can pull the MetricsHub Enterprise image.
-`--image-pull-policy=Always` forces a real download: without it, a node that already has the image reuses it
-without contacting the registry, and the credentials are not tested at all.
+Run this before going further: it proves the registry credentials can pull both private images, the MetricsHub
+Enterprise agent and the M8B bot, in the versions of the chart you pinned. `--image-pull-policy=Always` forces a
+real download: without it, a node that already has an image reuses it without contacting the registry, and the
+credentials are not tested at all.
 
 ```bash
-kubectl -n "$NS" run pull-test --image=docker.metricshub.com/metricshub-enterprise:3.9.07 --restart=Never \
-  --image-pull-policy=Always \
-  --overrides='{"spec":{"imagePullSecrets":[{"name":"registry-pull"}]}}' --command -- sleep 5
-sleep 60; kubectl -n "$NS" describe pod pull-test | grep -Ei 'pulled|failed|errimage|denied|unauthorized'
-kubectl -n "$NS" delete pod pull-test
+for img in $(helm show values "$CHART" --version "$CHART_VERSION" | grep -oE 'docker\.metricshub\.com/[^ ]+'); do
+  kubectl -n "$NS" delete pod pull-test --ignore-not-found --wait=true > /dev/null
+  kubectl -n "$NS" run pull-test --image="$img" --restart=Never --image-pull-policy=Always \
+    --overrides='{"spec":{"imagePullSecrets":[{"name":"registry-pull"}]}}' --command -- sleep 5 > /dev/null
+  sleep 60; echo "== $img"
+  kubectl -n "$NS" describe pod pull-test | grep -Ei 'pulled|failed|errimage|denied|unauthorized'
+done
+kubectl -n "$NS" delete pod pull-test --ignore-not-found
 ```
 
-- `Successfully pulled image`: continue.
-- `denied` or `unauthorized`: the credentials do not cover this image. Get the right ones, re-run step 4, then
+- `Successfully pulled image` for both images: continue.
+- `denied` or `unauthorized`: the credentials do not cover that image. Get the right ones, re-run step 4, then
   `kubectl -n "$NS" delete secret registry-pull` and the `create` command above.
 - `already present on machine`: the download was not forced. Check that the command contains `--image-pull-policy=Always`.
 
@@ -209,7 +213,7 @@ the state**: `check` and `index` keep the bot stopped, and only `run` starts it.
 | `index` | the above + knowledge-base index Job | stopped |
 
 ```bash
-helm upgrade --install "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" \
+helm upgrade --install "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" \
   --set stage=core --wait --timeout 15m
 kubectl -n "$NS" get pods -o wide
 ```
@@ -287,7 +291,7 @@ With the bot still stopped, the Doctor checks:
   Python sandbox.
 
 ```bash
-helm upgrade "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" \
+helm upgrade "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" \
   --set stage=check --wait --wait-for-jobs --timeout 15m
 kubectl -n "$NS" logs -l "$L,app.kubernetes.io/component=doctor" --all-containers=true --tail=-1
 ```
@@ -308,7 +312,7 @@ kubectl -n "$NS" logs -l "$L,app.kubernetes.io/component=doctor" --all-container
 ## Step 10 — Stage `run`: start the bot
 
 ```bash
-helm upgrade "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" \
+helm upgrade "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" \
   --set stage=run --wait --timeout 15m
 kubectl -n "$NS" get pods
 kubectl -n "$NS" logs deploy/m8b-stack-bot -c m8b --tail=50
@@ -336,7 +340,7 @@ The index Job needs the bot volume to itself, so the bot is stopped first:
 ```bash
 kubectl -n "$NS" scale deployment -l "$L,app.kubernetes.io/component=m8b" --replicas=0
 kubectl -n "$NS" wait --for=delete pod -l "$L,app.kubernetes.io/component=m8b" --timeout=300s
-helm upgrade "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" \
+helm upgrade "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" \
   --set stage=index --wait --wait-for-jobs --timeout 65m
 ```
 
@@ -352,7 +356,7 @@ When the `helm upgrade` returns:
 kubectl -n "$NS" logs -l "$L,app.kubernetes.io/component=knowledge" -c index --tail=-1 > /root/kb-index.log
 tail -5 /root/kb-index.log         # must contain "action":"indexed" with a document count
 kubectl -n "$NS" delete job -l "$L,app.kubernetes.io/component=knowledge" --wait=true
-helm upgrade "$RELEASE" "$CHART" -n "$NS" -f "$VALUES" \
+helm upgrade "$RELEASE" "$CHART" --version "$CHART_VERSION" -n "$NS" -f "$VALUES" \
   --set stage=run --wait --timeout 15m
 ```
 
@@ -365,7 +369,8 @@ A typical run indexes several hundred documents. Details: [KNOWLEDGE-BASE.md](KN
 
 ```bash
 export KUBECONFIG=/etc/kubernetes/admin.conf
-NS=m8b-metricshub; RELEASE=m8b-stack; CHART=/root/m8b-stack; VALUES=/root/my-values.yaml
+NS=m8b-metricshub; RELEASE=m8b-stack; CHART=metricshub/m8b-stack; VALUES=/root/my-values.yaml
+CHART_VERSION=$(helm get metadata "$RELEASE" -n "$NS" -o yaml | sed -n 's/^version: //p')   # the installed version
 L="app.kubernetes.io/instance=$RELEASE"; S=/root/.m8b-secrets
 ```
 
@@ -394,7 +399,13 @@ The new Pod runs its start-up checks again (about 1–2 minutes). The knowledge 
 **Change a value.** Edit `$VALUES`, then re-run step 9 if an endpoint or a token changed, and **always** finish with
 step 10. A configuration change restarts the bot automatically.
 
-**Update the chart.** `helm repo update`, pull the new version as in step 3, then run steps 9 and 10.
+**Update the chart.** Look for a newer version and read its `CHANGELOG.md`, then pin it and run steps 9 and 10:
+
+```bash
+helm repo update
+helm search repo "$CHART" --versions
+CHART_VERSION=2.1.0          # example: the version you picked in the list above
+```
 
 ## Troubleshooting
 
@@ -409,9 +420,9 @@ step 10. A configuration change restarts the bot automatically.
 | Doctor: `MCP … SSE error: Non-200 status code (401)`  | `MCP_AGENT_TOKEN` is not the bare 36-character UUID: repair it (end of step 8), then step 9                    |
 | Doctor: no `metricshub_agent_info` after 5 minutes    | Collector: step 7 check, `kubectl -n "$NS" logs deploy/m8b-stack-agent -c metricshub`                          |
 | Doctor: timeouts to the LLM, Slack or monitored hosts | A network policy blocks it: add the destination to `m8b.ai.egress` or `metricshub.egress`                      |
-| `helm lint`: `overlaps cluster range`                 | A `metricshub.egress` CIDR includes the Pod/Service ranges: narrow it or add them to its `except` list         |
+| `helm template`: `overlaps cluster range`             | A `metricshub.egress` CIDR includes the Pod/Service ranges: narrow it or add them to its `except` list         |
 | Failed `m8b-stack-doctor-N` Job remains               | Expected after a failed revision: `kubectl -n "$NS" delete job -l "$L,app.kubernetes.io/component=doctor"`     |
-| Web UI (:31888) or Prometheus (:30909) unreachable    | Source IP outside `adminCidrs`, or wrong node IP (use the node running the Pod); NodePorts exist only in `run` |
+| Web UI (:31888) or Prometheus (:30909) unreachable    | Source IP outside `adminCidrs`, or wrong node IP (use the node running the Pod); NodePorts exist in `run` and `index` only |
 | `helm upgrade`: `another operation is in progress`    | Interrupted command: `helm history`, then `helm rollback "$RELEASE" <last good revision> -n "$NS"`             |
 
 ## Remove everything
@@ -426,7 +437,7 @@ kubectl delete namespace "$NS" --wait=true --ignore-not-found
 kubectl get pv -o name | grep "$NS-" | xargs -r kubectl delete
 
 # Data and working files on kube-01
-rm -rf /var/lib/m8b-stack "$S" "$VALUES" "$CHART" /root/m8b-secrets.sh /root/kb-index.log
+rm -rf /var/lib/m8b-stack /tmp/m8b-chart "$S" "$VALUES" /root/m8b-secrets.sh /root/kb-index.log
 ```
 
 Images: run this on **each** node (kube-01, kube-02, kube-03). It uses `ctr`, which ships with containerd; with

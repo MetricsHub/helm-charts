@@ -17,7 +17,7 @@ A helm install/upgrade executes ONLY this stage. Next step:
 {{- else }}
   Validate a real Slack conversation. A Ready Pod is not a KB retrieval test; try search_knowledge_base.
 {{- end }}
-See the chart README for the full staged sequence. Do not run the bot and the KB index Job concurrently.
+Full staged sequence: GETTING-STARTED.md in the chart, https://metricshub.org/helm-charts. Never run the bot and the KB index Job together.
 {{ if and (has .Values.stage (list "run" "index")) .Values.metricshub.exposure.enabled }}
 MetricsHub: https://<agent-node-ip>:{{ .Values.metricshub.exposure.nodePort }}
 External traffic policy: {{ .Values.metricshub.exposure.externalTrafficPolicy }}
