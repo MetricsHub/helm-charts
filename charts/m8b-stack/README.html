@@ -16,8 +16,8 @@
 
 	<meta name="keywords" content="metricshub,helm,kubernetes,chart,m8b,slack,prometheus,opentelemetry" />
 	<meta name="generator" content="Maven Site Plugin, Doxia Site Renderer 2.0.0-M19, Skin sentry-maven-skin 8.0.00, from markdown" />
-	<meta property="article:published_time" content="2026-10-05T08:23:17" />
-	<meta property="article:modified_time" content="2026-10-05T08:23:17" />
+	<meta property="article:published_time" content="2026-10-05T08:41:52" />
+	<meta property="article:modified_time" content="2026-10-05T08:41:52" />
 
 		<link rel="canonical" href="https://metricshub.org/helm-charts/charts/m8b-stack/README.html">
 	<link rel="alternate" type="text/markdown" href="README.html.md">	<link rel="stylesheet" href="../../css/main-combined.css">
@@ -27,8 +27,8 @@
 	"@context": "https://schema.org",
 	"@type": "TechArticle",
 	"headline": "M8B Stack Helm chart",
-	"datePublished": "2026-10-05T08:23:17",
-	"dateModified": "2026-10-05T08:23:17",
+	"datePublished": "2026-10-05T08:41:52",
+	"dateModified": "2026-10-05T08:41:52",
 	"mainEntityOfPage": "https://metricshub.org/helm-charts/charts/m8b-stack/README.html",
 }
 </script>
@@ -200,7 +200,15 @@
  <a id="m8b-stack-helm-chart"></a>
  <h1 id="m8b-stack-helm-chart">M8B Stack Helm chart</h1>
  <p><a href="https://github.com/MetricsHub/helm-charts/releases?q=m8b-stack" class="externalLink"><img src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fmetricshub.org%2Fhelm-charts%2Findex.yaml&amp;query=%24.entries%5B%27m8b-stack%27%5D%5B0%5D.version&amp;label=chart&amp;color=266fd0" alt="Chart version"></a><sup class="visible-print-inline">[1]</sup> <a href="CHANGELOG.html"><img src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fmetricshub.org%2Fhelm-charts%2Findex.yaml&amp;query=%24.entries%5B%27m8b-stack%27%5D%5B0%5D.appVersion&amp;label=app&amp;color=266fd0" alt="App version"></a><sup class="visible-print-inline">[2]</sup></p>
- <p>MetricsHub Enterprise Agent (with its embedded OpenTelemetry Collector), Prometheus, SearXNG and the M8B Slack bot. Readable YAML templates, configurable resources, retained PVCs, staged diagnostics and local KB indexing.</p>
+ <p><strong>Ask questions about your infrastructure in Slack.</strong> m8b-stack deploys M8B, an AI assistant for Slack, together with everything it needs to answer from real data rather than guesses:</p>
+ <ul>
+  <li><strong>live state</strong> of your servers, storage and network devices, collected by the MetricsHub Enterprise agent and exposed to the bot as MCP tools;</li>
+  <li><strong>history and trends</strong> from Prometheus, which stores the agent's metrics;</li>
+  <li><strong>MetricsHub documentation</strong>, indexed into a local knowledge base;</li>
+  <li><strong>web search</strong> through a private SearXNG instance.</li>
+ </ul>
+ <p>The language model is yours: vLLM or any OpenAI-compatible endpoint you choose. Typical questions: <em>“Which servers have a degraded disk?”</em>, <em>“How did the temperature of this host evolve this week?”</em>, <em>“How do I monitor a Dell iDRAC with MetricsHub?”</em></p>
+ <p>The chart itself: readable YAML templates, configurable resources, retained PVCs, staged diagnostics and local knowledge-base indexing.</p>
  <pre copy-to-clipboard=""><code class="language-bash">helm repo add metricshub https://metricshub.github.io/helm-charts
 helm repo update
 helm show values metricshub/m8b-stack &gt; values-reference.yaml

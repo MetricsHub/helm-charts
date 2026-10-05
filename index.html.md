@@ -26,7 +26,7 @@ helm show values oci://ghcr.io/metricshub/charts/m8b-stack
 
 | Chart | Latest release | Description |
 | --- | --- | --- |
-| [m8b-stack](charts/m8b-stack/README.html) | [m8b-stack version](https://github.com/MetricsHub/helm-charts/releases?q=m8b-stack) | MetricsHub Enterprise, Prometheus, SearXNG and the M8B Slack bot, installed in explicit stages |
+| [m8b-stack](charts/m8b-stack/README.html) | [m8b-stack version](https://github.com/MetricsHub/helm-charts/releases?q=m8b-stack) | AI assistant in Slack that answers questions about your infrastructure from live MetricsHub data, metrics history and documentation, with your own LLM. Deploys MetricsHub Enterprise, Prometheus, SearXNG and the M8B bot. |
 
 New to Helm? Start with the [m8b-stack getting-started guide](charts/m8b-stack/GETTING-STARTED.html). Each chart's README documents prerequisites, required Secrets and values. Charts never embed credentials: they reference Kubernetes Secrets you create.
 
