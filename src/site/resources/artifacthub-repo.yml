@@ -1,0 +1,3 @@
+# Artifact Hub repository metadata, served at https://metricshub.github.io/helm-charts/artifacthub-repo.yml
+# (the site resources are published at the root of the Helm repository). Gives the "Verified Publisher" badge.
+repositoryID: 7bc03076-a595-4398-a199-dced5488e3f1
