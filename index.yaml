@@ -3,6 +3,37 @@ entries:
   m8b-stack:
   - annotations:
       artifacthub.io/changes: |
+        - kind: added
+          description: Architecture diagram in the chart README
+      artifacthub.io/license: MIT
+    apiVersion: v2
+    appVersion: 3.1.0
+    created: "2026-10-05T08:23:01.293221035Z"
+    description: MetricsHub Enterprise, Prometheus, SearXNG and the M8B Slack bot,
+      installed in explicit stages
+    digest: 125f0287fe0dce4aac54f6371085e773713c71bfac0cad106e166a06ae1f9112
+    home: https://metricshub.com
+    icon: https://metricshub.com/images/logo.svg
+    keywords:
+    - metricshub
+    - m8b
+    - slack
+    - prometheus
+    - otlp
+    - observability
+    kubeVersion: '>=1.27.0-0'
+    maintainers:
+    - name: MetricsHub
+      url: https://metricshub.com
+    name: m8b-stack
+    sources:
+    - https://github.com/metricshub/helm-charts
+    type: application
+    urls:
+    - https://github.com/MetricsHub/helm-charts/releases/download/m8b-stack-2.1.1/m8b-stack-2.1.1.tgz
+    version: 2.1.1
+  - annotations:
+      artifacthub.io/changes: |
         - kind: changed
           description: M8B bot image 3.1.0 (docker.metricshub.com/metricshub/m8b-slack:3.1.0)
       artifacthub.io/license: MIT
@@ -69,4 +100,4 @@ entries:
     urls:
     - https://github.com/MetricsHub/helm-charts/releases/download/m8b-stack-2.0.0/m8b-stack-2.0.0.tgz
     version: 2.0.0
-generated: "2026-10-03T13:03:08.272650223Z"
+generated: "2026-10-05T08:23:01.293232402Z"
