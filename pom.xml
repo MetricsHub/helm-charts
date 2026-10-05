@@ -39,30 +39,6 @@
 		<tag>HEAD</tag>
 	</scm>
 
-	<developers>
-		<developer>
-			<name>Bertrand Martin</name>
-			<email>bertrand@metricshub.com</email>
-			<roles>
-				<role>CEO</role>
-			</roles>
-		</developer>
-		<developer>
-			<name>Christophe Clerment</name>
-			<email>christophe@metricshub.com</email>
-			<roles>
-				<role>DevOps</role>
-			</roles>
-		</developer>
-		<developer>
-			<name>Nassim Boutekedjiret</name>
-			<email>nassim@metricshub.com</email>
-			<roles>
-				<role>Architect</role>
-			</roles>
-		</developer>
-	</developers>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>25</maven.compiler.release>
