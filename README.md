@@ -20,7 +20,7 @@ helm show values oci://ghcr.io/metricshub/charts/m8b-stack
 
 | Chart | Latest release | Description |
 |---|---|---|
-| [m8b-stack](charts/m8b-stack/README.md) | [![m8b-stack version](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fmetricshub.org%2Fhelm-charts%2Findex.yaml&query=%24.entries%5B%27m8b-stack%27%5D%5B0%5D.version&label=chart&color=266fd0)](https://github.com/MetricsHub/helm-charts/releases?q=m8b-stack) | MetricsHub Enterprise, Prometheus, SearXNG and the M8B Slack bot, installed in explicit stages |
+| [m8b-stack](charts/m8b-stack/README.md) | [![m8b-stack version](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fmetricshub.org%2Fhelm-charts%2Findex.yaml&query=%24.entries%5B%27m8b-stack%27%5D%5B0%5D.version&label=chart&color=266fd0)](https://github.com/MetricsHub/helm-charts/releases?q=m8b-stack) | AI assistant in Slack that answers questions about your infrastructure from live MetricsHub data, metrics history and documentation, with your own LLM. Deploys MetricsHub Enterprise, Prometheus, SearXNG and the M8B bot. |
 
 New to Helm? Start with the [m8b-stack getting-started guide](charts/m8b-stack/GETTING-STARTED.md).
 Each chart's README documents prerequisites, required Secrets and values.

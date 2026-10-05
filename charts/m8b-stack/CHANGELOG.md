@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.2 (2026-10-05)
+
+- README, repository index and chart description explain what the stack is for: an AI assistant in Slack that
+  answers from live MetricsHub data, Prometheus history, the MetricsHub documentation and web search.
+
 ## 2.1.1 (2026-10-05)
 
 - Architecture diagram (`architecture.svg`) replaces the text diagram in the README, also on the site: embedded

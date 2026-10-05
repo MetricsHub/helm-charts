@@ -2,8 +2,21 @@
 
 [![Chart version](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fmetricshub.org%2Fhelm-charts%2Findex.yaml&query=%24.entries%5B%27m8b-stack%27%5D%5B0%5D.version&label=chart&color=266fd0)](https://github.com/MetricsHub/helm-charts/releases?q=m8b-stack) [![App version](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fmetricshub.org%2Fhelm-charts%2Findex.yaml&query=%24.entries%5B%27m8b-stack%27%5D%5B0%5D.appVersion&label=app&color=266fd0)](CHANGELOG.md)
 
-MetricsHub Enterprise Agent (with its embedded OpenTelemetry Collector), Prometheus, SearXNG and the M8B Slack bot.
-Readable YAML templates, configurable resources, retained PVCs, staged diagnostics and local KB indexing.
+**Ask questions about your infrastructure in Slack.** m8b-stack deploys M8B, an AI assistant for Slack, together
+with everything it needs to answer from real data rather than guesses:
+
+- **live state** of your servers, storage and network devices, collected by the MetricsHub Enterprise agent and
+  exposed to the bot as MCP tools;
+- **history and trends** from Prometheus, which stores the agent's metrics;
+- **MetricsHub documentation**, indexed into a local knowledge base;
+- **web search** through a private SearXNG instance.
+
+The language model is yours: vLLM or any OpenAI-compatible endpoint you choose. Typical questions: *"Which servers
+have a degraded disk?"*, *"How did the temperature of this host evolve this week?"*, *"How do I monitor a Dell
+iDRAC with MetricsHub?"*
+
+The chart itself: readable YAML templates, configurable resources, retained PVCs, staged diagnostics and local
+knowledge-base indexing.
 
 ```bash
 helm repo add metricshub https://metricshub.github.io/helm-charts
