@@ -1,10 +1,14 @@
 ---
-date_published: 2026-10-03
-date_modified: 2026-10-03
+date_published: 2026-10-05
+date_modified: 2026-10-05
 canonical_url: https://metricshub.org/helm-charts/charts/m8b-stack/CHANGELOG.html
 ---
 
 # Changelog
+
+## 2.1.1 (2026-10-05)
+
+- Architecture diagram (`architecture.svg`) replaces the text diagram in the README, also on the site: embedded OTel Collector pushing to Prometheus, outbound Slack and LLM connections, stage Jobs, Secrets and network rules.
 
 ## 2.1.0 (2026-10-03)
 

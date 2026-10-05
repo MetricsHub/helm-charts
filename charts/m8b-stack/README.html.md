@@ -1,6 +1,6 @@
 ---
-date_published: 2026-10-03
-date_modified: 2026-10-03
+date_published: 2026-10-05
+date_modified: 2026-10-05
 canonical_url: https://metricshub.org/helm-charts/charts/m8b-stack/README.html
 ---
 
@@ -19,17 +19,7 @@ helm show values metricshub/m8b-stack > values-reference.yaml
 
 ## Architecture
 
-```
-               ┌──────────────── agent Pod (metricshub-enterprise) ───────────────────┐
- monitored ◄───┤ MetricsHub Agent ──OTLP gRPC localhost:4317──► OTel Collector Contrib├──► Prometheus :9090 (OTLP)
- hosts         │   :31888 Web UI / REST / MCP (self-signed TLS)   :13133 health       │    ▲
- (egress)      │                                                  :24375 /metrics     │    │ PromQL
-               └──────────────────────────────▲───────────────────────────────────────┘    │
-                                              │ MCP (HTTPS)                                │
-                                         M8B Slack bot ────────────────────────────────────┘
-                                              ├──► SearXNG :8080 (web search)
-                                              └──► Slack, LLM / embedding endpoints (egress)
-```
+![m8b-stack architecture: components, flows and network rules](architecture.svg)
 
 - The agent pushes metrics to the collector running in the **same container**, over loopback without TLS: nothing outside the Pod can reach port 4317, and the Pod keeps its real hostname.
 - The bundled collector config (`files/config/otel-config.yaml`) exports to the in-cluster Prometheus and exposes a Prometheus scrape endpoint on 24375. Replace it entirely with `metricshub.otel.configText` to add exporters (Datadog, New Relic, BMC Helix, remote write…), starting from the [official example](https://metricshub.com/docs/latest/resources/config/otel/otel-config-example.yaml).

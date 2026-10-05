@@ -16,8 +16,8 @@
 
 	<meta name="keywords" content="metricshub,helm,kubernetes,chart,m8b,slack,prometheus,opentelemetry" />
 	<meta name="generator" content="Maven Site Plugin, Doxia Site Renderer 2.0.0-M19, Skin sentry-maven-skin 8.0.00, from markdown" />
-	<meta property="article:published_time" content="2026-10-03T13:03:19" />
-	<meta property="article:modified_time" content="2026-10-03T13:03:19" />
+	<meta property="article:published_time" content="2026-10-05T08:23:17" />
+	<meta property="article:modified_time" content="2026-10-05T08:23:17" />
 
 		<link rel="canonical" href="https://metricshub.org/helm-charts/charts/m8b-stack/README.html">
 	<link rel="alternate" type="text/markdown" href="README.html.md">	<link rel="stylesheet" href="../../css/main-combined.css">
@@ -27,8 +27,8 @@
 	"@context": "https://schema.org",
 	"@type": "TechArticle",
 	"headline": "M8B Stack Helm chart",
-	"datePublished": "2026-10-03T13:03:19",
-	"dateModified": "2026-10-03T13:03:19",
+	"datePublished": "2026-10-05T08:23:17",
+	"dateModified": "2026-10-05T08:23:17",
 	"mainEntityOfPage": "https://metricshub.org/helm-charts/charts/m8b-stack/README.html",
 }
 </script>
@@ -208,16 +208,7 @@ helm show values metricshub/m8b-stack &gt; values-reference.yaml
 </code></pre>
  <section>
   <h2 id="architecture"><a href="#architecture">Architecture</a></h2>
-  <pre copy-to-clipboard=""><code>               ┌──────────────── agent Pod (metricshub-enterprise) ───────────────────┐
- monitored ◄───┤ MetricsHub Agent ──OTLP gRPC localhost:4317──► OTel Collector Contrib├──► Prometheus :9090 (OTLP)
- hosts         │   :31888 Web UI / REST / MCP (self-signed TLS)   :13133 health       │    ▲
- (egress)      │                                                  :24375 /metrics     │    │ PromQL
-               └──────────────────────────────▲───────────────────────────────────────┘    │
-                                              │ MCP (HTTPS)                                │
-                                         M8B Slack bot ────────────────────────────────────┘
-                                              ├──► SearXNG :8080 (web search)
-                                              └──► Slack, LLM / embedding endpoints (egress)
-</code></pre>
+  <p><img src="architecture.svg" alt="m8b-stack architecture: components, flows and network rules" width="100%"></p>
   <ul>
    <li>The agent pushes metrics to the collector running in the <strong>same container</strong>, over loopback without TLS: nothing outside the Pod can reach port 4317, and the Pod keeps its real hostname.</li>
    <li>The bundled collector config (<code>files/config/otel-config.yaml</code>) exports to the in-cluster Prometheus and exposes a Prometheus scrape endpoint on 24375. Replace it entirely with <code>metricshub.otel.configText</code> to add exporters (Datadog, New Relic, BMC Helix, remote write…), starting from the <a href="https://metricshub.com/docs/latest/resources/config/otel/otel-config-example.yaml">official example</a><sup class="visible-print-inline">[3]</sup>.</li>
@@ -466,7 +457,7 @@ helm template demo metricshub/m8b-stack --namespace demo -f my-values.yaml --set
 		<p class="footer-title" ng-class="{'text-center': $matchMedia.size == 'xs'}">
 			<strong>Helm Charts </strong>
 			<span class="hidden-xs">|</span><br class="hidden-sm hidden-md hidden-lg"/>
-			Documentation as of <strong><time datetime="2026-10-03">2026-10-03</time></strong>
+			Documentation as of <strong><time datetime="2026-10-05">2026-10-05</time></strong>
 		</p>
 
 <div class="hidden-xs navbar navbar-inverse site-logo additional-links">

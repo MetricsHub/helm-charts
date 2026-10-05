@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" font-family="Poppins, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">m8b-stack architecture</title>
+  <desc id="d">One Helm release in one namespace: the M8B Slack bot, the MetricsHub Enterprise agent with its embedded OpenTelemetry Collector, Prometheus and SearXNG, with the bot connecting out to Slack and the LLM endpoint.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#266fd0"/>
+    </marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f9d55"/>
+    </marker>
+
+    <!-- Brand marks: Simple Icons 16.33.0 (CC0 icon data; trademarks belong to their owners), MetricsHub logo -->
+    <symbol id="i-k8s" viewBox="0 0 24 24"><path fill="#326CE5" d="M10.204 14.35l.007.01-.999 2.413a5.171 5.171 0 0 1-2.075-2.597l2.578-.437.004.005a.44.44 0 0 1 .484.606zm-.833-2.129a.44.44 0 0 0 .173-.756l.002-.011L7.585 9.7a5.143 5.143 0 0 0-.73 3.255l2.514-.725.002-.009zm1.145-1.98a.44.44 0 0 0 .699-.337l.01-.005.15-2.62a5.144 5.144 0 0 0-3.01 1.442l2.147 1.523.004-.002zm.76 2.75l.723.349.722-.347.18-.78-.5-.623h-.804l-.5.623.179.779zm1.5-3.095a.44.44 0 0 0 .7.336l.008.003 2.134-1.513a5.188 5.188 0 0 0-2.992-1.442l.148 2.615.002.001zm10.876 5.97l-5.773 7.181a1.6 1.6 0 0 1-1.248.594l-9.261.003a1.6 1.6 0 0 1-1.247-.596l-5.776-7.18a1.583 1.583 0 0 1-.307-1.34L2.1 5.573c.108-.47.425-.864.863-1.073L11.305.513a1.606 1.606 0 0 1 1.385 0l8.345 3.985c.438.209.755.604.863 1.073l2.062 8.955c.108.47-.005.963-.308 1.34zm-3.289-2.057c-.042-.01-.103-.026-.145-.034-.174-.033-.315-.025-.479-.038-.35-.037-.638-.067-.895-.148-.105-.04-.18-.165-.216-.216l-.201-.059a6.45 6.45 0 0 0-.105-2.332 6.465 6.465 0 0 0-.936-2.163c.052-.047.15-.133.177-.159.008-.09.001-.183.094-.282.197-.185.444-.338.743-.522.142-.084.273-.137.415-.242.032-.024.076-.062.11-.089.24-.191.295-.52.123-.736-.172-.216-.506-.236-.745-.045-.034.027-.08.062-.111.088-.134.116-.217.23-.33.35-.246.25-.45.458-.673.609-.097.056-.239.037-.303.033l-.19.135a6.545 6.545 0 0 0-4.146-2.003l-.012-.223c-.065-.062-.143-.115-.163-.25-.022-.268.015-.557.057-.905.023-.163.061-.298.068-.475.001-.04-.001-.099-.001-.142 0-.306-.224-.555-.5-.555-.275 0-.499.249-.499.555l.001.014c0 .041-.002.092 0 .128.006.177.044.312.067.475.042.348.078.637.056.906a.545.545 0 0 1-.162.258l-.012.211a6.424 6.424 0 0 0-4.166 2.003 8.373 8.373 0 0 1-.18-.128c-.09.012-.18.04-.297-.029-.223-.15-.427-.358-.673-.608-.113-.12-.195-.234-.329-.349-.03-.026-.077-.062-.111-.088a.594.594 0 0 0-.348-.132.481.481 0 0 0-.398.176c-.172.216-.117.546.123.737l.007.005.104.083c.142.105.272.159.414.242.299.185.546.338.743.522.076.082.09.226.1.288l.16.143a6.462 6.462 0 0 0-1.02 4.506l-.208.06c-.055.072-.133.184-.215.217-.257.081-.546.11-.895.147-.164.014-.305.006-.48.039-.037.007-.09.02-.133.03l-.004.002-.007.002c-.295.071-.484.342-.423.608.061.267.349.429.645.365l.007-.001.01-.003.129-.029c.17-.046.294-.113.448-.172.33-.118.604-.217.87-.256.112-.009.23.069.288.101l.217-.037a6.5 6.5 0 0 0 2.88 3.596l-.09.218c.033.084.069.199.044.282-.097.252-.263.517-.452.813-.091.136-.185.242-.268.399-.02.037-.045.095-.064.134-.128.275-.034.591.213.71.248.12.556-.007.69-.282v-.002c.02-.039.046-.09.062-.127.07-.162.094-.301.144-.458.132-.332.205-.68.387-.897.05-.06.13-.082.215-.105l.113-.205a6.453 6.453 0 0 0 4.609.012l.106.192c.086.028.18.042.256.155.136.232.229.507.342.84.05.156.074.295.145.457.016.037.043.09.062.129.133.276.442.402.69.282.247-.118.341-.435.213-.71-.02-.039-.045-.096-.065-.134-.083-.156-.177-.261-.268-.398-.19-.296-.346-.541-.443-.793-.04-.13.007-.21.038-.294-.018-.022-.059-.144-.083-.202a6.499 6.499 0 0 0 2.88-3.622c.064.01.176.03.213.038.075-.05.144-.114.28-.104.266.039.54.138.87.256.154.06.277.128.448.173.036.01.088.019.13.028l.009.003.007.001c.297.064.584-.098.645-.365.06-.266-.128-.537-.423-.608zM16.4 9.701l-1.95 1.746v.005a.44.44 0 0 0 .173.757l.003.01 2.526.728a5.199 5.199 0 0 0-.108-1.674A5.208 5.208 0 0 0 16.4 9.7zm-4.013 5.325a.437.437 0 0 0-.404-.232.44.44 0 0 0-.372.233h-.002l-1.268 2.292a5.164 5.164 0 0 0 3.326.003l-1.27-2.296h-.01zm1.888-1.293a.44.44 0 0 0-.27.036.44.44 0 0 0-.214.572l-.003.004 1.01 2.438a5.15 5.15 0 0 0 2.081-2.615l-2.6-.44-.004.005z"/></symbol>
+    <symbol id="i-prom" viewBox="0 0 24 24"><path fill="#E6522C" d="M12 0C5.373 0 0 5.372 0 12c0 6.627 5.373 12 12 12s12-5.373 12-12c0-6.628-5.373-12-12-12zm0 22.46c-1.885 0-3.414-1.26-3.414-2.814h6.828c0 1.553-1.528 2.813-3.414 2.813zm5.64-3.745H6.36v-2.046h11.28v2.046zm-.04-3.098H6.391c-.037-.043-.075-.086-.111-.13-1.155-1.401-1.427-2.133-1.69-2.879-.005-.025 1.4.287 2.395.511 0 0 .513.119 1.262.255-.72-.843-1.147-1.915-1.147-3.01 0-2.406 1.845-4.508 1.18-6.207.648.053 1.34 1.367 1.387 3.422.689-.951.977-2.69.977-3.755 0-1.103.727-2.385 1.454-2.429-.648 1.069.168 1.984.894 4.256.272.854.237 2.29.447 3.201.07-1.892.395-4.652 1.595-5.605-.529 1.2.079 2.702.494 3.424.671 1.164 1.078 2.047 1.078 3.716a4.642 4.642 0 01-1.11 2.996c.792-.149 1.34-.283 1.34-.283l2.573-.502s-.374 1.538-1.81 3.019z"/></symbol>
+    <symbol id="i-otel" viewBox="0 0 24 24"><path fill="#425CC7" d="M12.6974 13.1173c-1.0224 1.0224-1.0224 2.68 0 3.7024 1.0224 1.0224 2.68 1.0224 3.7024 0 1.0224-1.0223 1.0224-2.68 0-3.7024-1.0223-1.0223-2.68-1.0223-3.7024 0zm2.7677 2.7701c-.5063.5063-1.3267.5063-1.833 0s-.5063-1.3266 0-1.833c.5063-.5062 1.3267-.5062 1.833 0 .5063.504.5063 1.3267 0 1.833zM16.356.2355l-1.6041 1.6042c-.314.314-.314.83 0 1.144L21.015 9.247c.314.314.83.314 1.144 0l1.6042-1.6041c.314-.314.314-.83 0-1.144L17.4976.2354c-.314-.314-.8276-.314-1.1416 0zM5.1173 20.734c.2848-.2848.2848-.7497 0-1.0345l-.8155-.8155c-.2848-.2848-.7497-.2848-1.0345 0l-1.6845 1.6845-.0024.0024-.4625-.4625c-.2556-.2556-.6718-.2556-.925 0-.2556.2556-.2556.6718 0 .925l2.775 2.775c.2556.2556.6718.2556.925 0 .2532-.2556.2556-.6718 0-.925l-.4625-.4625.0024-.0024zm8.4856-15.893-3.5637 3.5637c-.3164.3164-.3164.8374 0 1.1538l2.2006 2.2005c1.5554-1.1197 3.7365-.981 5.1361.4187l1.7819-1.7818c.3164-.3165.3164-.8374 0-1.1538l-4.401-4.401c-.3165-.319-.8374-.319-1.1539 0zm-2.2881 7.8455-1.2999-1.2999c-.3043-.3043-.8033-.3043-1.1076 0l-4.5836 4.586c-.3042.3043-.3042.8033 0 1.1076l2.5973 2.5973c.3043.3043.8033.3043 1.1076 0l2.9478-2.9527c-.6231-1.2877-.5112-2.8431.3384-4.0383z"/></symbol>
+    <symbol id="i-searx" viewBox="0 0 24 24"><path fill="#3050FF" d="m13.716 17.261 6.873 6.582L24 20.282l-6.824-6.536a9.11 9.11 0 0 0 1.143-4.43c0-5.055-4.105-9.159-9.16-9.159S0 4.261 0 9.316c0 5.055 4.104 9.159 9.159 9.159a9.11 9.11 0 0 0 4.557-1.214ZM9.159 2.773a6.546 6.546 0 0 1 6.543 6.543 6.545 6.545 0 0 1-6.543 6.542 6.545 6.545 0 0 1-6.542-6.542 6.545 6.545 0 0 1 6.542-6.543ZM7.26 5.713a4.065 4.065 0 0 1 4.744.747 4.064 4.064 0 0 1 .707 4.749l1.157.611a5.376 5.376 0 0 0-.935-6.282 5.377 5.377 0 0 0-6.274-.987l.601 1.162Z"/></symbol>
+    <symbol id="i-mh" viewBox="40 40 125 78"><style>.mh-1{fill:#45ce52;}.mh-1,.mh-2,.mh-3,.mh-4{stroke-width:0px;}.mh-2{fill:#2684ff;}.mh-3{fill:#333;}.mh-4{fill:#e50031;}</style><path class="mh-4" d="M42.04,102.21c.58,4.57,3.21,8.83,7.48,11.3h0c7.26,4.19,16.62,1.68,20.81-5.58l3.3-5.72h-31.59Z"/><path class="mh-4" d="M77.37,95.74l17.9-31c4.19-7.26,1.68-16.62-5.58-20.81h0c-7.26-4.19-16.62-1.68-20.81,5.58l-24.94,43.2c-.57.98-1,2-1.33,3.03h34.76Z"/><path class="mh-1" d="M85.07,102.21c.58,4.57,3.21,8.83,7.48,11.3h0c7.26,4.19,16.62,1.68,20.81-5.58l3.3-5.72h-31.59Z"/><path class="mh-1" d="M120.4,95.74l17.9-31c4.19-7.26,1.68-16.62-5.58-20.81h0c-7.26-4.19-16.62-1.68-20.81,5.58l-24.94,43.2c-.57.98-1,2-1.33,3.03h34.76Z"/><path class="mh-2" d="M145.93,82.41c-8.04,0-14.74,5.73-16.25,13.33h15.49l-5.55-5.54h7.45l8.78,8.78-8.78,8.78h-7.45l5.55-5.54h-15.49c1.51,7.6,8.21,13.33,16.25,13.33,9.15,0,16.56-7.42,16.56-16.56s-7.42-16.56-16.56-16.56Z"/></symbol>
+    <!-- Slack mark: official colours, unmodified (Slack brand guidelines); vLLM: official mark from the vLLM logo -->
+    <symbol id="i-slack" viewBox="0 0 127 127"><path d="M27.2 80c0 7.3-5.9 13.2-13.2 13.2C6.7 93.2.8 87.3.8 80c0-7.3 5.9-13.2 13.2-13.2h13.2V80zm6.6 0c0-7.3 5.9-13.2 13.2-13.2 7.3 0 13.2 5.9 13.2 13.2v33c0 7.3-5.9 13.2-13.2 13.2-7.3 0-13.2-5.9-13.2-13.2V80z" fill="#E01E5A"/><path d="M47 27c-7.3 0-13.2-5.9-13.2-13.2C33.8 6.5 39.7.6 47 .6c7.3 0 13.2 5.9 13.2 13.2V27H47zm0 6.7c7.3 0 13.2 5.9 13.2 13.2 0 7.3-5.9 13.2-13.2 13.2H13.9C6.6 60.1.7 54.2.7 46.9c0-7.3 5.9-13.2 13.2-13.2H47z" fill="#36C5F0"/><path d="M99.9 46.9c0-7.3 5.9-13.2 13.2-13.2 7.3 0 13.2 5.9 13.2 13.2 0 7.3-5.9 13.2-13.2 13.2H99.9V46.9zm-6.6 0c0 7.3-5.9 13.2-13.2 13.2-7.3 0-13.2-5.9-13.2-13.2V13.8C66.9 6.5 72.8.6 80.1.6c7.3 0 13.2 5.9 13.2 13.2v33.1z" fill="#2EB67D"/><path d="M80.1 99.8c7.3 0 13.2 5.9 13.2 13.2 0 7.3-5.9 13.2-13.2 13.2-7.3 0-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3 0-13.2-5.9-13.2-13.2 0-7.3 5.9-13.2 13.2-13.2h33.1c7.3 0 13.2 5.9 13.2 13.2 0 7.3-5.9 13.2-13.2 13.2H80.1z" fill="#ECB22E"/></symbol>
+    <symbol id="i-vllm" viewBox="28 64 74 76"><path fill="#fdb515" d="m58.465023 81.84252l0 55.30709l-27.653543 -55.30709z"/><path fill="#30a2ff" d="m58.46389 137.14961l21.72966 0l18.653542 -70.38583l-25.574806 13.461945z"/></symbol>
+    <!-- M8B Slack bot app icon, redrawn as vector from the Slack app icon -->
+    <symbol id="i-m8b" viewBox="0 0 72 72"><rect width="72" height="72" rx="14" fill="#343a40"/><rect x="9.5" y="4" width="38" height="37" rx="6" fill="#f8f8f8" stroke="#1e242a" stroke-width="1.5"/><circle cx="28.5" cy="22.5" r="16" fill="#e3e7ed"/><g stroke="#18202a" stroke-width="2.4" stroke-linecap="round"><path d="M18.5 18.6h7.5M30 18.6h8.5M22.5 27h16"/></g><path d="M5 44.8L53 44L52 51L7 51.8Z" fill="#e00034"/><path d="M27 55.5L52.5 48.5" stroke="#44ca52" stroke-width="4.5" stroke-linecap="round"/><path d="M6 48L31.5 11.5" stroke="#2682fd" stroke-width="4.2" stroke-linecap="round"/></symbol>
+    <!-- Neutral pictograms -->
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" cx="12" cy="12" r="9"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" cx="12" cy="8" r="4"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" x="3" y="4" width="18" height="7" rx="2"/><rect fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" x="3" y="13" width="18" height="7" rx="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 7.5h.01M7 16.5h.01"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" cx="8" cy="15" r="4"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M11 12l9-9M16 7l3 3"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></symbol>
+    <symbol id="i-jobs" viewBox="0 0 24 24"><circle fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" cx="12" cy="12" r="9"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3"/></symbol>
+    <style>
+      .h { font-size: 15px; font-weight: 700; fill: #1b2a3a; }
+      .t { font-size: 12px; fill: #3d4f63; }
+      .m { font-size: 11.5px; fill: #3d4f63; font-family: Consolas, 'Courier New', monospace; }
+      .s { font-size: 11px; fill: #5b6b7d; }
+      .l { font-size: 11px; fill: #266fd0; font-weight: 600; }
+      .lg { font-size: 11px; fill: #1f9d55; font-weight: 600; }
+      .flow { stroke: #266fd0; stroke-width: 2; fill: none; marker-end: url(#a); }
+      .otlp { stroke: #1f9d55; stroke-width: 2; fill: none; stroke-dasharray: 6 4; marker-end: url(#g); }
+    </style>
+  </defs>
+
+  <rect width="1280" height="800" rx="16" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="40" y="48" style="font-size:26px;font-weight:800;fill:#1b2a3a">m8b-stack on Kubernetes</text>
+  <text x="40" y="74" class="t" style="font-size:14px">Helm chart m8b-stack: everything inside the frame is one Helm release in one namespace</text>
+
+  <!-- Cluster -->
+  <rect x="240" y="100" width="800" height="640" rx="14" fill="#f4f8fd" stroke="#266fd0" stroke-width="1.5"/>
+  <use href="#i-k8s" x="260" y="110" width="20" height="20"/>
+  <text x="286" y="126" style="font-size:13px;font-weight:700;fill:#266fd0">Kubernetes cluster · namespace m8b-metricshub · release m8b-stack</text>
+
+  <!-- Bot -->
+  <rect x="265" y="145" width="290" height="200" rx="10" fill="#fff" stroke="#7c3aed" stroke-width="1.5"/>
+  <use href="#i-m8b" x="281" y="151" width="23" height="23"/>
+  <text x="309" y="170" class="h">M8B Slack bot</text>
+  <text x="281" y="190" class="m">Deployment m8b-stack-bot</text>
+  <text x="281" y="214" class="t">1 replica in stage run, 0 in check / index</text>
+  <text x="281" y="234" class="t">Start-up checks: Slack, MCP, LLM,</text>
+  <text x="281" y="250" class="t">Prometheus, SearXNG</text>
+  <rect x="281" y="285" width="258" height="44" rx="7" fill="#f3e8ff"/>
+  <text x="293" y="303" class="m">PVC m8b-stack-bot-data</text>
+  <text x="293" y="320" class="s">data + knowledge-base index</text>
+
+  <!-- Agent pod -->
+  <rect x="640" y="145" width="375" height="230" rx="10" fill="#fff" stroke="#266fd0" stroke-width="1.5"/>
+  <use href="#i-mh" x="656" y="155" width="32" height="20"/>
+  <text x="694" y="170" class="h">MetricsHub Enterprise agent</text>
+  <text x="656" y="190" class="m">Deployment m8b-stack-agent</text>
+  <rect x="656" y="205" width="150" height="95" rx="8" fill="#eaf2fd" stroke="#266fd0"/>
+  <text x="668" y="226" style="font-size:13px;font-weight:700;fill:#1b2a3a">MetricsHub Agent</text>
+  <text x="668" y="246" class="s">:31888 Web UI, REST,</text>
+  <text x="668" y="262" class="s">MCP tools</text>
+  <text x="668" y="284" class="s">self-signed TLS</text>
+  <rect x="866" y="205" width="135" height="95" rx="8" fill="#e8f7ee" stroke="#1f9d55"/>
+  <use href="#i-otel" x="878" y="214" width="16" height="16"/>
+  <text x="898" y="226" style="font-size:13px;font-weight:700;fill:#1b2a3a">OTel Collector</text>
+  <text x="878" y="246" class="s">Contrib, embedded</text>
+  <text x="878" y="268" class="s">:13133 health</text>
+  <text x="878" y="284" class="s">:24375 /metrics</text>
+  <path class="otlp" d="M806,252 L864,252"/>
+  <text x="836" y="244" class="lg" text-anchor="middle">OTLP</text>
+  <text x="836" y="270" class="s" text-anchor="middle">:4317</text>
+  <rect x="656" y="315" width="200" height="44" rx="7" fill="#eaf2fd"/>
+  <text x="668" y="333" class="m">PVC m8b-stack-agent-data</text>
+  <text x="668" y="350" class="s">config, keystore, logs</text>
+
+  <!-- Prometheus -->
+  <rect x="640" y="410" width="375" height="135" rx="10" fill="#fff" stroke="#e6522c" stroke-width="1.5"/>
+  <use href="#i-prom" x="656" y="417" width="22" height="22"/>
+  <text x="684" y="435" class="h">Prometheus</text>
+  <text x="656" y="455" class="m">Deployment m8b-stack-prometheus</text>
+  <text x="656" y="477" class="t">:9090 OTLP receiver and PromQL</text>
+  <rect x="656" y="490" width="345" height="42" rx="7" fill="#fdece7"/>
+  <text x="668" y="508" class="m">PVC m8b-stack-prometheus-data</text>
+  <text x="668" y="524" class="s">metrics history (7 days / 15 GB by default)</text>
+  <path class="otlp" d="M933,300 L933,408"/>
+  <text x="942" y="388" class="lg">OTLP push</text>
+
+  <!-- SearXNG -->
+  <rect x="265" y="400" width="290" height="110" rx="10" fill="#fff" stroke="#0e7490" stroke-width="1.5"/>
+  <use href="#i-searx" x="281" y="407" width="22" height="22"/>
+  <text x="309" y="425" class="h">SearXNG</text>
+  <text x="281" y="445" class="m">Deployment m8b-stack-searxng</text>
+  <text x="281" y="467" class="t">:8080 JSON web search for the bot</text>
+  <text x="281" y="487" class="s">cache: emptyDir (ephemeral)</text>
+
+  <!-- Bot flows inside the cluster -->
+  <path class="flow" d="M555,230 L638,230"/>
+  <text x="597" y="220" class="l" text-anchor="middle">MCP</text>
+  <text x="597" y="248" class="s" text-anchor="middle">HTTPS :31888</text>
+  <path class="flow" d="M555,315 L600,315 L600,470 L638,470"/>
+  <text x="595" y="392" class="l" text-anchor="end">PromQL :9090</text>
+  <path class="flow" d="M410,345 L410,398"/>
+  <text x="418" y="377" class="l">search :8080</text>
+
+  <!-- Stage jobs -->
+  <rect x="265" y="545" width="290" height="180" rx="10" fill="#fff" stroke="#7c3aed" stroke-dasharray="6 4"/>
+  <use href="#i-jobs" x="281" y="554" width="20" height="20" style="color:#7c3aed"/>
+  <text x="307" y="570" class="h">Stage Jobs</text>
+  <text x="281" y="590" class="t">bot image, bot PVC, bot stopped</text>
+  <text x="281" y="618" style="font-size:12.5px;font-weight:700;fill:#1b2a3a">Doctor</text>
+  <text x="281" y="636" class="m">m8b-stack-doctor-&lt;revision&gt;</text>
+  <text x="281" y="652" class="s">stage check: every integration</text>
+  <text x="281" y="680" style="font-size:12.5px;font-weight:700;fill:#1b2a3a">Knowledge-base index</text>
+  <text x="281" y="698" class="m">m8b-stack-kb-index-&lt;revision&gt;</text>
+  <text x="281" y="714" class="s">stage index: builds the local index</text>
+
+  <!-- Secrets -->
+  <rect x="640" y="580" width="180" height="145" rx="10" fill="#fff" stroke="#8a94a6"/>
+  <use href="#i-key" x="656" y="589" width="20" height="20" style="color:#5b6b7d"/>
+  <text x="682" y="605" class="h">Secrets</text>
+  <text x="656" y="623" class="s">you create them; the chart</text>
+  <text x="656" y="637" class="s">only references them</text>
+  <text x="656" y="660" class="m">registry-pull</text>
+  <text x="656" y="680" class="m">m8b-runtime</text>
+  <text x="656" y="700" class="m">searxng-runtime</text>
+
+  <!-- Network policies -->
+  <rect x="835" y="580" width="180" height="145" rx="10" fill="#fff" stroke="#8a94a6"/>
+  <use href="#i-shield" x="851" y="589" width="20" height="20" style="color:#5b6b7d"/>
+  <text x="877" y="605" class="h">NetworkPolicies</text>
+  <text x="851" y="630" class="t">default deny</text>
+  <text x="851" y="650" class="t">+ one allow rule per flow</text>
+  <text x="851" y="670" class="t">shown on this diagram</text>
+  <text x="851" y="698" class="s">NETWORK-POLICIES.md</text>
+
+  <!-- Outside, left -->
+  <rect x="25" y="150" width="185" height="110" rx="10" fill="#fff" stroke="#7c3aed"/>
+  <use href="#i-slack" x="40" y="157" width="22" height="22"/>
+  <text x="68" y="175" class="h">Slack</text>
+  <text x="40" y="196" class="t">users chat in channels</text>
+  <text x="40" y="220" class="s">the bot connects out</text>
+  <text x="40" y="236" class="s">(Socket Mode, 443)</text>
+  <path class="flow" d="M265,200 L212,200"/>
+
+  <rect x="25" y="280" width="185" height="105" rx="10" fill="#fff" stroke="#7c3aed"/>
+  <use href="#i-vllm" x="40" y="287" width="22" height="22"/>
+  <text x="68" y="305" class="h">LLM endpoint</text>
+  <text x="40" y="326" class="t">vLLM, OpenAI-compatible</text>
+  <text x="40" y="350" class="s">chat + embeddings</text>
+  <text x="40" y="366" class="s">m8b.ai.egress</text>
+  <path class="flow" d="M265,325 L212,325"/>
+
+  <rect x="25" y="405" width="185" height="100" rx="10" fill="#fff" stroke="#0e7490"/>
+  <use href="#i-globe" x="40" y="412" width="22" height="22" style="color:#0e7490"/>
+  <text x="68" y="430" class="h">Search engines</text>
+  <text x="40" y="451" class="t">public Internet</text>
+  <text x="40" y="475" class="s">80 / 443</text>
+  <path class="flow" d="M265,455 L212,455"/>
+
+  <!-- Outside, right -->
+  <rect x="1070" y="150" width="190" height="100" rx="10" fill="#fff" stroke="#266fd0"/>
+  <use href="#i-user" x="1085" y="157" width="22" height="22" style="color:#266fd0"/>
+  <text x="1113" y="175" class="h">Admins (LAN, VPN)</text>
+  <text x="1085" y="196" class="s">exposure.adminCidrs</text>
+  <text x="1085" y="218" class="s">NodePort 31888 Web UI</text>
+  <text x="1085" y="234" class="s">NodePort 30909 Prometheus</text>
+  <path class="flow" d="M1070,200 L1017,200"/>
+
+  <rect x="1070" y="280" width="190" height="120" rx="10" fill="#fff" stroke="#266fd0"/>
+  <use href="#i-server" x="1085" y="287" width="22" height="22" style="color:#266fd0"/>
+  <text x="1113" y="305" class="h">Monitored hosts</text>
+  <text x="1085" y="326" class="t">servers, BMCs, storage,</text>
+  <text x="1085" y="342" class="t">network devices</text>
+  <text x="1085" y="364" class="s">SSH, SNMP, WinRM, HTTPS…</text>
+  <text x="1085" y="380" class="s">metricshub.egress</text>
+  <path class="flow" d="M1015,335 L1068,335"/>
+
+  <!-- Legend -->
+  <path class="flow" d="M40,772 L90,772"/>
+  <text x="100" y="776" class="t">request or connection (arrow: who opens it)</text>
+  <path class="otlp" d="M440,772 L490,772"/>
+  <text x="500" y="776" class="t">metrics push (OpenTelemetry, OTLP)</text>
+  <text x="1240" y="776" class="s" text-anchor="end">metricshub.org/helm-charts</text>
+</svg>
