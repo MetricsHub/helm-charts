@@ -92,6 +92,9 @@ spec:
             - name: data
               mountPath: /opt/metricshub/lib/security
               subPath: security
+            - name: data
+              mountPath: /opt/metricshub/lib/connectors
+              subPath: connectors
             - name: otel
               mountPath: /opt/metricshub/lib/otel/otel-config.yaml
               subPath: otel-config.yaml
