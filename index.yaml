@@ -3,6 +3,37 @@ entries:
   m8b-stack:
   - annotations:
       artifacthub.io/changes: |
+        - kind: added
+          description: The agent connectors folder is persistent, so custom connectors survive restarts
+      artifacthub.io/license: MIT
+    apiVersion: v2
+    appVersion: 3.1.0
+    created: "2026-10-06T17:10:27.817980788Z"
+    description: AI assistant in Slack that answers from live MetricsHub data; MetricsHub
+      Enterprise, Prometheus, SearXNG and the M8B bot
+    digest: da5706495bbcc5f20e13fcd2f78cb4220846f35bfaf5f3def1bfece2bd05af7d
+    home: https://metricshub.com
+    icon: https://metricshub.com/images/logo.svg
+    keywords:
+    - metricshub
+    - m8b
+    - slack
+    - prometheus
+    - otlp
+    - observability
+    kubeVersion: '>=1.27.0-0'
+    maintainers:
+    - name: MetricsHub
+      url: https://metricshub.com
+    name: m8b-stack
+    sources:
+    - https://github.com/metricshub/helm-charts
+    type: application
+    urls:
+    - https://github.com/MetricsHub/helm-charts/releases/download/m8b-stack-2.1.3/m8b-stack-2.1.3.tgz
+    version: 2.1.3
+  - annotations:
+      artifacthub.io/changes: |
         - kind: changed
           description: README and chart description explain what the stack is for
       artifacthub.io/license: MIT
@@ -131,4 +162,4 @@ entries:
     urls:
     - https://github.com/MetricsHub/helm-charts/releases/download/m8b-stack-2.0.0/m8b-stack-2.0.0.tgz
     version: 2.0.0
-generated: "2026-10-05T08:41:36.890893993Z"
+generated: "2026-10-06T17:10:27.817998141Z"
