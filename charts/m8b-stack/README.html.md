@@ -1,6 +1,6 @@
 ---
-date_published: 2026-10-05
-date_modified: 2026-10-05
+date_published: 2026-10-06
+date_modified: 2026-10-06
 canonical_url: https://metricshub.org/helm-charts/charts/m8b-stack/README.html
 ---
 
@@ -88,6 +88,18 @@ With network policies on, the agent Pod only reaches DNS, Prometheus and the des
 Set `network.podCidrs` and `network.serviceCidrs` to the real cluster ranges. They are then excluded from public egress, and any `metricshub.egress` rule that overlaps them is **rejected at render time**, unless an `except` entry covers the cluster range or `network.allowClusterCIDROverlap: true` records that the overlap was reviewed.
 
 To scrape the collector (24375) or probe its health (13133) from outside the Pod, list the trusted source CIDRs in `metricshub.otel.ingressCidrs`. The ClusterIP Service `<fullname>-agent` exposes both ports.
+
+### Custom connectors
+
+`/opt/metricshub/lib/connectors` lives on the agent volume, so connectors you add there survive restarts and upgrades. At every start, the connectors bundled in the image are copied over it, which keeps them up to date with the image: add your own files (a `custom/` folder, for example), never edit the bundled ones.
+
+```bash
+POD=$(kubectl -n "$NS" get pod -l "app.kubernetes.io/instance=$RELEASE,app.kubernetes.io/component=metricshub" -o jsonpath='{.items[0].metadata.name}')
+kubectl -n "$NS" cp ./my-connectors "$POD":/opt/metricshub/lib/connectors/custom -c metricshub
+kubectl -n "$NS" rollout restart deployment/m8b-stack-agent
+```
+
+How to write a connector: [MetricsHub Community Connectors](https://metricshub.org/community-connectors/).
 
 ### MCP TLS
 

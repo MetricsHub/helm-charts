@@ -16,8 +16,8 @@
 
 	<meta name="keywords" content="metricshub,helm,kubernetes,chart,m8b,slack,prometheus,opentelemetry" />
 	<meta name="generator" content="Maven Site Plugin, Doxia Site Renderer 2.0.0-M19, Skin sentry-maven-skin 8.0.00, from markdown" />
-	<meta property="article:published_time" content="2026-10-05T10:30:16" />
-	<meta property="article:modified_time" content="2026-10-05T10:30:16" />
+	<meta property="article:published_time" content="2026-10-06T17:10:44" />
+	<meta property="article:modified_time" content="2026-10-06T17:10:44" />
 
 		<link rel="canonical" href="https://metricshub.org/helm-charts/charts/m8b-stack/CHANGELOG.html">
 	<link rel="alternate" type="text/markdown" href="CHANGELOG.html.md">	<link rel="stylesheet" href="../../css/main-combined.css">
@@ -27,8 +27,8 @@
 	"@context": "https://schema.org",
 	"@type": "TechArticle",
 	"headline": "Changelog",
-	"datePublished": "2026-10-05T10:30:16",
-	"dateModified": "2026-10-05T10:30:16",
+	"datePublished": "2026-10-06T17:10:44",
+	"dateModified": "2026-10-06T17:10:44",
 	"mainEntityOfPage": "https://metricshub.org/helm-charts/charts/m8b-stack/CHANGELOG.html",
 }
 </script>
@@ -200,6 +200,13 @@
  <a id="changelog"></a>
  <h1 id="changelog">Changelog</h1>
  <section>
+  <a id="a2-1-3-282026-10-06-29"></a>
+  <h2 id="2-1-3-2026-10-06"><a href="#2-1-3-2026-10-06">2.1.3 (2026-10-06)</a></h2>
+  <ul>
+   <li><code>/opt/metricshub/lib/connectors</code> is now on the agent volume (subPath <code>connectors</code>): custom connectors copied there survive restarts and upgrades. The bundled connectors are copied from the image at every start, so they follow image upgrades; add your own files, do not edit the bundled ones.</li>
+  </ul>
+ </section>
+ <section>
   <a id="a2-1-2-282026-10-05-29"></a>
   <h2 id="2-1-2-2026-10-05"><a href="#2-1-2-2026-10-05">2.1.2 (2026-10-05)</a></h2>
   <ul>
@@ -336,7 +343,7 @@
 		<p class="footer-title" ng-class="{'text-center': $matchMedia.size == 'xs'}">
 			<strong>Helm Charts </strong>
 			<span class="hidden-xs">|</span><br class="hidden-sm hidden-md hidden-lg"/>
-			Documentation as of <strong><time datetime="2026-10-05">2026-10-05</time></strong>
+			Documentation as of <strong><time datetime="2026-10-06">2026-10-06</time></strong>
 		</p>
 
 <div class="hidden-xs navbar navbar-inverse site-logo additional-links">

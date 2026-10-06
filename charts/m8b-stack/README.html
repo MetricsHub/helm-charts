@@ -16,8 +16,8 @@
 
 	<meta name="keywords" content="metricshub,helm,kubernetes,chart,m8b,slack,prometheus,opentelemetry" />
 	<meta name="generator" content="Maven Site Plugin, Doxia Site Renderer 2.0.0-M19, Skin sentry-maven-skin 8.0.00, from markdown" />
-	<meta property="article:published_time" content="2026-10-05T10:30:18" />
-	<meta property="article:modified_time" content="2026-10-05T10:30:18" />
+	<meta property="article:published_time" content="2026-10-06T17:10:45" />
+	<meta property="article:modified_time" content="2026-10-06T17:10:45" />
 
 		<link rel="canonical" href="https://metricshub.org/helm-charts/charts/m8b-stack/README.html">
 	<link rel="alternate" type="text/markdown" href="README.html.md">	<link rel="stylesheet" href="../../css/main-combined.css">
@@ -27,8 +27,8 @@
 	"@context": "https://schema.org",
 	"@type": "TechArticle",
 	"headline": "M8B Stack Helm chart",
-	"datePublished": "2026-10-05T10:30:18",
-	"dateModified": "2026-10-05T10:30:18",
+	"datePublished": "2026-10-06T17:10:45",
+	"dateModified": "2026-10-06T17:10:45",
 	"mainEntityOfPage": "https://metricshub.org/helm-charts/charts/m8b-stack/README.html",
 }
 </script>
@@ -282,6 +282,15 @@ helm template demo metricshub/m8b-stack --namespace demo -f my-values.yaml --set
    <p>To scrape the collector (24375) or probe its health (13133) from outside the Pod, list the trusted source CIDRs in <code>metricshub.otel.ingressCidrs</code>. The ClusterIP Service <code>&lt;fullname&gt;-agent</code> exposes both ports.</p>
   </section>
   <section>
+   <h3 id="custom-connectors"><a href="#custom-connectors">Custom connectors</a></h3>
+   <p><code>/opt/metricshub/lib/connectors</code> lives on the agent volume, so connectors you add there survive restarts and upgrades. At every start, the connectors bundled in the image are copied over it, which keeps them up to date with the image: add your own files (a <code>custom/</code> folder, for example), never edit the bundled ones.</p>
+   <pre copy-to-clipboard=""><code class="language-bash">POD=$(kubectl -n "$NS" get pod -l "app.kubernetes.io/instance=$RELEASE,app.kubernetes.io/component=metricshub" -o jsonpath='{.items[0].metadata.name}')
+kubectl -n "$NS" cp ./my-connectors "$POD":/opt/metricshub/lib/connectors/custom -c metricshub
+kubectl -n "$NS" rollout restart deployment/m8b-stack-agent
+</code></pre>
+   <p>How to write a connector: <a href="https://metricshub.org/community-connectors/" class="externalLink">MetricsHub Community Connectors</a><sup class="visible-print-inline">[14]</sup>.</p>
+  </section>
+  <section>
    <h3 id="mcp-tls"><a href="#mcp-tls">MCP TLS</a></h3>
    <p>The agent serves its Web UI, REST API and MCP endpoint on 31888 with its own <strong>self-signed certificate</strong>, so the bot must accept it: <code>m8b.allowSelfSignedMcp</code> defaults to <code>true</code>. This traffic never leaves the cluster and is limited by network policies. Set it to <code>false</code> only after installing a certificate trusted by the bot in the agent keystore (<code>/opt/metricshub/lib/security</code>, on the agent PVC).</p>
   </section>
@@ -355,7 +364,7 @@ helm template demo metricshub/m8b-stack --namespace demo -f my-values.yaml --set
  </section>
  <section>
   <h2 id="validation"><a href="#validation">Validation</a></h2>
-  <p>Network isolation uses standard NetworkPolicies by default, so Cilium is not required. On a Cilium cluster you may opt into CiliumNetworkPolicies with <code>network.provider: cilium</code>; see <a href="NETWORK-POLICIES.html">NETWORK-POLICIES.md</a><sup class="visible-print-inline">[14]</sup>. CI runs <code>scripts/test.sh</code> (lint, render matrix, rejected values) on every change. That is offline only: on a representative cluster, test allowed AND denied traffic, DNS, storage, Doctor, KB indexing and a real Slack retrieval before declaring production readiness.</p>
+  <p>Network isolation uses standard NetworkPolicies by default, so Cilium is not required. On a Cilium cluster you may opt into CiliumNetworkPolicies with <code>network.provider: cilium</code>; see <a href="NETWORK-POLICIES.html">NETWORK-POLICIES.md</a><sup class="visible-print-inline">[15]</sup>. CI runs <code>scripts/test.sh</code> (lint, render matrix, rejected values) on every change. That is offline only: on a representative cluster, test allowed AND denied traffic, DNS, storage, Doctor, KB indexing and a real Slack retrieval before declaring production readiness.</p>
  </section>
 </section>
 <div class="keywords">
@@ -384,7 +393,8 @@ helm template demo metricshub/m8b-stack --namespace demo -f my-values.yaml --set
 								<li>[11] https://support.metricshub.com</li>
 								<li>[12] https://metricshub.com/pricing</li>
 								<li>[13] GETTING-STARTED.html</li>
-								<li>[14] NETWORK-POLICIES.html</li>
+								<li>[14] https://metricshub.org/community-connectors/</li>
+								<li>[15] NETWORK-POLICIES.html</li>
 								</ul>
 							</div>
 						</div>
@@ -465,7 +475,7 @@ helm template demo metricshub/m8b-stack --namespace demo -f my-values.yaml --set
 		<p class="footer-title" ng-class="{'text-center': $matchMedia.size == 'xs'}">
 			<strong>Helm Charts </strong>
 			<span class="hidden-xs">|</span><br class="hidden-sm hidden-md hidden-lg"/>
-			Documentation as of <strong><time datetime="2026-10-05">2026-10-05</time></strong>
+			Documentation as of <strong><time datetime="2026-10-06">2026-10-06</time></strong>
 		</p>
 
 <div class="hidden-xs navbar navbar-inverse site-logo additional-links">

@@ -1,6 +1,6 @@
 ---
-date_published: 2026-10-05
-date_modified: 2026-10-05
+date_published: 2026-10-06
+date_modified: 2026-10-06
 canonical_url: https://metricshub.org/helm-charts/charts/m8b-stack/GETTING-STARTED.html
 ---
 
@@ -371,6 +371,14 @@ kubectl -n "$NS" rollout status deployment/m8b-stack-bot --timeout=10m
 ```
 
 The new Pod runs its start-up checks again (about 1–2 minutes). The knowledge base is reloaded from disk, not rebuilt.
+
+**Add custom connectors.** The agent's connectors folder is on its volume: copy yours into a folder of their own, then restart the agent. Bundled connectors are refreshed from the image at every start, so do not edit them.
+
+```bash
+POD=$(kubectl -n "$NS" get pod -l "$L,app.kubernetes.io/component=metricshub" -o jsonpath='{.items[0].metadata.name}')
+kubectl -n "$NS" cp ./my-connectors "$POD":/opt/metricshub/lib/connectors/custom -c metricshub
+kubectl -n "$NS" rollout restart deployment/m8b-stack-agent
+```
 
 **Change a value.** Edit `$VALUES`, then re-run step 9 if an endpoint or a token changed, and **always** finish with step 10. A configuration change restarts the bot automatically.
 

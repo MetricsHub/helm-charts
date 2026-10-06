@@ -16,8 +16,8 @@
 
 	<meta name="keywords" content="metricshub,helm,kubernetes,chart,m8b,slack,prometheus,opentelemetry" />
 	<meta name="generator" content="Maven Site Plugin, Doxia Site Renderer 2.0.0-M19, Skin sentry-maven-skin 8.0.00, from markdown" />
-	<meta property="article:published_time" content="2026-10-05T10:30:17" />
-	<meta property="article:modified_time" content="2026-10-05T10:30:17" />
+	<meta property="article:published_time" content="2026-10-06T17:10:45" />
+	<meta property="article:modified_time" content="2026-10-06T17:10:45" />
 
 		<link rel="canonical" href="https://metricshub.org/helm-charts/charts/m8b-stack/GETTING-STARTED.html">
 	<link rel="alternate" type="text/markdown" href="GETTING-STARTED.html.md">	<link rel="stylesheet" href="../../css/main-combined.css">
@@ -27,8 +27,8 @@
 	"@context": "https://schema.org",
 	"@type": "TechArticle",
 	"headline": "Getting started with the m8b-stack chart",
-	"datePublished": "2026-10-05T10:30:17",
-	"dateModified": "2026-10-05T10:30:17",
+	"datePublished": "2026-10-06T17:10:45",
+	"dateModified": "2026-10-06T17:10:45",
 	"mainEntityOfPage": "https://metricshub.org/helm-charts/charts/m8b-stack/GETTING-STARTED.html",
 }
 </script>
@@ -592,6 +592,11 @@ kubectl -n "$NS" get events --sort-by=.lastTimestamp | tail -20
 kubectl -n "$NS" rollout status deployment/m8b-stack-bot --timeout=10m
 </code></pre>
   <p>The new Pod runs its start-up checks again (about 1–2 minutes). The knowledge base is reloaded from disk, not rebuilt.</p>
+  <p><strong>Add custom connectors.</strong> The agent's connectors folder is on its volume: copy yours into a folder of their own, then restart the agent. Bundled connectors are refreshed from the image at every start, so do not edit them.</p>
+  <pre copy-to-clipboard=""><code class="language-bash">POD=$(kubectl -n "$NS" get pod -l "$L,app.kubernetes.io/component=metricshub" -o jsonpath='{.items[0].metadata.name}')
+kubectl -n "$NS" cp ./my-connectors "$POD":/opt/metricshub/lib/connectors/custom -c metricshub
+kubectl -n "$NS" rollout restart deployment/m8b-stack-agent
+</code></pre>
   <p><strong>Change a value.</strong> Edit <code>$VALUES</code>, then re-run step 9 if an endpoint or a token changed, and <strong>always</strong> finish with step 10. A configuration change restarts the bot automatically.</p>
   <p><strong>Update the chart.</strong> Look for a newer version and read its <code>CHANGELOG.md</code>, then pin it and run steps 9 and 10:</p>
   <pre copy-to-clipboard=""><code class="language-bash">helm repo update
@@ -790,7 +795,7 @@ ctr -n k8s.io images ls -q | grep -E 'metricshub|m8b-slack|searxng|prometheus'
 		<p class="footer-title" ng-class="{'text-center': $matchMedia.size == 'xs'}">
 			<strong>Helm Charts </strong>
 			<span class="hidden-xs">|</span><br class="hidden-sm hidden-md hidden-lg"/>
-			Documentation as of <strong><time datetime="2026-10-05">2026-10-05</time></strong>
+			Documentation as of <strong><time datetime="2026-10-06">2026-10-06</time></strong>
 		</p>
 
 <div class="hidden-xs navbar navbar-inverse site-logo additional-links">

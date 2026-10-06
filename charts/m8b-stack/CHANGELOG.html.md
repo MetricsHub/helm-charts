@@ -1,10 +1,14 @@
 ---
-date_published: 2026-10-05
-date_modified: 2026-10-05
+date_published: 2026-10-06
+date_modified: 2026-10-06
 canonical_url: https://metricshub.org/helm-charts/charts/m8b-stack/CHANGELOG.html
 ---
 
 # Changelog
+
+## 2.1.3 (2026-10-06)
+
+- `/opt/metricshub/lib/connectors` is now on the agent volume (subPath `connectors`): custom connectors copied there survive restarts and upgrades. The bundled connectors are copied from the image at every start, so they follow image upgrades; add your own files, do not edit the bundled ones.
 
 ## 2.1.2 (2026-10-05)
 
