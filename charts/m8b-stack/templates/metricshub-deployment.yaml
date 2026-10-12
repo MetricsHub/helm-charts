@@ -49,6 +49,9 @@ spec:
             - name: bootstrap
               mountPath: /bootstrap
               readOnly: true
+            - name: otel
+              mountPath: /otel-seed
+              readOnly: true
           env:
             - name: CONFIG_MODE
               value: {{ .Values.metricshub.config.mode | quote }}
@@ -95,10 +98,9 @@ spec:
             - name: data
               mountPath: /opt/metricshub/lib/connectors
               subPath: connectors
-            - name: otel
-              mountPath: /opt/metricshub/lib/otel/otel-config.yaml
-              subPath: otel-config.yaml
-              readOnly: true
+            - name: data
+              mountPath: /opt/metricshub/lib/otel
+              subPath: otel
 {{ with .Values.metricshub.extraEnv }}
           env:
 {{ toYaml . | indent 12 }}

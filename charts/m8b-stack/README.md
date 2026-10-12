@@ -33,9 +33,10 @@ helm show values metricshub/m8b-stack > values-reference.yaml
 - The agent pushes metrics to the collector running in the **same container**, over loopback without TLS:
   nothing outside the Pod can reach port 4317, and the Pod keeps its real hostname.
 - The bundled collector config (`files/config/otel-config.yaml`) exports to the in-cluster Prometheus and exposes a
-  Prometheus scrape endpoint on 24375. Replace it entirely with `metricshub.otel.configText` to add exporters
-  (Datadog, New Relic, BMC Helix, remote write...), starting from the
-  [official example](https://metricshub.com/docs/latest/resources/config/otel/otel-config-example.yaml).
+  Prometheus scrape endpoint on 24375. It is written to the agent volume at first start, where you can edit it to
+  add exporters (Datadog, New Relic, BMC Helix, remote write...), starting from the
+  [official example](https://metricshub.com/docs/latest/resources/config/otel/otel-config-example.yaml); see
+  [Collector configuration](#collector-configuration).
 - Prometheus promotes OTLP resource attributes (`host.name`, ...) to labels, so PromQL can filter on them.
 
 ## Related documentation
@@ -119,6 +120,25 @@ entry covers the cluster range or `network.allowClusterCIDROverlap: true` record
 
 To scrape the collector (24375) or probe its health (13133) from outside the Pod, list the trusted source CIDRs in
 `metricshub.otel.ingressCidrs`. The ClusterIP Service `<fullname>-agent` exposes both ports.
+
+### Collector configuration
+
+The collector folder `/opt/metricshub/lib/otel` lives on the agent volume. At first start, `otel-config.yaml` is
+written there from `metricshub.otel.configText` (or the bundled config); from then on it is yours to edit, from the
+MetricsHub Web UI or as a file. The collector and Java agent binaries are copied from the image whenever they differ, so
+they follow image upgrades. With `metricshub.config.mode: managed`, the chart rewrites `otel-config.yaml` at every
+start instead.
+
+```bash
+POD=$(kubectl -n "$NS" get pod -l "app.kubernetes.io/instance=$RELEASE,app.kubernetes.io/component=metricshub" -o jsonpath='{.items[0].metadata.name}')
+kubectl -n "$NS" cp -c metricshub "$POD":/opt/metricshub/lib/otel/otel-config.yaml ./otel-config.yaml
+# edit ./otel-config.yaml, then:
+kubectl -n "$NS" cp -c metricshub ./otel-config.yaml "$POD":/opt/metricshub/lib/otel/otel-config.yaml
+kubectl -n "$NS" rollout restart deployment/m8b-stack-agent
+```
+
+With local storage, the file is also on the node: `<basePath>/<namespace>/<release>/agent/otel/otel-config.yaml`.
+Allow every new exporter destination in `metricshub.egress`.
 
 ### Custom connectors
 

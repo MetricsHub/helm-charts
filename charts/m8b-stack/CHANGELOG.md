@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.1.4 (2026-10-12)
+
+- The OpenTelemetry Collector configuration can be edited, including from the MetricsHub Web UI. Until 2.1.3,
+  `otel-config.yaml` was a read-only ConfigMap file: saving it from the Web UI failed (the agent saves atomically,
+  through a temporary file renamed over the original, which cannot replace a mounted file) and left
+  `otel-config.yaml.*.tmp` files behind.
+- `/opt/metricshub/lib/otel` is now on the agent volume (subPath `otel`). `otel-config.yaml` is written there at
+  first start from `metricshub.otel.configText` or the bundled config, then left to the user; `managed` mode
+  rewrites it at every start. The collector and Java agent are copied from the image whenever they differ, since
+  the image only ships an example configuration in `/opt/metricshub/defaults/otel`.
+
 ## 2.1.3 (2026-10-06)
 
 - `/opt/metricshub/lib/connectors` is now on the agent volume (subPath `connectors`): custom connectors copied
