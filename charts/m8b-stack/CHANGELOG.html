@@ -16,8 +16,8 @@
 
 	<meta name="keywords" content="metricshub,helm,kubernetes,chart,m8b,slack,prometheus,opentelemetry" />
 	<meta name="generator" content="Maven Site Plugin, Doxia Site Renderer 2.0.0-M19, Skin sentry-maven-skin 8.0.00, from markdown" />
-	<meta property="article:published_time" content="2026-10-06T17:10:44" />
-	<meta property="article:modified_time" content="2026-10-06T17:10:44" />
+	<meta property="article:published_time" content="1980-02-01T00:00:00" />
+	<meta property="article:modified_time" content="1980-02-01T00:00:00" />
 
 		<link rel="canonical" href="https://metricshub.org/helm-charts/charts/m8b-stack/CHANGELOG.html">
 	<link rel="alternate" type="text/markdown" href="CHANGELOG.html.md">	<link rel="stylesheet" href="../../css/main-combined.css">
@@ -27,8 +27,8 @@
 	"@context": "https://schema.org",
 	"@type": "TechArticle",
 	"headline": "Changelog",
-	"datePublished": "2026-10-06T17:10:44",
-	"dateModified": "2026-10-06T17:10:44",
+	"datePublished": "1980-02-01T00:00:00",
+	"dateModified": "1980-02-01T00:00:00",
 	"mainEntityOfPage": "https://metricshub.org/helm-charts/charts/m8b-stack/CHANGELOG.html",
 }
 </script>
@@ -200,6 +200,14 @@
  <a id="changelog"></a>
  <h1 id="changelog">Changelog</h1>
  <section>
+  <a id="a2-1-4-282026-10-12-29"></a>
+  <h2 id="2-1-4-2026-10-12"><a href="#2-1-4-2026-10-12">2.1.4 (2026-10-12)</a></h2>
+  <ul>
+   <li>The OpenTelemetry Collector configuration can be edited, including from the MetricsHub Web UI. Until 2.1.3, <code>otel-config.yaml</code> was a read-only ConfigMap file: saving it from the Web UI failed (the agent saves atomically, through a temporary file renamed over the original, which cannot replace a mounted file) and left <code>otel-config.yaml.*.tmp</code> files behind.</li>
+   <li><code>/opt/metricshub/lib/otel</code> is now on the agent volume (subPath <code>otel</code>). <code>otel-config.yaml</code> is written there at first start from <code>metricshub.otel.configText</code> or the bundled config, then left to the user; <code>managed</code> mode rewrites it at every start. The collector and Java agent are copied from the image whenever they differ, since the image only ships an example configuration in <code>/opt/metricshub/defaults/otel</code>.</li>
+  </ul>
+ </section>
+ <section>
   <a id="a2-1-3-282026-10-06-29"></a>
   <h2 id="2-1-3-2026-10-06"><a href="#2-1-3-2026-10-06">2.1.3 (2026-10-06)</a></h2>
   <ul>
@@ -343,7 +351,7 @@
 		<p class="footer-title" ng-class="{'text-center': $matchMedia.size == 'xs'}">
 			<strong>Helm Charts </strong>
 			<span class="hidden-xs">|</span><br class="hidden-sm hidden-md hidden-lg"/>
-			Documentation as of <strong><time datetime="2026-10-06">2026-10-06</time></strong>
+			Documentation as of <strong><time datetime="1980-02-01">1980-02-01</time></strong>
 		</p>
 
 <div class="hidden-xs navbar navbar-inverse site-logo additional-links">
@@ -392,7 +400,7 @@
 		</div>
 
 		<div class="footer-copyright" ng-class="{'text-center': $matchMedia.size == 'xs'}">
-			<span class="copyright">Copyright &copy; 2026&dash;2026</span> <a href="https://metricshub.com">MetricsHub</a><span class="pull-right hidden-xs icons">
+			<span class="copyright">Copyright &copy; 2026&dash;1980</span> <a href="https://metricshub.com">MetricsHub</a><span class="pull-right hidden-xs icons">
 			<a href="https://www.linkedin.com/company/metricshub" target="_blank" title="Follow metricshub on LinkedIn">
 					<i class="fa-brands fa-linkedin"></i>
 			</a>

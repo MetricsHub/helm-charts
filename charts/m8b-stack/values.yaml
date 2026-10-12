@@ -128,7 +128,7 @@ metricshub:
     adminCidrs: []
     # -- Local: connect to the node hosting the agent; preserves external source addressing.
     externalTrafficPolicy: Local
-  # -- seed preserves existing configuration; managed overwrites metricshub.yaml from the chart on every rollout.
+  # -- seed preserves existing configuration; managed overwrites metricshub.yaml and otel-config.yaml from the chart on every rollout.
   config:
     mode: seed
     # -- Optional metricshub.yaml content. Use a block scalar (|) for multiline text.
@@ -140,6 +140,7 @@ metricshub:
   # -- Embedded OpenTelemetry Collector Contrib (Enterprise image).
   otel:
     # -- Complete otel-config.yaml; empty uses the bundled one (loopback OTLP in, Prometheus out).
+    # Written to the agent volume at first start (seed mode), then edited there: <volume>/otel/otel-config.yaml.
     configText: ''
     # -- Trusted SOURCE CIDRs allowed to reach the collector health check (13133) and Prometheus exporter (24375).
     ingressCidrs: []
