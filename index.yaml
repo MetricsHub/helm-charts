@@ -3,6 +3,37 @@ entries:
   m8b-stack:
   - annotations:
       artifacthub.io/changes: |
+        - kind: changed
+          description: otel-config.yaml can be edited and saved from the MetricsHub Web UI (collector folder on the agent volume)
+      artifacthub.io/license: MIT
+    apiVersion: v2
+    appVersion: 3.1.0
+    created: "2026-10-12T10:50:21.337236578Z"
+    description: AI assistant in Slack that answers from live MetricsHub data; MetricsHub
+      Enterprise, Prometheus, SearXNG and the M8B bot
+    digest: e2907dfc5095933c33a8681f9d87d3f154ea499955ac9e6e0096ed2b0a3c8bf4
+    home: https://metricshub.com
+    icon: https://metricshub.com/images/logo.svg
+    keywords:
+    - metricshub
+    - m8b
+    - slack
+    - prometheus
+    - otlp
+    - observability
+    kubeVersion: '>=1.27.0-0'
+    maintainers:
+    - name: MetricsHub
+      url: https://metricshub.com
+    name: m8b-stack
+    sources:
+    - https://github.com/metricshub/helm-charts
+    type: application
+    urls:
+    - https://github.com/MetricsHub/helm-charts/releases/download/m8b-stack-2.1.4/m8b-stack-2.1.4.tgz
+    version: 2.1.4
+  - annotations:
+      artifacthub.io/changes: |
         - kind: added
           description: The agent connectors folder is persistent, so custom connectors survive restarts
       artifacthub.io/license: MIT
@@ -162,4 +193,4 @@ entries:
     urls:
     - https://github.com/MetricsHub/helm-charts/releases/download/m8b-stack-2.0.0/m8b-stack-2.0.0.tgz
     version: 2.0.0
-generated: "2026-10-06T17:10:27.817998141Z"
+generated: "2026-10-12T10:50:21.337259281Z"
