@@ -80,7 +80,7 @@ The chart deploys and wires the components; their own documentation covers what 
 
    ```bash
    docker login docker.metricshub.com
-   docker pull docker.metricshub.com/metricshub-enterprise:3.9.07
+   docker pull docker.metricshub.com/metricshub-enterprise:3.9.08
    docker pull docker.metricshub.com/metricshub/m8b-slack:3.1.0
    ```
 

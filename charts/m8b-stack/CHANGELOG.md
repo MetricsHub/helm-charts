@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.5 (2026-11-09)
+
+- MetricsHub Enterprise agent 3.9.08 (`docker.metricshub.com/metricshub-enterprise:3.9.08`).
+
 ## 2.1.4 (2026-10-12)
 
 - The OpenTelemetry Collector configuration can be edited, including from the MetricsHub Web UI. Until 2.1.3,

@@ -2,7 +2,7 @@ apiVersion: v2
 name: m8b-stack
 description: AI assistant in Slack that answers from live MetricsHub data; MetricsHub Enterprise, Prometheus, SearXNG and the M8B bot
 type: application
-version: 2.1.4
+version: 2.1.5
 appVersion: 3.1.0
 kubeVersion: '>=1.27.0-0'
 home: https://metricshub.com
@@ -23,4 +23,4 @@ annotations:
   artifacthub.io/license: MIT
   artifacthub.io/changes: |
     - kind: changed
-      description: otel-config.yaml can be edited and saved from the MetricsHub Web UI (collector folder on the agent volume)
+      description: MetricsHub Enterprise agent 3.9.08
