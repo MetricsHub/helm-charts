@@ -1,6 +1,6 @@
 ---
-date_published: 1980-02-01
-date_modified: 1980-02-01
+date_published: 2026-11-09
+date_modified: 2026-11-09
 canonical_url: https://metricshub.org/helm-charts/charts/m8b-stack/NETWORK-POLICIES.html
 ---
 

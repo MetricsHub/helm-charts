@@ -17,7 +17,7 @@ stage: core
 # -- Full image references. agent and bot come from the private docker.metricshub.com registry (see README).
 images:
   # -- MetricsHub Enterprise: agent plus embedded OpenTelemetry Collector Contrib.
-  agent: docker.metricshub.com/metricshub-enterprise:3.9.07
+  agent: docker.metricshub.com/metricshub-enterprise:3.9.08
   prometheus: prom/prometheus:v3.13.3
   searxng: searxng/searxng:2026.9.17-c49771992
   bot: docker.metricshub.com/metricshub/m8b-slack:3.1.0

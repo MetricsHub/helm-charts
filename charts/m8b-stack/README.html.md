@@ -1,6 +1,6 @@
 ---
-date_published: 1980-02-01
-date_modified: 1980-02-01
+date_published: 2026-11-09
+date_modified: 2026-11-09
 canonical_url: https://metricshub.org/helm-charts/charts/m8b-stack/README.html
 ---
 
@@ -63,7 +63,7 @@ The chart deploys and wires the components; their own documentation covers what 
   
   ```bash
   docker login docker.metricshub.com
-  docker pull docker.metricshub.com/metricshub-enterprise:3.9.07
+  docker pull docker.metricshub.com/metricshub-enterprise:3.9.08
   docker pull docker.metricshub.com/metricshub/m8b-slack:3.1.0
   ```
 3. **Give them to Kubernetes**: [GETTING-STARTED.md](GETTING-STARTED.html) step 4 writes them without echoing the password, step 5 creates the `registry-pull` Secret that every Pod of the chart references, and step 5b checks from the cluster that both images can be pulled. Do not reuse `~/.docker/config.json`: with a credential helper it holds no usable `auth` entry.

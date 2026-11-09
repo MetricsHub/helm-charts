@@ -1,10 +1,14 @@
 ---
-date_published: 1980-02-01
-date_modified: 1980-02-01
+date_published: 2026-11-09
+date_modified: 2026-11-09
 canonical_url: https://metricshub.org/helm-charts/charts/m8b-stack/CHANGELOG.html
 ---
 
 # Changelog
+
+## 2.1.5 (2026-11-09)
+
+- MetricsHub Enterprise agent 3.9.08 (`docker.metricshub.com/metricshub-enterprise:3.9.08`).
 
 ## 2.1.4 (2026-10-12)
 
